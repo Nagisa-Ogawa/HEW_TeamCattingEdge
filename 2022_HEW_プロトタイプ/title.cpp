@@ -57,7 +57,7 @@ void UninitTitle(void)
 void UpdateTitle(void)
 {
 	//スペースキーが押されたらゲームシーンへ移行する
-	if (IsButtonPressedX(0, XINPUT_GAMEPAD_A))
+	if (IsButtonPressedX(0, XINPUT_GAMEPAD_A)||GetKeyboardPress(DIK_RETURN))
 	{
 		SetFadeColor(0.0f, 0.0f, 0.0f, 0.0f);//フェードカラーを黒に変える
 		SceneTransition(SCENE_GAME);

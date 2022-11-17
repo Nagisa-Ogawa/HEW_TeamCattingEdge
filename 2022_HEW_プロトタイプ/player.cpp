@@ -15,10 +15,6 @@
 #include "number.h"
 #include "camera.h"
 #include "inputx.h"
-#include "ground.h"
-#include "enemy_cloud.h"
-#include "enemy_turret.h"
-#include "enemy_bass.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -52,9 +48,6 @@ void PlayerStatusNormal(void);
 void PlayerStatusWarpwait(void);
 void PlayerStatusWarp(void);
 
-int HitCheckGround(D3DXVECTOR2 box1pos, float box1width, float box1height);
-int HitCheckGroundBASS(D3DXVECTOR2 box1pos, float box1width, float box1height);
-void  HitChackEnemy(float x, float y, float size, ENEMY_PROT* enemy);
 void SetMap(MAPS map);
 
 //スティック情報取得関数
@@ -66,15 +59,6 @@ D3DXVECTOR2 GetRightStick(int padNo);
 //*****************************************************************************
 static PLAYER g_Player;
 
-ENEMY_CLOUD g_EC[NUM_ENEMY_CLOUD] = {
-	ENEMY_CLOUD(2800.0f, 50.0f, 0.0f, 150.0f),
-	ENEMY_CLOUD(2700.0f, 100.0f,45.0f, 150.0f),
-};
-ENEMY_TURRET g_e2(2600.0f - MONOSIZE, 500.0f - MONOSIZE * 2, 1);
-ENEMY_BASS g_EB(600.0f, 100, 0.0f, 200.0f, 1);
-
-static ground g_ground[NUM_GROUND];
-static ground g_bassmap[3];
 
 static int g_TextureNo = 0;//プレイヤー用テクスチャの識別子
 static int g_TextureNoShadow = 0;//プレイヤー用影のテクスチャの識別子
@@ -146,23 +130,6 @@ HRESULT InitPlayer(void)
 	g_Player.hp = 10;
 	g_Player.map = tutorial;
 
-	//フィールドの初期化 (X,Y,横幅、立幅)
-	g_ground[0].SetVertex(0.0f, 500.0f, 960.0f, MONOSIZE * 2);
-	g_ground[1].SetVertex(-1000.0f, -500.0f, 1000.0f, 1200.0f);
-	g_ground[2].SetVertex(960.0f, 500.0f + MONOSIZE, 150.0f, MONOSIZE);
-	g_ground[3].SetVertex(1100.0f, 500.0f, 80.0f, MONOSIZE * 2);
-	g_ground[4].SetVertex(1180.0f, 500.0f - MONOSIZE, 300.0f, MONOSIZE * 3);
-	g_ground[5].SetVertex(1600.0f, 500.0f - MONOSIZE, 200.0f, MONOSIZE * 3);
-	g_ground[6].SetVertex(1800.0f, 500.0f + MONOSIZE, 150.0f, MONOSIZE);
-	g_ground[7].SetVertex(1950.0f, 500.0f - MONOSIZE, 650.0f, MONOSIZE * 3);
-	g_ground[8].SetVertex(1950.0f, -500.0f, 100.0f, 950.0f);
-	g_ground[9].SetVertex(2600.0f, 500.0f - MONOSIZE * 2, 500.0f, MONOSIZE * 4);
-	g_ground[10].SetVertex(3100.0f, -500.0f, 1000.0f, 1200.0f);
-	
-	//ボスマップの初期化
-	g_bassmap[0].SetVertex(-1000.0f,-500.0f,1000.0,1200.0f);
-	g_bassmap[1].SetVertex(960.0f, -500.0f, 1000.0, 1200.0f);
-	g_bassmap[2].SetVertex(0.0f, 500.0f, 960.0, 500.0f);
 
 	return S_OK;
 }
@@ -197,41 +164,6 @@ void UpdatePlayer(void)
 		break;
 	}
 
-	//敵の更新
-
-	for (int i = 0; i < NUM_ENEMY_CLOUD; i++)
-	{
-		g_EC[i].Update();
-	}
-
-	if (g_e2.GetLive())
-		g_e2.Update();
-
-	if (g_EB.GetLive())
-		g_EB.Update();
-
-	else
-	{
-		SceneTransition(SCENE_RESULT);
-	}
-
-	////ジャンプ中の処理
-	//if (g_Player.jumpFlag == true)
-	//{
-	//	//高さの更新
-	//	g_Player.height += g_Player.jumpPower;
-
-	//	//ジャンプ力の減衰
-	//	g_Player.jumpPower -= g_Player.gravity;
-
-	//	//地面に着地した場合
-	//	if (g_Player.height <= 0.0f)
-	//	{
-	//		//高さを0に戻してジャンプ中フラグを落とす
-	//		g_Player.height = 0.0f;
-	//		g_Player.jumpFlag = false;
-	//	}
-	//}
 
 	////アニメーションカウンターをカウントアップして、ウエイト値を超えたら
 	//if (g_Player.animeCounter > 10)
@@ -247,61 +179,8 @@ void UpdatePlayer(void)
 	//}
 	//g_Player.animeCounter++;
 
-	//衝突判定
-	int a ;
 
-	//マップ選択
-	switch (g_Player.map)
-	{
-	case tutorial:
-		a = (HitCheckGround(g_Player.pos, 64.0f, 64.0f));
-		break;
-	case bass:
-		a = (HitCheckGroundBASS(g_Player.pos, 64.0f, 64.0f));
-		break;
-	default:
-		break;
-	}
 
-	switch (a)
-	{
-	case 1://床にいる場合
-		g_Player.pos.y = g_Player.oldpos.y;
-		break;
-	case 2://壁にぶつかる場合
-		g_Player.pos.x = g_Player.oldpos.x;
-
-		if (g_Player.status == warpwait)
-		{
-			g_Player.pos.y += 1.0f;
-		}
-		else
-		{
-			g_Player.pos.y += 10.0f;
-		}
-		break;
-	case 3://壁の中
-		g_Player.pos = g_Player.oldpos;
-		break;
-	case 0://どこにも触れていない
-		if (g_Player.waitafterwarp <= 0)
-		{
-			if (g_Player.status == warpwait)
-			{
-				g_Player.pos.y += 1.0f;
-			}
-			else
-			{
-				g_Player.pos.y += 10.0f;
-			}
-		}
-		else
-		{
-			g_Player.waitafterwarp--;
-		}
-
-		break;
-	}
 	
 	if (IsButtonPressedX(0, XINPUT_GAMEPAD_Y))
 		SetMap(tutorial);
@@ -406,36 +285,6 @@ void DrawPlayer(void)
 	D3DXVECTOR2 BasePos = GetBase();
 
 
-	//グラウンドの描画 と　敵の描画
-	switch (g_Player.map)
-	{
-	case tutorial:
-		for (int i = 0; i < NUM_GROUND; i++)
-		{
-			DrawSpriteLeftTop(g_TextureGround, BasePos.x + g_ground[i].GetVertex0(), BasePos.y + g_ground[i].GetVertex1(), g_ground[i].GetVertex2(), g_ground[i].GetVertex3(), 0.0f, 0.0f, 1.0f, 1.0f);
-		}
-
-		for (int i = 0; i < NUM_ENEMY_CLOUD; i++)
-		{
-			if (g_EC[i].GetLive())
-				DrawSpriteLeftTop(g_TextureCloud, BasePos.x + g_EC[i].GetPosX(), BasePos.y + g_EC[i].GetPosY(), g_EC[i].GetSize(), g_EC[i].GetSize(), 0.08f, 0.14f, 0.18f, 0.1f);
-		}
-
-		if (g_e2.GetLive())
-			DrawSpriteLeftTop(g_TextureTurret, BasePos.x + g_e2.GetPosX(), BasePos.y + g_e2.GetPosY(), g_e2.GetSize(), g_e2.GetSize(), 0.00f, 0.25f, 0.33f, 0.25f);
-		break;
-	case bass:
-		for (int i = 0; i < 3; i++)
-		{
-			DrawSpriteLeftTop(g_TextureGround, BasePos.x + g_bassmap[i].GetVertex0(), BasePos.y + g_bassmap[i].GetVertex1(), g_bassmap[i].GetVertex2(), g_bassmap[i].GetVertex3(), 0.0f, 0.0f, 1.0f, 1.0f);
-		}
-
-		if (g_EB.GetLive())
-			DrawSpriteLeftTop(g_TextureBass, BasePos.x + g_EB.GetPosX(), BasePos.y + g_EB.GetPosY(), g_EB.GetSize(), g_EB.GetSize(), 0.00f, 0.25f, 0.33f, 0.25f);
-		break;
-	default:
-		break;
-	}
 
 	if (g_Player.attackflag != 0)
 	{
@@ -482,43 +331,6 @@ void PlayerStatusNormal(void)
 
 	if (IsButtonPressedX(0, XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
-		switch (g_Player.map)
-		{
-		case tutorial:
-			if (GetThumbLeftX(TEST_CON) <= 0.0f)
-			{
-				g_Player.attackflag = 1;
-				for (int i = 0; i < NUM_ENEMY_CLOUD; i++)
-				{
-					HitChackEnemy(g_Player.pos.x - MONOSIZE, g_Player.pos.y, MONOSIZE, &g_EC[i]);
-				}
-				HitChackEnemy(g_Player.pos.x - MONOSIZE, g_Player.pos.y, MONOSIZE, &g_e2);
-			}
-			else
-			{
-				g_Player.attackflag = 2;
-				for (int i = 0; i < NUM_ENEMY_CLOUD; i++)
-				{
-					HitChackEnemy(g_Player.pos.x + MONOSIZE, g_Player.pos.y, MONOSIZE, &g_EC[i]);
-				};
-				HitChackEnemy(g_Player.pos.x + MONOSIZE, g_Player.pos.y, MONOSIZE, &g_e2);
-			}
-			break;
-		case bass:
-			if (GetThumbLeftX(TEST_CON) <= 0.0f)
-			{
-				g_Player.attackflag = 1;
-				HitChackEnemy(g_Player.pos.x - MONOSIZE, g_Player.pos.y, MONOSIZE, &g_EB);
-			}
-			else
-			{
-				g_Player.attackflag = 2;
-				HitChackEnemy(g_Player.pos.x + MONOSIZE, g_Player.pos.y, MONOSIZE, &g_EB);
-			}
-			break;
-		default:
-			break;
-		}
 	}
 }
 
@@ -571,128 +383,7 @@ D3DXVECTOR2 GetRightStick(int padNo)
 	return D3DXVECTOR2(GetThumbRightX(padNo), GetThumbRightY(padNo));
 }
 
-//フィールドとの接触を判定する
-//1:床に接触
-//2:壁に接触
-//3:壁の中
-//0:接触無し
-int HitCheckGround(D3DXVECTOR2 box1pos, float box1width, float box1height)
-{
-	bool frag1 = false;
-	bool frag2 = false;
 
-	float box1Xmin = box1pos.x - (box1width / 2);
-	float box1Xmax = box1pos.x + (box1width / 2);
-	float box1Ymin = box1pos.y - (box1height / 2);
-	float box1Ymax = box1pos.y + (box1height / 2);
-
-	for (int i = 0; i < NUM_GROUND; i++)
-	{
-		float box2Xmin = g_ground[i].GetVertex0();
-		float box2Xmax = g_ground[i].GetVertex0() + g_ground[i].GetVertex2();
-		float box2Ymin = g_ground[i].GetVertex1();
-		float box2Ymax = g_ground[i].GetVertex1() + g_ground[i].GetVertex3();
-
-		if (box1Xmin < box2Xmax)
-		{
-			if (box1Xmax > box2Xmin)
-			{
-				if (box1Ymin < box2Ymax)
-				{
-					if (box1Ymax > box2Ymin)
-					{
-
-						if (box2Ymin >= box1Ymax - 10.0f)
-						{
-							frag1 = true;
-						}
-						else if (box2Xmin + 10.0f >= box1Xmax || box2Xmax - 10.0f <= box1Xmin)
-						{
-							frag2 = true;
-						}
-
-						if (frag1 == false && frag2 == false)
-						{
-							return 3;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (frag1 == true && frag2 == true)
-	{
-		return 3;
-	}
-	else if (frag1 == true)
-	{
-		return 1;
-	}
-	else if (frag2 == true)
-	{
-		return 2;
-	}
-}
-
-int HitCheckGroundBASS(D3DXVECTOR2 box1pos, float box1width, float box1height)
-{
-	bool frag1 = false;
-	bool frag2 = false;
-
-	float box1Xmin = box1pos.x - (box1width / 2);
-	float box1Xmax = box1pos.x + (box1width / 2);
-	float box1Ymin = box1pos.y - (box1height / 2);
-	float box1Ymax = box1pos.y + (box1height / 2);
-
-	for (int i = 0; i < 3; i++)
-	{
-		float box2Xmin = g_bassmap[i].GetVertex0();
-		float box2Xmax = g_bassmap[i].GetVertex0() + g_bassmap[i].GetVertex2();
-		float box2Ymin = g_bassmap[i].GetVertex1();
-		float box2Ymax = g_bassmap[i].GetVertex1() + g_bassmap[i].GetVertex3();
-
-		if (box1Xmin < box2Xmax)
-		{
-			if (box1Xmax > box2Xmin)
-			{
-				if (box1Ymin < box2Ymax)
-				{
-					if (box1Ymax > box2Ymin)
-					{
-
-						if (box2Ymin >= box1Ymax - 10.0f)
-						{
-							frag1 = true;
-						}
-						else if (box2Xmin + 10.0f >= box1Xmax || box2Xmax - 10.0f <= box1Xmin)
-						{
-							frag2 = true;
-						}
-
-						if (frag1 == false && frag2 == false)
-						{
-							return 3;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	if (frag1 == true && frag2 == true)
-	{
-		return 3;
-	}
-	else if (frag1 == true)
-	{
-		return 1;
-	}
-	else if (frag2 == true)
-	{
-		return 2;
-	}
-}
 
 void SetMap(MAPS map)
 {
@@ -713,34 +404,4 @@ void SetMap(MAPS map)
 	g_Player.move = false;
 
 	g_Player.map = map;
-}
-
-void  HitChackEnemy(float x, float y,float size,ENEMY_PROT* enemy) 
-{
-	float box1Xmin = x - (size / 2);
-	float box1Xmax = x + (size / 2);
-	float box1Ymin = y - (size / 2);
-	float box1Ymax = y + (size / 2);
-
-	for (int i = 0; i < 3; i++)
-	{
-		float box2Xmin = enemy->GetPosX();
-		float box2Xmax = enemy->GetPosX() + enemy->GetSize();
-		float box2Ymin = enemy->GetPosY();
-		float box2Ymax = enemy->GetPosY() + enemy->GetSize();
-
-		if (box1Xmin < box2Xmax)
-		{
-			if (box1Xmax > box2Xmin)
-			{
-				if (box1Ymin < box2Ymax)
-				{
-					if (box1Ymax > box2Ymin)
-					{
-						enemy->Damage(1);
-					}
-				}
-			}
-		}
-	}
 }
