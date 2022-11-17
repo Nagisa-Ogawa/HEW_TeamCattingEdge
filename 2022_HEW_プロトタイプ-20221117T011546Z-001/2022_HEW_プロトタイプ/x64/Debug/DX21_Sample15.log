@@ -1,6 +1,0 @@
-﻿  player.cpp
-c:\ぜんつっぱ\デスクトップ\2022_hew_プロトタイプ\enemy_cloud.h(22): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\ぜんつっぱ\デスクトップ\2022_hew_プロトタイプ\enemy_cloud.h(23): warning C4244: '=': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\ぜんつっぱ\デスクトップ\2022_hew_プロトタイプ\player.cpp(694): warning C4715: 'HitCheckGroundBASS': 値を返さないコントロール パスがあります。
-c:\ぜんつっぱ\デスクトップ\2022_hew_プロトタイプ\player.cpp(635): warning C4715: 'HitCheckGround': 値を返さないコントロール パスがあります。
-  DX21_Sample15.vcxproj -> C:\ぜんつっぱ\デスクトップ\2022_HEW_プロトタイプ\x64\Debug\DX21_Sample15.exe
