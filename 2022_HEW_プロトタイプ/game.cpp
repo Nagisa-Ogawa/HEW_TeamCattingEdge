@@ -15,6 +15,7 @@
 #include "player.h"
 #include "goal.h"
 #include "bg.h"
+#include "Block.h"
 #include "bullet.h"
 #include "enemy.h"
 #include "collision.h"
@@ -55,6 +56,9 @@ void InitGame(void)
 
 	// 背景の初期化
 	InitBG();
+
+	// ステージの初期化
+	InitBlock();
 
 	// 弾の初期化
 	InitBullet();
@@ -103,6 +107,9 @@ void UninitGame(void)
 	// 弾の終了処理
 	UninitBullet();
 
+	// ステージの終了処理
+	UninitBlock();
+
 	// 背景の終了処理
 	UninitBG();
 
@@ -140,6 +147,9 @@ void UpdateGame(void)
 	// ゴールの更新処理
 	UpdateGoal();
 
+	// ステージの更新処理
+	UpdateBlock();
+
 	// 背景の更新
 	UpdateBG();
 
@@ -166,6 +176,9 @@ void DrawGame(void)
 
 	// 敵の描画処理
 	//DrawEnemy();
+
+	// ステージの描画処理
+	DrawBlock();
 
 	// プレイヤーの描画処理
 	DrawPlayer();
