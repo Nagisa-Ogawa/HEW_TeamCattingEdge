@@ -87,7 +87,6 @@ HRESULT InitBlock(void)
 
 	//データの初期化
 
-
 	return S_OK;
 }
 
@@ -118,6 +117,8 @@ void UpdateBlock(void)
 {
 	//ベース座標を受け取る
 	D3DXVECTOR2 basePos = GetBase();
+	//プレイヤー座標を受け取る
+	PLAYER* pPlayer = GetPlayer();
 	// プレイヤーとの当たり判定
 	for (int y = 0; y < STAGE_HEIGHT; y++)
 	{
@@ -127,16 +128,15 @@ void UpdateBlock(void)
 			if (g_Blocks[y][x] == 0){
 				continue;
 			}
-			PLAYER* pPlayer = GetPlayer();
 			if (HitCheckBox_Block(
-				D3DXVECTOR2(
-					(basePos.x + BLOCK_SIZE * x), 
-					(basePos.y + BLOCK_SIZE * y - BLOCK_SIZE)), 
+				D3DXVECTOR2(BLOCK_SIZE * x, BLOCK_SIZE * y),
 				BLOCK_SIZE, BLOCK_SIZE,
 				pPlayer->pos, 120.0f, 120.0f))
 			{
 				// 当たった
 				pPlayer->pos = pPlayer->oldpos;
+
+				//どれにあたったか？
 			}
 		}
 	}
@@ -172,7 +172,7 @@ void DrawBlock(void)
 			if (g_Blocks[y][x] == 0){
 				continue;
 			}
-			SetVertexBlock(basePos.x + BLOCK_SIZE*x, basePos.y + BLOCK_SIZE*y-BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE,
+			SetVertexBlock(basePos.x + BLOCK_SIZE*x, basePos.y + BLOCK_SIZE*y, BLOCK_SIZE, BLOCK_SIZE,
 				0.0f,
 				0.0f,
 				1.0f,
@@ -215,10 +215,10 @@ void SetVertexBlock(float x, float y, float width, float height,
 bool HitCheckBox_Block(D3DXVECTOR2 box1pos, float box1width, float box1height,
 	D3DXVECTOR2 box2pos, float box2width, float box2height)
 {
-	float box1Xmin = box1pos.x - (box1width / 2);
-	float box1Xmax = box1pos.x + (box1width / 2);
-	float box1Ymin = box1pos.y - (box1height / 2);
-	float box1Ymax = box1pos.y + (box1height / 2);
+	float box1Xmin = box1pos.x;
+	float box1Xmax = box1pos.x + box1width;
+	float box1Ymin = box1pos.y;
+	float box1Ymax = box1pos.y + box1height;
 
 	float box2Xmin = box2pos.x - (box2width / 2);
 	float box2Xmax = box2pos.x + (box2width / 2);

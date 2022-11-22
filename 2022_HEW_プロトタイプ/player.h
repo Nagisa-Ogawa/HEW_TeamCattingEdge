@@ -28,6 +28,7 @@ struct PLAYER
 	D3DXVECTOR2 pos;		//現在座標
 	D3DXVECTOR2 oldpos;		//１フレーム前の座標
 	D3DXVECTOR2 warppos;	//ワープ地点の座標
+	float		size;
 	D3DXVECTOR2	vel;		//速度ベクトル
 	STATUS		status;		//プレイヤーの状態
 
@@ -43,10 +44,9 @@ struct PLAYER
 
 	bool		move;
 
-	int attackflag;
+	int			attackflag;
 
 	int			hp;			//HP
-	MAPS		map;		//現在MAP
 };
 
 //*****************************************************************************
@@ -55,6 +55,7 @@ struct PLAYER
 HRESULT InitPlayer(void);
 void UninitPlayer(void);
 void UpdatePlayer(void);
+void UpdateEndPlayer(void);
 void DrawPlayer(void);
 
 PLAYER* GetPlayer(void);

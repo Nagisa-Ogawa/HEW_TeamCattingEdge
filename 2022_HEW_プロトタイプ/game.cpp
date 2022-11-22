@@ -156,6 +156,8 @@ void UpdateGame(void)
 	//カメラの更新処理
 	UpdateCamera();
 
+	UpdateEndPlayer();
+
 	//数値表示の更新処理
 	UpdateNumber();
 
