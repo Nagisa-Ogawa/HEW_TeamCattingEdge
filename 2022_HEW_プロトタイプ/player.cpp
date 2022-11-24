@@ -80,7 +80,7 @@ HRESULT InitPlayer(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/pipo-xmaschara03.png");
 
 	//データの初期化
-	g_Player.pos = D3DXVECTOR2(PLAYER_DISP_X, PLAYER_DISP_Y);
+	g_Player.pos = D3DXVECTOR2(200.0f, 200.0f);
 	//g_Player.pos = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.oldpos = g_Player.pos;
@@ -90,7 +90,7 @@ HRESULT InitPlayer(void)
 	g_Player.warpframe = 0;
 	g_Player.waitafterwarp = 0;
 	g_Player.warppower = 0.0f;
-	g_Player.gravity = 2.0f;
+	g_Player.gravity = 4.0f;
 	g_Player.warpFlag = 0;//int
 
 	g_Player.muki = 0;
@@ -121,6 +121,7 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	g_Player.oldpos = g_Player.pos;
 	//プレーヤーの状態変化（ステータス）
 	switch (g_Player.status)
 	{
@@ -161,7 +162,7 @@ void UpdatePlayer(void)
 	//カメラ座標の更新
 	CAMERA_2D* pCamera = GetCamera();
 	pCamera->pos.x = g_Player.pos.x - PLAYER_DISP_X;
-	pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y -60.0f;
+	//pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y -60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
 	if (pCamera->pos.y < 0)
@@ -171,7 +172,7 @@ void UpdatePlayer(void)
 
 void UpdateEndPlayer(void)
 {
-	g_Player.oldpos = g_Player.pos;
+	// g_Player.oldpos = g_Player.pos;
 }
 
 
@@ -220,7 +221,7 @@ void DrawPlayer(void)
 			g_MukiTable[g_Player.muki],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
 			0.0f);
 		break;
 		//ワ－プ状態
@@ -269,6 +270,11 @@ void DrawPlayer(void)
 	}
 }
 
+void AdjustPlayer(D3DXVECTOR2 pos)
+{
+	g_Player.pos += pos;
+}
+
 PLAYER* GetPlayer(void)
 {
 	return &g_Player;
@@ -291,7 +297,14 @@ void PlayerStatusNormal(void)
 	}
 
 	//落下処理
-	g_Player.pos.y += g_Player.gravity;
+	if (g_Player.waitafterwarp>0)
+	{
+		g_Player.waitafterwarp--;
+	}
+	else
+	{
+		g_Player.pos.y += g_Player.gravity;
+	}
 }
 
 void PlayerStatusWarpwait(void)

@@ -144,11 +144,12 @@ void UpdateGame(void)
 	// 弾の更新処理
 	UpdateBullet();
 
+	// ステージの更新処理
+	UpdateBlock();
+
 	// ゴールの更新処理
 	UpdateGoal();
 
-	// ステージの更新処理
-	UpdateBlock();
 
 	// 背景の更新
 	UpdateBG();

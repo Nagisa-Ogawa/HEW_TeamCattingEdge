@@ -6,6 +6,7 @@
 --------------------------------------------------------------------------------
 
 ==============================================================================*/
+#include <vector>
 #include "Block.h"
 #include "camera.h"
 #include "player.h"
@@ -29,6 +30,12 @@ void SetVertexBlock(float x, float y, float width, float height,
 	float u, float v, float uw, float vh);
 bool HitCheckBox_Block(D3DXVECTOR2 box1pos, float box1width, float box1height,
 	D3DXVECTOR2 box2pos, float box2width, float box2height);
+// 線と線の当たり判定
+bool HitCheckLine(D3DXVECTOR2 A, D3DXVECTOR2 B, D3DXVECTOR2 C, D3DXVECTOR2 D);
+// 線と線の交点を求める関数
+D3DXVECTOR2 GetCrossPoint(D3DXVECTOR2 A, D3DXVECTOR2 B, D3DXVECTOR2 C, D3DXVECTOR2 D);
+// 外積
+float Cross(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
 
 
 //*****************************************************************************
@@ -46,13 +53,13 @@ static int g_Blocks[STAGE_HEIGHT][STAGE_WIDTH] = {
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,1,1,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -115,31 +122,442 @@ void UninitBlock(void)
 //=============================================================================
 void UpdateBlock(void)
 {
-	//ベース座標を受け取る
-	D3DXVECTOR2 basePos = GetBase();
 	//プレイヤー座標を受け取る
 	PLAYER* pPlayer = GetPlayer();
-	// プレイヤーとの当たり判定
-	for (int y = 0; y < STAGE_HEIGHT; y++)
+	bool isHit = false;
+	do
 	{
-		for (int x = 0; x < STAGE_WIDTH; x++)
+		// プレイヤーの移動ベクトルとブロックの４辺の交点の配列
+		std::vector<D3DXVECTOR2> crossPoints;
+		std::vector<int> dore;
+		// プレイヤーの移動ベクトル
+		D3DXVECTOR2 pVec = pPlayer->pos - pPlayer->oldpos;
+		// プレイヤーの各頂点の座標の配列
+		D3DXVECTOR2 playerVertices[4] =
 		{
-			// ブロックがないならスキップ
-			if (g_Blocks[y][x] == 0){
-				continue;
-			}
-			if (HitCheckBox_Block(
-				D3DXVECTOR2(BLOCK_SIZE * x, BLOCK_SIZE * y),
-				BLOCK_SIZE, BLOCK_SIZE,
-				pPlayer->pos, 120.0f, 120.0f))
-			{
-				// 当たった
-				pPlayer->pos = pPlayer->oldpos;
+			D3DXVECTOR2(pPlayer->pos.x - pPlayer->size / 2, pPlayer->pos.y - pPlayer->size / 2), // 左上
+			D3DXVECTOR2(pPlayer->pos.x + pPlayer->size / 2, pPlayer->pos.y - pPlayer->size / 2), // 右上
+			D3DXVECTOR2(pPlayer->pos.x - pPlayer->size / 2, pPlayer->pos.y + pPlayer->size / 2), // 左下
+			D3DXVECTOR2(pPlayer->pos.x + pPlayer->size / 2, pPlayer->pos.y + pPlayer->size / 2), // 右下
 
-				//どれにあたったか？
+		};
+		// 1フレーム前のプレイヤーの各頂点の座標の配列
+		D3DXVECTOR2 oldPlayerVertices[4] =
+		{
+			D3DXVECTOR2(pPlayer->oldpos.x - pPlayer->size / 2, pPlayer->oldpos.y - pPlayer->size / 2), // 左上
+			D3DXVECTOR2(pPlayer->oldpos.x + pPlayer->size / 2, pPlayer->oldpos.y - pPlayer->size / 2), // 右上
+			D3DXVECTOR2(pPlayer->oldpos.x - pPlayer->size / 2, pPlayer->oldpos.y + pPlayer->size / 2), // 左下
+			D3DXVECTOR2(pPlayer->oldpos.x + pPlayer->size / 2, pPlayer->oldpos.y + pPlayer->size / 2), // 右下
+
+		};
+		isHit = false;
+		// プレイヤーとの当たり判定
+		for (int y = 0; y < STAGE_HEIGHT; y++)
+		{
+			for (int x = 0; x < STAGE_WIDTH; x++)
+			{
+				// ブロックがないならスキップ
+				if (g_Blocks[y][x] == 0)
+				{
+					continue;
+				}
+				if (HitCheckBox_Block(
+					D3DXVECTOR2(BLOCK_SIZE * x, BLOCK_SIZE * y),
+					BLOCK_SIZE, BLOCK_SIZE,
+					pPlayer->pos, 120.0f, 120.0f))
+				{
+					isHit = true;
+					// ４辺の２点を格納
+					D3DXVECTOR2 blockPoints[4][2] =
+					{
+						// 開始点                                                               終了点
+						{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y)}, // 上
+						{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y + BLOCK_SIZE),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y + BLOCK_SIZE)}, // 下
+						{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x             , BLOCK_SIZE * y + BLOCK_SIZE)}, // 左
+						{D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y + BLOCK_SIZE)}, // 右
+					};
+					// プレイヤーの頂点数分ループ
+					for (int i = 0; i < 4; i++)
+					{
+						// 当たった辺との交点を求める
+						for (int j = 0; j < 4; j++)
+						{
+							if (HitCheckLine(oldPlayerVertices[i], playerVertices[i], blockPoints[j][0], blockPoints[j][1]))
+							{
+								// 交点を配列に格納
+								crossPoints.push_back(GetCrossPoint(oldPlayerVertices[i], playerVertices[i], blockPoints[j][0], blockPoints[j][1]));
+								dore.push_back(i);
+							}
+						}
+					}
+				}
 			}
 		}
-	}
+		D3DXVECTOR2 moveVec = D3DXVECTOR2(0.0f, 0.0f);
+		// 0 : 動いてない
+		// 1 : 真上
+		// 2 : 真下
+		// 3 : 真左
+		// 4 : 真右
+		// 5 : 左上
+		// 6 : 右上
+		// 7 : 左下
+		// 8 : 右下
+		int playerVecDirection = -1;
+
+		// プレイヤーの移動ベクトルの方向を決める
+		if (pVec.x == 0.0f&&pVec.y == 0.0f)
+		{
+			playerVecDirection = 0;		// 動いてない
+		}
+		else if (pVec.x == 0.0f&&pVec.y < 0.0f)
+		{
+			playerVecDirection = 1;		// 真上
+		}
+		else if (pVec.x == 0.0f&&pVec.y > 0.0f)
+		{
+			playerVecDirection = 2;		// 真下
+		}
+		else if (pVec.x < 0.0f&&pVec.y == 0.0f)
+		{
+			playerVecDirection = 3;		// 真左
+		}
+		else if (pVec.x > 0.0f&&pVec.y == 0.0f)
+		{
+			playerVecDirection = 4;		// 真右
+		}
+		else if (pVec.x < 0.0f&&pVec.y < 0.0f)
+		{
+			playerVecDirection = 5;		// 左上
+		}
+		else if (pVec.x > 0.0f&&pVec.y < 0.0f)
+		{
+			playerVecDirection = 6;		// 右上
+		}
+		else if (pVec.x < 0.0f&&pVec.y > 0.0f)
+		{
+			playerVecDirection = 7;		// 左下
+		}
+		else if (pVec.x > 0.0f&&pVec.y > 0.0f)
+		{
+			playerVecDirection = 8;		// 右下
+		}
+
+		// 一番遠いベクトルの長さ
+		float farLength = -99999.0f;
+		D3DXVECTOR2 farVec = D3DXVECTOR2(0.0f, 0.0f);
+		bool isDore = false;
+		switch (playerVecDirection)
+		{
+		case 0:	// 動いてない
+			break;
+		case 1:	// 真上
+			// 全ての交点の中から一番プレイヤーに遠い交点を探す
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				// 平行に交わっている場合は除外
+				if (crossPoints[i].y == -99999.0f)
+				{
+					continue;
+				}
+				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
+				vec.x = 0.0f;
+				float len = D3DXVec2Length(&vec);
+				if (len > farLength)
+				{
+					farLength = len;
+					farVec = vec;
+				}
+			}
+			farVec.y += 1.0f;
+			break;
+		case 2:	// 真下
+			// 全ての交点の中から一番プレイヤーに遠い交点を探す
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				// 平行に交わっている場合は除外
+				if (crossPoints[i].y == -99999.0f)
+				{
+					continue;
+				}
+				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[2];
+				vec.x = 0.0f;
+				float len = D3DXVec2Length(&vec);
+				if (len > farLength)
+				{
+					farLength = len;
+					farVec = vec;
+				}
+			}
+			farVec.y -= 1.0f;
+			break;
+		case 3:	// 真左
+			// 全ての交点の中から一番プレイヤーに遠い交点を探す
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				// 平行に交わっている場合は除外
+				if (crossPoints[i].y == -99999.0f)
+				{
+					continue;
+				}
+				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
+				vec.y = 0.0f;
+				float len = D3DXVec2Length(&vec);
+				if (len > farLength)
+				{
+					farLength = len;
+					farVec = vec;
+				}
+			}
+			farVec.x += 1.0f;
+			break;
+		case 4:	// 真右
+			// 全ての交点の中から一番プレイヤーに遠い交点を探す
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				// 平行に交わっている場合は除外
+				if (crossPoints[i].y == -99999.0f)
+				{
+					continue;
+				}
+				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[1];
+				vec.y = 0.0f;
+				float len = D3DXVec2Length(&vec);
+				if (len > farLength)
+				{
+					farLength = len;
+					farVec = vec;
+				}
+			}
+			farVec.x -= 1.0f;
+			break;
+		case 5:	// 左上
+			// 基準のプレイヤーのベクトルとの交点があるかチェック
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				if (dore[i] == 0)
+				{
+					isDore = true;
+				}
+			}
+			if (isDore)
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					if (dore[i] == 0)
+					{
+						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
+						float len = D3DXVec2Length(&vec);
+						if (len > farLength)
+						{
+							farLength = len;
+							farVec = vec;
+						}
+						farVec.x += 1.0f;
+						farVec.y += 1.0f;
+					}
+				}
+			}
+			else
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
+					float len = D3DXVec2Length(&vec);
+					if (len > farLength)
+					{
+						farLength = len;
+						farVec = vec;
+					}
+					farVec.x += 1.0f;
+					farVec.y += 1.0f;
+				}
+			}
+
+			break;
+		case 6:	// 右上
+			// 基準のプレイヤーのベクトルとの交点があるかチェック
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				if (dore[i] == 1)
+				{
+					isDore = true;
+				}
+			}
+			if (isDore)
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					if (dore[i] == 1)
+					{
+						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[1];
+						float len = D3DXVec2Length(&vec);
+						if (len > farLength)
+						{
+							farLength = len;
+							farVec = vec;
+						}
+						farVec.x -= 1.0f;
+						farVec.y += 1.0f;
+					}
+				}
+			}
+			else
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[1];
+					float len = D3DXVec2Length(&vec);
+					if (len > farLength)
+					{
+						farLength = len;
+						farVec = vec;
+					}
+					farVec.x -= 1.0f;
+					farVec.y += 1.0f;
+				}
+			}
+			break;
+		case 7: // 左下
+			// 基準のプレイヤーのベクトルとの交点があるかチェック
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				if (dore[i] == 2)
+				{
+					isDore = true;
+				}
+			}
+			if (isDore)
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					if (dore[i] == 2)
+					{
+						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[2];
+						float len = D3DXVec2Length(&vec);
+						if (len > farLength)
+						{
+							farLength = len;
+							farVec = vec;
+						}
+						farVec.x += 1.0f;
+						farVec.y -= 1.0f;
+					}
+				}
+			}
+			else
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[2];
+					float len = D3DXVec2Length(&vec);
+					if (len > farLength)
+					{
+						farLength = len;
+						farVec = vec;
+					}
+					farVec.x += 1.0f;
+					farVec.y -= 1.0f;
+				}
+			}
+			break;
+		case 8: // 右下
+			// 基準のプレイヤーのベクトルとの交点があるかチェック
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				if (dore[i] == 3)
+				{
+					isDore = true;
+				}
+			}
+			if (isDore)
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					if (dore[i] == 3)
+					{
+						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[3];
+						float len = D3DXVec2Length(&vec);
+						if (len > farLength)
+						{
+							farLength = len;
+							farVec = vec;
+						}
+						farVec.x -= 1.0f;
+						farVec.y -= 1.0f;
+					}
+				}
+			}
+			else
+			{
+				// 全ての交点の中から一番プレイヤーに遠い交点を探す
+				for (size_t i = 0; i < crossPoints.size(); i++)
+				{
+					// 平行に交わっている場合は除外
+					if (crossPoints[i].y == -99999.0f)
+					{
+						continue;
+					}
+					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[3];
+					float len = D3DXVec2Length(&vec);
+					if (len > farLength)
+					{
+						farLength = len;
+						farVec = vec;
+					}
+					farVec.x -= 1.0f;
+					farVec.y -= 1.0f;
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+		AdjustPlayer(farVec);
+	}while (isHit == true);
 }
 
 
@@ -241,4 +659,74 @@ bool HitCheckBox_Block(D3DXVECTOR2 box1pos, float box1width, float box1height,
 
 	return false;
 }
+
+// 線と線の当たり判定
+bool HitCheckLine(D3DXVECTOR2 A, D3DXVECTOR2 B, D3DXVECTOR2 C, D3DXVECTOR2 D)
+{
+	// ２つの線分のベクトルをABとCDとする
+	// ３つのベクトルからなる二つのグループを作成
+
+	// グループ１
+	D3DXVECTOR2 AB = B - A;
+	D3DXVECTOR2 AC = C - A;
+	D3DXVECTOR2 AD = D - A;
+
+	// グループ２
+	D3DXVECTOR2 CD = D - C;
+	D3DXVECTOR2 CA = A - C;
+	D3DXVECTOR2 CB = B - C;
+
+	// 正負、負正の組み合わせなら当たっている
+	float cross_AB_AC = Cross(AB, AC);
+	float cross_AB_AD = Cross(AB, AD);
+	if (cross_AB_AC*cross_AB_AD > 0.0f)
+	{
+		return false;
+	}
+
+	// 正負、負正の組み合わせなら当たっている
+	float cross_CD_CA = Cross(CD, CA);
+	float cross_CD_CB = Cross(CD, CB);
+	if (cross_CD_CA*cross_CD_CB > 0.0f)
+	{
+		return false;
+
+	}
+	return true;
+}
+
+// 交点を求める関数
+D3DXVECTOR2 GetCrossPoint(D3DXVECTOR2 A, D3DXVECTOR2 B, D3DXVECTOR2 C, D3DXVECTOR2 D)
+{
+	// 座標からベクトルを生成
+	D3DXVECTOR2 v =  C - A;
+	D3DXVECTOR2 v1 = B - A;
+	D3DXVECTOR2 v2 = D - C;
+
+	//  Cross(v,v1)
+	// -------------
+	//  Cross(v1,v2)
+	float cross_v_v1 = Cross(v, v1);
+	float cross_v1_v2 = Cross(v1, v2);
+	if (cross_v_v1 == 0.0f&&cross_v1_v2 == 0.0f){
+		return D3DXVECTOR2(-99999.0f, -99999.0f);
+	}
+	float t2 = Cross(v, v1) / Cross(v1, v2);
+
+
+	// 交点
+	D3DXVECTOR2 crossPos = C;
+	crossPos.x += v2.x*t2;
+	crossPos.y += v2.y*t2;
+
+	return crossPos;
+}
+
+// 外積
+float Cross(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2)
+{
+	return (vec1.x*vec2.y) - (vec2.x*vec1.y);
+}
+
+
 

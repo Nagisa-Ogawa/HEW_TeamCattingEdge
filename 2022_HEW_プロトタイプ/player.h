@@ -58,4 +58,6 @@ void UpdatePlayer(void);
 void UpdateEndPlayer(void);
 void DrawPlayer(void);
 
+void AdjustPlayer(D3DXVECTOR2 pos);
+
 PLAYER* GetPlayer(void);
