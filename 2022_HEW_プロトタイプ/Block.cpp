@@ -44,29 +44,31 @@ float Cross(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
 static ID3D11Buffer				*g_VertexBuffer = NULL;	// 頂点情報
 static ID3D11ShaderResourceView	*g_Texture = NULL;		// テクスチャ情報
 
+static float g_Block_Height = 0.0f;
+
 static char *g_TextureName = (char*)"data/TEXTURE/wall_03.png";
 
 // 0 : ブロックなし
 // 1 : ブロックあり
 static int g_Blocks[STAGE_HEIGHT][STAGE_WIDTH] = {
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
-	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,1,1,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,0,0,0,0,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,1},
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 };
 
 //=============================================================================
@@ -124,440 +126,7 @@ void UpdateBlock(void)
 {
 	//プレイヤー座標を受け取る
 	PLAYER* pPlayer = GetPlayer();
-	bool isHit = false;
-	do
-	{
-		// プレイヤーの移動ベクトルとブロックの４辺の交点の配列
-		std::vector<D3DXVECTOR2> crossPoints;
-		std::vector<int> dore;
-		// プレイヤーの移動ベクトル
-		D3DXVECTOR2 pVec = pPlayer->pos - pPlayer->oldpos;
-		// プレイヤーの各頂点の座標の配列
-		D3DXVECTOR2 playerVertices[4] =
-		{
-			D3DXVECTOR2(pPlayer->pos.x - pPlayer->size / 2, pPlayer->pos.y - pPlayer->size / 2), // 左上
-			D3DXVECTOR2(pPlayer->pos.x + pPlayer->size / 2, pPlayer->pos.y - pPlayer->size / 2), // 右上
-			D3DXVECTOR2(pPlayer->pos.x - pPlayer->size / 2, pPlayer->pos.y + pPlayer->size / 2), // 左下
-			D3DXVECTOR2(pPlayer->pos.x + pPlayer->size / 2, pPlayer->pos.y + pPlayer->size / 2), // 右下
 
-		};
-		// 1フレーム前のプレイヤーの各頂点の座標の配列
-		D3DXVECTOR2 oldPlayerVertices[4] =
-		{
-			D3DXVECTOR2(pPlayer->oldpos.x - pPlayer->size / 2, pPlayer->oldpos.y - pPlayer->size / 2), // 左上
-			D3DXVECTOR2(pPlayer->oldpos.x + pPlayer->size / 2, pPlayer->oldpos.y - pPlayer->size / 2), // 右上
-			D3DXVECTOR2(pPlayer->oldpos.x - pPlayer->size / 2, pPlayer->oldpos.y + pPlayer->size / 2), // 左下
-			D3DXVECTOR2(pPlayer->oldpos.x + pPlayer->size / 2, pPlayer->oldpos.y + pPlayer->size / 2), // 右下
-
-		};
-		isHit = false;
-		// プレイヤーとの当たり判定
-		for (int y = 0; y < STAGE_HEIGHT; y++)
-		{
-			for (int x = 0; x < STAGE_WIDTH; x++)
-			{
-				// ブロックがないならスキップ
-				if (g_Blocks[y][x] == 0)
-				{
-					continue;
-				}
-				if (HitCheckBox_Block(
-					D3DXVECTOR2(BLOCK_SIZE * x, BLOCK_SIZE * y),
-					BLOCK_SIZE, BLOCK_SIZE,
-					pPlayer->pos, 120.0f, 120.0f))
-				{
-					isHit = true;
-					// ４辺の２点を格納
-					D3DXVECTOR2 blockPoints[4][2] =
-					{
-						// 開始点                                                               終了点
-						{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y)}, // 上
-						{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y + BLOCK_SIZE),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y + BLOCK_SIZE)}, // 下
-						{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x             , BLOCK_SIZE * y + BLOCK_SIZE)}, // 左
-						{D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y + BLOCK_SIZE)}, // 右
-					};
-					// プレイヤーの頂点数分ループ
-					for (int i = 0; i < 4; i++)
-					{
-						// 当たった辺との交点を求める
-						for (int j = 0; j < 4; j++)
-						{
-							if (HitCheckLine(oldPlayerVertices[i], playerVertices[i], blockPoints[j][0], blockPoints[j][1]))
-							{
-								// 交点を配列に格納
-								crossPoints.push_back(GetCrossPoint(oldPlayerVertices[i], playerVertices[i], blockPoints[j][0], blockPoints[j][1]));
-								dore.push_back(i);
-							}
-						}
-					}
-				}
-			}
-		}
-		D3DXVECTOR2 moveVec = D3DXVECTOR2(0.0f, 0.0f);
-		// 0 : 動いてない
-		// 1 : 真上
-		// 2 : 真下
-		// 3 : 真左
-		// 4 : 真右
-		// 5 : 左上
-		// 6 : 右上
-		// 7 : 左下
-		// 8 : 右下
-		int playerVecDirection = -1;
-
-		// プレイヤーの移動ベクトルの方向を決める
-		if (pVec.x == 0.0f&&pVec.y == 0.0f)
-		{
-			playerVecDirection = 0;		// 動いてない
-		}
-		else if (pVec.x == 0.0f&&pVec.y < 0.0f)
-		{
-			playerVecDirection = 1;		// 真上
-		}
-		else if (pVec.x == 0.0f&&pVec.y > 0.0f)
-		{
-			playerVecDirection = 2;		// 真下
-		}
-		else if (pVec.x < 0.0f&&pVec.y == 0.0f)
-		{
-			playerVecDirection = 3;		// 真左
-		}
-		else if (pVec.x > 0.0f&&pVec.y == 0.0f)
-		{
-			playerVecDirection = 4;		// 真右
-		}
-		else if (pVec.x < 0.0f&&pVec.y < 0.0f)
-		{
-			playerVecDirection = 5;		// 左上
-		}
-		else if (pVec.x > 0.0f&&pVec.y < 0.0f)
-		{
-			playerVecDirection = 6;		// 右上
-		}
-		else if (pVec.x < 0.0f&&pVec.y > 0.0f)
-		{
-			playerVecDirection = 7;		// 左下
-		}
-		else if (pVec.x > 0.0f&&pVec.y > 0.0f)
-		{
-			playerVecDirection = 8;		// 右下
-		}
-
-		// 一番遠いベクトルの長さ
-		float farLength = -99999.0f;
-		D3DXVECTOR2 farVec = D3DXVECTOR2(0.0f, 0.0f);
-		bool isDore = false;
-		switch (playerVecDirection)
-		{
-		case 0:	// 動いてない
-			break;
-		case 1:	// 真上
-			// 全ての交点の中から一番プレイヤーに遠い交点を探す
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				// 平行に交わっている場合は除外
-				if (crossPoints[i].y == -99999.0f)
-				{
-					continue;
-				}
-				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
-				vec.x = 0.0f;
-				float len = D3DXVec2Length(&vec);
-				if (len > farLength)
-				{
-					farLength = len;
-					farVec = vec;
-				}
-			}
-			farVec.y += 1.0f;
-			break;
-		case 2:	// 真下
-			// 全ての交点の中から一番プレイヤーに遠い交点を探す
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				// 平行に交わっている場合は除外
-				if (crossPoints[i].y == -99999.0f)
-				{
-					continue;
-				}
-				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[2];
-				vec.x = 0.0f;
-				float len = D3DXVec2Length(&vec);
-				if (len > farLength)
-				{
-					farLength = len;
-					farVec = vec;
-				}
-			}
-			farVec.y -= 1.0f;
-			break;
-		case 3:	// 真左
-			// 全ての交点の中から一番プレイヤーに遠い交点を探す
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				// 平行に交わっている場合は除外
-				if (crossPoints[i].y == -99999.0f)
-				{
-					continue;
-				}
-				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
-				vec.y = 0.0f;
-				float len = D3DXVec2Length(&vec);
-				if (len > farLength)
-				{
-					farLength = len;
-					farVec = vec;
-				}
-			}
-			farVec.x += 1.0f;
-			break;
-		case 4:	// 真右
-			// 全ての交点の中から一番プレイヤーに遠い交点を探す
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				// 平行に交わっている場合は除外
-				if (crossPoints[i].y == -99999.0f)
-				{
-					continue;
-				}
-				D3DXVECTOR2 vec = crossPoints[i] - playerVertices[1];
-				vec.y = 0.0f;
-				float len = D3DXVec2Length(&vec);
-				if (len > farLength)
-				{
-					farLength = len;
-					farVec = vec;
-				}
-			}
-			farVec.x -= 1.0f;
-			break;
-		case 5:	// 左上
-			// 基準のプレイヤーのベクトルとの交点があるかチェック
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				if (dore[i] == 0)
-				{
-					isDore = true;
-				}
-			}
-			if (isDore)
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					if (dore[i] == 0)
-					{
-						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
-						float len = D3DXVec2Length(&vec);
-						if (len > farLength)
-						{
-							farLength = len;
-							farVec = vec;
-						}
-						farVec.x += 1.0f;
-						farVec.y += 1.0f;
-					}
-				}
-			}
-			else
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[0];
-					float len = D3DXVec2Length(&vec);
-					if (len > farLength)
-					{
-						farLength = len;
-						farVec = vec;
-					}
-					farVec.x += 1.0f;
-					farVec.y += 1.0f;
-				}
-			}
-
-			break;
-		case 6:	// 右上
-			// 基準のプレイヤーのベクトルとの交点があるかチェック
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				if (dore[i] == 1)
-				{
-					isDore = true;
-				}
-			}
-			if (isDore)
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					if (dore[i] == 1)
-					{
-						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[1];
-						float len = D3DXVec2Length(&vec);
-						if (len > farLength)
-						{
-							farLength = len;
-							farVec = vec;
-						}
-						farVec.x -= 1.0f;
-						farVec.y += 1.0f;
-					}
-				}
-			}
-			else
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[1];
-					float len = D3DXVec2Length(&vec);
-					if (len > farLength)
-					{
-						farLength = len;
-						farVec = vec;
-					}
-					farVec.x -= 1.0f;
-					farVec.y += 1.0f;
-				}
-			}
-			break;
-		case 7: // 左下
-			// 基準のプレイヤーのベクトルとの交点があるかチェック
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				if (dore[i] == 2)
-				{
-					isDore = true;
-				}
-			}
-			if (isDore)
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					if (dore[i] == 2)
-					{
-						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[2];
-						float len = D3DXVec2Length(&vec);
-						if (len > farLength)
-						{
-							farLength = len;
-							farVec = vec;
-						}
-						farVec.x += 1.0f;
-						farVec.y -= 1.0f;
-					}
-				}
-			}
-			else
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[2];
-					float len = D3DXVec2Length(&vec);
-					if (len > farLength)
-					{
-						farLength = len;
-						farVec = vec;
-					}
-					farVec.x += 1.0f;
-					farVec.y -= 1.0f;
-				}
-			}
-			break;
-		case 8: // 右下
-			// 基準のプレイヤーのベクトルとの交点があるかチェック
-			for (size_t i = 0; i < crossPoints.size(); i++)
-			{
-				if (dore[i] == 3)
-				{
-					isDore = true;
-				}
-			}
-			if (isDore)
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					if (dore[i] == 3)
-					{
-						D3DXVECTOR2 vec = crossPoints[i] - playerVertices[3];
-						float len = D3DXVec2Length(&vec);
-						if (len > farLength)
-						{
-							farLength = len;
-							farVec = vec;
-						}
-						farVec.x -= 1.0f;
-						farVec.y -= 1.0f;
-					}
-				}
-			}
-			else
-			{
-				// 全ての交点の中から一番プレイヤーに遠い交点を探す
-				for (size_t i = 0; i < crossPoints.size(); i++)
-				{
-					// 平行に交わっている場合は除外
-					if (crossPoints[i].y == -99999.0f)
-					{
-						continue;
-					}
-					D3DXVECTOR2 vec = crossPoints[i] - playerVertices[3];
-					float len = D3DXVec2Length(&vec);
-					if (len > farLength)
-					{
-						farLength = len;
-						farVec = vec;
-					}
-					farVec.x -= 1.0f;
-					farVec.y -= 1.0f;
-				}
-			}
-			break;
-		default:
-			break;
-		}
-
-		AdjustPlayer(farVec);
-	}while (isHit == true);
 }
 
 
@@ -590,7 +159,8 @@ void DrawBlock(void)
 			if (g_Blocks[y][x] == 0){
 				continue;
 			}
-			SetVertexBlock(basePos.x + BLOCK_SIZE*x, basePos.y + BLOCK_SIZE*y, BLOCK_SIZE, BLOCK_SIZE,
+
+			SetVertexBlock(basePos.x + BLOCK_SIZE * x, basePos.y + BLOCK_SIZE * y, BLOCK_SIZE, BLOCK_SIZE,
 				0.0f,
 				0.0f,
 				1.0f,
@@ -600,6 +170,354 @@ void DrawBlock(void)
 			GetDeviceContext()->Draw(NUM_VERTEX, 0);
 		}
 	}
+}
+
+DWORD hitChackNormalPlayer_Block(D3DXVECTOR2 move)
+{
+	PLAYER* pPlayer = GetPlayer();
+
+	DWORD result = 0;
+	//プレイヤーの移動先座標を作成する
+	D3DXVECTOR2 vPlayerPos = pPlayer->pos + move;
+
+	float block_length = 99999;//一番近いブロックの距離
+	int block_index[2]{ -99999,-99999 };//1一番近いブロックの添え字
+
+	//敵バッファのすべてをチェックする
+	for (int x = 0; x < STAGE_WIDTH; x++)
+	{
+		for (int y = 0; y < STAGE_HEIGHT; y++)
+		{
+			//敵の可視フラグがオフの場合はスキップする
+			if (g_Blocks[y][x] == 0) {
+				continue;
+			}
+
+			//ヒットしているかを判定する
+			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
+
+			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vPlayerPos, pPlayer->size, pPlayer->size))
+			{
+				//自分に当たっている中で一番近いブロックを探す
+				D3DXVECTOR2 vLength = BlockPos - vPlayerPos;
+				float length = D3DXVec2Length(&(vLength));
+				if (block_length > length)
+				{
+					//より近いブロックの情報に更新する
+					block_length = length;
+					block_index[0] = x;
+					block_index[1] = y;
+				}
+			}
+		}
+	}
+
+	//ブロックのヒットした向きを調べる
+	if (block_length != 99999)
+	{
+		D3DXVECTOR2 vY(0.0f, -1.0f);
+
+		//ブロックの座標(中心)
+		D3DXVECTOR2 BlockPos = D3DXVECTOR2((block_index[0] * BLOCK_SIZE) + 30.0f, (block_index[1] * BLOCK_SIZE) + 30.0f);
+
+		D3DXVECTOR2 vDist = vPlayerPos - BlockPos;
+		D3DXVec2Normalize(&vDist, &vDist);
+
+		//ヒット方向の判定
+		float hit_vartical = D3DXVec2Dot(&vY, &vDist);
+
+		if (hit_vartical < 0) {
+			result |= HIT_DOWN;
+		}
+		else if (hit_vartical > 0) {
+			result |= HIT_UP;
+		}
+
+		D3DXVECTOR2 vX(-1.0f, 0.0f);
+		float hit_horizontal = D3DXVec2Dot(&vX, &vDist);
+		if (hit_horizontal < 0) {
+			result |= HIT_RIGHT;
+		}
+		else if (hit_horizontal > 0) {
+			result |= HIT_LEFT;
+		}
+
+		//ブロックの上座標を更新する
+		g_Block_Height = BlockPos.y - 30.0f;
+	}
+
+	return result;
+}
+
+float GetBlockHeight(void)
+{
+	return g_Block_Height;
+}
+
+void hitChackWarpPlayer_Block(D3DXVECTOR2 move)
+{
+	PLAYER* pPlayer = GetPlayer();
+	bool isHit = false; //ヒット確認フラグ
+	// プレイヤーの移動ベクトル
+	D3DXVECTOR2 pVec = pPlayer->pos - pPlayer->oldpos;
+
+	// プレイヤーの各頂点の座標の配列
+	D3DXVECTOR2 playerVertices[4] =
+	{
+		D3DXVECTOR2(pPlayer->pos.x - pPlayer->size / 2, pPlayer->pos.y - pPlayer->size / 2), // 左上
+		D3DXVECTOR2(pPlayer->pos.x + pPlayer->size / 2, pPlayer->pos.y - pPlayer->size / 2), // 右上
+		D3DXVECTOR2(pPlayer->pos.x - pPlayer->size / 2, pPlayer->pos.y + pPlayer->size / 2), // 左下
+		D3DXVECTOR2(pPlayer->pos.x + pPlayer->size / 2, pPlayer->pos.y + pPlayer->size / 2), // 右下
+
+	};
+	// 1フレーム前のプレイヤーの各頂点の座標の配列
+	D3DXVECTOR2 oldPlayerVertices[4] =
+	{
+		D3DXVECTOR2(pPlayer->oldpos.x - pPlayer->size / 2, pPlayer->oldpos.y - pPlayer->size / 2), // 左上
+		D3DXVECTOR2(pPlayer->oldpos.x + pPlayer->size / 2, pPlayer->oldpos.y - pPlayer->size / 2), // 右上
+		D3DXVECTOR2(pPlayer->oldpos.x - pPlayer->size / 2, pPlayer->oldpos.y + pPlayer->size / 2), // 左下
+		D3DXVECTOR2(pPlayer->oldpos.x + pPlayer->size / 2, pPlayer->oldpos.y + pPlayer->size / 2), // 右下
+
+	};
+
+	// プレイヤーの移動ベクトルの方向
+	// 0 : 動いてない
+	// 1 : 真上
+	// 2 : 真下
+	// 3 : 真左
+	// 4 : 真右
+	// 5 : 左上
+	// 6 : 右上
+	// 7 : 左下
+	// 8 : 右下
+	int playerVecDirection = -1;
+
+	D3DXVECTOR2 LookUpPos[3][2];
+	//LookUpPosの初期化
+	LookUpPos[0][0] = D3DXVECTOR2(0.0f, 0.0f);
+	LookUpPos[0][1] = D3DXVECTOR2(0.0f, 0.0f);
+	LookUpPos[1][0] = D3DXVECTOR2(0.0f, 0.0f);
+	LookUpPos[1][1] = D3DXVECTOR2(0.0f, 0.0f);
+	LookUpPos[2][0] = D3DXVECTOR2(0.0f, 0.0f);
+	LookUpPos[2][1] = D3DXVECTOR2(0.0f, 0.0f);
+
+	// プレイヤーの移動ベクトルの方向を決める
+	// 方向から参照するベクトルを決める
+	if (pVec.x == 0.0f&&pVec.y == 0.0f)
+	{
+		playerVecDirection = 0;		// 動いてない
+	}
+	else if (pVec.x == 0.0f&&pVec.y < 0.0f)
+	{
+		playerVecDirection = 1;		// 真上
+
+		LookUpPos[0][0] = playerVertices[0];
+		LookUpPos[0][1] = oldPlayerVertices[0];
+		LookUpPos[1][0] = playerVertices[1];
+		LookUpPos[1][1] = oldPlayerVertices[1];
+	}
+	else if (pVec.x == 0.0f&&pVec.y > 0.0f)
+	{
+		playerVecDirection = 2;		// 真下
+
+		LookUpPos[0][0] = playerVertices[2];
+		LookUpPos[0][1] = oldPlayerVertices[2];
+		LookUpPos[1][0] = playerVertices[3];
+		LookUpPos[1][1] = oldPlayerVertices[3];
+	}
+	else if (pVec.x < 0.0f&&pVec.y == 0.0f)
+	{
+		playerVecDirection = 3;		// 真左
+
+		LookUpPos[0][0] = playerVertices[0];
+		LookUpPos[0][1] = oldPlayerVertices[0];
+		LookUpPos[1][0] = playerVertices[2];
+		LookUpPos[1][1] = oldPlayerVertices[2];
+	}
+	else if (pVec.x > 0.0f&&pVec.y == 0.0f)
+	{
+		playerVecDirection = 4;		// 真右
+
+		LookUpPos[0][0] = playerVertices[1];
+		LookUpPos[0][1] = oldPlayerVertices[1];
+		LookUpPos[1][0] = playerVertices[3];
+		LookUpPos[1][1] = oldPlayerVertices[3];
+	}
+	else if (pVec.x < 0.0f&&pVec.y < 0.0f)
+	{
+		playerVecDirection = 5;		// 左上
+
+		LookUpPos[0][0] = playerVertices[0];
+		LookUpPos[0][1] = oldPlayerVertices[0];
+	}
+	else if (pVec.x > 0.0f&&pVec.y < 0.0f)
+	{
+		playerVecDirection = 6;		// 右上
+
+		LookUpPos[0][0] = playerVertices[1];
+		LookUpPos[0][1] = oldPlayerVertices[1];
+	}
+	else if (pVec.x < 0.0f&&pVec.y > 0.0f)
+	{
+		playerVecDirection = 7;		// 右下
+
+		LookUpPos[0][0] = playerVertices[2];
+		LookUpPos[0][1] = oldPlayerVertices[2];
+	}
+	else if (pVec.x > 0.0f&&pVec.y > 0.0f)
+	{
+		playerVecDirection = 8;		// 左下
+
+		LookUpPos[0][0] = playerVertices[3];
+		LookUpPos[0][1] = oldPlayerVertices[3];
+	}
+
+	// プレイヤーの移動ベクトルとブロックの４辺の交点の配列
+	std::vector<D3DXVECTOR2> crossPoints;
+	std::vector<int> hitblockX;
+	std::vector<int> hitblockY;
+	std::vector<int> dore;
+	
+	// プレイヤーとの当たり判定
+	for (int y = 0; y < STAGE_HEIGHT; y++)
+	{
+		for (int x = 0; x < STAGE_WIDTH; x++)
+		{
+			// ブロックがないならスキップ
+			if (g_Blocks[y][x] == 0)
+			{
+				continue;
+			}
+
+			if (HitCheckBox_Block(
+				D3DXVECTOR2(BLOCK_SIZE * x, BLOCK_SIZE * y),
+				BLOCK_SIZE, BLOCK_SIZE,
+				pPlayer->pos, 120.0f, 120.0f))
+			{
+				isHit = true;
+
+				hitblockX.push_back(x);
+				hitblockY.push_back(y);
+				// ４辺の２点を格納
+				D3DXVECTOR2 blockPoints[4][2] =
+				{
+					// 開始点                                                               終了点
+					{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y)}, // 上
+					{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y + BLOCK_SIZE),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y + BLOCK_SIZE)}, // 下
+					{D3DXVECTOR2(BLOCK_SIZE * x,              BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x             , BLOCK_SIZE * y + BLOCK_SIZE)}, // 左
+					{D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y),D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE, BLOCK_SIZE * y + BLOCK_SIZE)}, // 右
+				};
+
+				for (int i = 0; i < 2; i++)// 参照ベクトル数分ループ
+				{
+					for (int j = 0; j < 4; j++)// 当たっているボックスの辺分ループ
+					{
+						if (HitCheckLine(LookUpPos[i][0], LookUpPos[i][1], blockPoints[j][0], blockPoints[j][1]))
+						{
+							// 交点を配列に格納
+							crossPoints.push_back(GetCrossPoint(LookUpPos[i][0], LookUpPos[i][1], blockPoints[j][0], blockPoints[j][1]));
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// 一番遠いベクトルの長さ
+	float farLength = -99999.0f;
+	D3DXVECTOR2 farVec = D3DXVECTOR2(0.0f, 0.0f);
+	bool isDore = false;
+
+	if (isHit)
+	{
+		if (crossPoints.size() != 0)
+		{
+			// 参照ベクトルから一番プレイヤーに遠い交点を探す
+			for (size_t i = 0; i < crossPoints.size(); i++)
+			{
+				// 平行に交わっている場合は除外
+				if (crossPoints[i].y == -99999.0f)
+				{
+					continue;
+				}
+
+				D3DXVECTOR2 vec = crossPoints[i] - LookUpPos[0][0];
+
+				float len = D3DXVec2Length(&vec);
+				if (len > farLength)
+				{
+					farLength = len;
+					farVec = vec;
+				}
+			}
+		}
+		//参照ベクトルに交点が無かった場合
+		else
+		{
+			std::vector<D3DXVECTOR2> kouten;
+
+			for (int x = 0; x < hitblockX.size(); x++)
+			{
+				for (int i = 0; i < 4; i++)// 
+				{
+					for (int j = 0; j < 4; j++)// 当たっているボックスの辺分ループ
+					{
+						D3DXVECTOR2 blockPoints[4][2] =
+						{
+							// 開始点                                                                                       終了点
+							{D3DXVECTOR2(BLOCK_SIZE * hitblockX[x],              BLOCK_SIZE * hitblockY[x]),				D3DXVECTOR2(BLOCK_SIZE * hitblockX[x] + BLOCK_SIZE, BLOCK_SIZE * hitblockY[x])}, // 上
+							{D3DXVECTOR2(BLOCK_SIZE * hitblockX[x],              BLOCK_SIZE * hitblockY[x] + BLOCK_SIZE),	D3DXVECTOR2(BLOCK_SIZE * hitblockX[x] + BLOCK_SIZE, BLOCK_SIZE * hitblockY[x] + BLOCK_SIZE)}, // 下
+							{D3DXVECTOR2(BLOCK_SIZE * hitblockX[x],              BLOCK_SIZE * hitblockY[x]),				D3DXVECTOR2(BLOCK_SIZE * hitblockX[x]             , BLOCK_SIZE * hitblockY[x] + BLOCK_SIZE)}, // 左
+							{D3DXVECTOR2(BLOCK_SIZE * hitblockX[x] + BLOCK_SIZE, BLOCK_SIZE * hitblockY[x]),				D3DXVECTOR2(BLOCK_SIZE * hitblockX[x] + BLOCK_SIZE, BLOCK_SIZE * hitblockY[x] + BLOCK_SIZE)}, // 右
+						};
+
+						if (HitCheckLine(pPlayer->pos,playerVertices[i], blockPoints[j][0], blockPoints[j][1]))
+						{
+							// 交点を配列に格納
+							kouten.push_back(GetCrossPoint(pPlayer->pos, playerVertices[i], blockPoints[j][0], blockPoints[j][1]));
+							dore.push_back(i);
+						}
+					}
+				}
+			}
+
+			for (int x = 0; x < kouten.size(); x++)
+			{
+				D3DXVECTOR2 vec = kouten[x] - playerVertices[dore[x]];
+
+				float len = D3DXVec2Length(&vec);
+				if (len > farLength)
+				{
+					farLength = len;
+					farVec = vec;
+				}
+			}
+		}	
+	}
+	
+	switch (playerVecDirection)
+	{
+	case 0:
+		farVec.x = 0.0f;
+		farVec.y = 0.0f;
+		break;
+	case 1:
+		farVec.x = 0.0f;
+		break;
+	case 2:
+		farVec.x = 0.0f;
+		break;
+	case 3:
+		farVec.y = 0.0f;
+		break;
+	case 4:
+		farVec.y = 0.0f;
+		break;
+	default:
+		break;
+	}
+
+	AdjustPlayer(farVec);
 }
 
 

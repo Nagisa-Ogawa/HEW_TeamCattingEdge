@@ -32,11 +32,14 @@ struct PLAYER
 	D3DXVECTOR2	vel;		//速度ベクトル
 	STATUS		status;		//プレイヤーの状態
 
+	//ワープ関連
 	int			warpframe;  //ワープ時の入力時間
-	int         waitafterwarp;
+	int         waitafterwarp;//ワープ後の停止時間
 	float		warppower;  //ワープ力
 	float		gravity;    //重力
 	int			warpFlag;	//ワープ回数フラグ
+
+	bool        LandingFlag; //着地フラグ
 
 	int			muki;
 	int			animePtn;

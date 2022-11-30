@@ -15,6 +15,7 @@
 #include "number.h"
 #include "camera.h"
 #include "inputx.h"
+#include "Block.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -31,7 +32,7 @@
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)	//プレイヤーの表示座標Y
 
 #define PLAYER_SPEED	4.0f //プレーヤーのスピード
-#define WARP_POWER		400.0f //ワープの最大距離
+#define WARP_POWER		300.0f //ワープの最大距離
 
 #define TEST_CON 0
 
@@ -80,8 +81,7 @@ HRESULT InitPlayer(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/pipo-xmaschara03.png");
 
 	//データの初期化
-	g_Player.pos = D3DXVECTOR2(200.0f, 200.0f);
-	//g_Player.pos = D3DXVECTOR2(0.0f, 0.0f);
+	g_Player.pos = D3DXVECTOR2(200.0f, 800.0f);
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.oldpos = g_Player.pos;
 	g_Player.size = 120.0f;
@@ -92,6 +92,8 @@ HRESULT InitPlayer(void)
 	g_Player.warppower = 0.0f;
 	g_Player.gravity = 4.0f;
 	g_Player.warpFlag = 0;//int
+
+	g_Player.LandingFlag = false; //着地フラグ
 
 	g_Player.muki = 0;
 	g_Player.animePtn = 0;
@@ -122,23 +124,76 @@ void UninitPlayer(void)
 void UpdatePlayer(void)
 {
 	g_Player.oldpos = g_Player.pos;
+	DWORD result = 0;
 	//プレーヤーの状態変化（ステータス）
 	switch (g_Player.status)
 	{
 		//徒歩状態
 	case normal:
 		PlayerStatusNormal();
+		result = hitChackNormalPlayer_Block(g_Player.vel);
+		g_Player.vel.y += g_Player.gravity;
 		break;
 		//ワープ待機状態
 	case warpwait:
 		PlayerStatusWarpwait();
+		result = hitChackNormalPlayer_Block(g_Player.vel);
+		g_Player.vel.y += g_Player.gravity / 4;
 		break;
 		//ワ－プ状態
 	case warp:
 		PlayerStatusWarp();
+		hitChackWarpPlayer_Block(g_Player.pos);
 		break;
 	}
 
+	//当たり判定処理
+	if (result & HIT_LEFT) 
+	{
+		if (g_Player.vel.x > 0.0)
+			g_Player.vel.x = 0.0f;
+	}
+	if (result & HIT_RIGHT) 
+	{
+		if (g_Player.vel.x < 0.0)
+			g_Player.vel.x = 0.0f;
+	}
+
+	result = hitChackNormalPlayer_Block(g_Player.vel);
+
+	//落下させるか？処理
+	if ((result & HIT_UP) == 0 && g_Player.LandingFlag == true)
+	{
+		g_Player.LandingFlag = false; 
+	}
+
+	//落下処理
+	if (g_Player.LandingFlag == false)
+	{
+		if (g_Player.waitafterwarp > 0)
+		{
+			g_Player.waitafterwarp--;
+			g_Player.vel.y = 0.0f;
+		}
+		else
+		{
+			if (result & HIT_UP)
+			{
+				g_Player.LandingFlag = true;
+				g_Player.pos.y = GetBlockHeight() - (g_Player.size / 2);
+				g_Player.vel.y = 0.0f;
+				g_Player.waitafterwarp = 0;
+			}
+		}
+	}
+	else // 最終的に地面に触れている
+	{
+		g_Player.vel.y = 0.0f;
+	}
+
+	g_Player.pos += g_Player.vel;
+
+	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 
 	////アニメーションカウンターをカウントアップして、ウエイト値を超えたら
 	//if (g_Player.animeCounter > 10)
@@ -154,7 +209,7 @@ void UpdatePlayer(void)
 	//}
 	//g_Player.animeCounter++;
 
-	if (g_Player.pos.y > 1000.0f)
+	if (g_Player.pos.y > 1200.0f)
 	{
 		SceneTransition(SCENE_OVER_GAME);
 	}
@@ -162,7 +217,7 @@ void UpdatePlayer(void)
 	//カメラ座標の更新
 	CAMERA_2D* pCamera = GetCamera();
 	pCamera->pos.x = g_Player.pos.x - PLAYER_DISP_X;
-	//pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y -60.0f;
+	pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y - 60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
 	if (pCamera->pos.y < 0)
@@ -189,7 +244,7 @@ void DrawPlayer(void)
 	{
 		//徒歩状態
 	case normal:
-		DrawSpriteColorRotate(g_TextureNo,
+		DrawSpriteColor(g_TextureNo,
 			basePos.x + g_Player.pos.x,
 			basePos.y + (g_Player.pos.y),
 			g_Player.size, g_Player.size,
@@ -197,12 +252,11 @@ void DrawPlayer(void)
 			g_MukiTable[g_Player.muki],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
-			0.0f);
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 		//ワープ待機状態
 	case warpwait:
-		DrawSpriteColorRotate(g_TextureNo,
+		DrawSpriteColor(g_TextureNo,
 			basePos.x + g_Player.pos.x,
 			basePos.y + (g_Player.pos.y),
 			g_Player.size, g_Player.size,
@@ -210,10 +264,9 @@ void DrawPlayer(void)
 			g_MukiTable[g_Player.muki],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f),
-			0.0f);
+			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
-		DrawSpriteColorRotate(g_TextureNo,
+		DrawSpriteColor(g_TextureNo,
 			basePos.x + g_Player.warppos.x,
 			basePos.y + (g_Player.warppos.y),
 			g_Player.size, g_Player.size,
@@ -221,12 +274,11 @@ void DrawPlayer(void)
 			g_MukiTable[g_Player.muki],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f),
-			0.0f);
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
 		break;
 		//ワ－プ状態
 	case warp:
-		DrawSpriteColorRotate(g_TextureNo,
+		DrawSpriteColor(g_TextureNo,
 			basePos.x + g_Player.pos.x,
 			basePos.y + g_Player.pos.y,
 			g_Player.size, g_Player.size,
@@ -234,8 +286,7 @@ void DrawPlayer(void)
 			g_MukiTable[g_Player.muki],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f),
-			0.0f);
+			D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
 		break;
 	}
 
@@ -283,7 +334,7 @@ PLAYER* GetPlayer(void)
 void PlayerStatusNormal(void)
 {
 	//左右移動
-	g_Player.pos.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
+	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
 
 	//ワープ処理(ワープ中ではない状態でスペースキーが押されたとき)
 	if (0.0 != GetThumbRightX(TEST_CON) || 0.0 != GetThumbRightY(TEST_CON))
@@ -295,22 +346,12 @@ void PlayerStatusNormal(void)
 	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
 	}
-
-	//落下処理
-	if (g_Player.waitafterwarp>0)
-	{
-		g_Player.waitafterwarp--;
-	}
-	else
-	{
-		g_Player.pos.y += g_Player.gravity;
-	}
 }
 
 void PlayerStatusWarpwait(void)
 {
 	//左右移動
-	g_Player.pos.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
+	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
 
 	if (0.0 == GetThumbRightX(TEST_CON) && 0.0 == GetThumbRightY(TEST_CON))
 	{
@@ -323,12 +364,12 @@ void PlayerStatusWarpwait(void)
 			g_Player.warpframe++;
 		}
 
-		g_Player.vel = GetRightStick(TEST_CON);
+		D3DXVECTOR2 Direction = GetRightStick(TEST_CON);
 
-		D3DXVec2Normalize(&g_Player.vel, &g_Player.vel);
+		D3DXVec2Normalize(&Direction, &Direction);
 
-		g_Player.warppos.x = g_Player.pos.x + (g_Player.vel.x * -1) * (WARP_POWER * ((float)g_Player.warpframe / 60.0f));
-		g_Player.warppos.y = g_Player.pos.y + (g_Player.vel.y) * (WARP_POWER * ((float)g_Player.warpframe / 60.0f));
+		g_Player.warppos.x = g_Player.pos.x + (Direction.x * -1) * (WARP_POWER * ((float)g_Player.warpframe / 60.0f));
+		g_Player.warppos.y = g_Player.pos.y + (Direction.y) * (WARP_POWER * ((float)g_Player.warpframe / 60.0f));
 	}
 }
 
@@ -355,7 +396,6 @@ D3DXVECTOR2 GetRightStick(int padNo)
 {
 	return D3DXVECTOR2(GetThumbRightX(padNo), GetThumbRightY(padNo));
 }
-
 
 
 //void SetMap(MAPS map)
