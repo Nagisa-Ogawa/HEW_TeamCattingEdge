@@ -32,7 +32,7 @@
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)	//プレイヤーの表示座標Y
 
 #define PLAYER_SPEED	4.0f //プレーヤーのスピード
-#define WARP_POWER		300.0f //ワープの最大距離
+#define WARP_POWER		420.0f //ワープの最大距離
 
 #define TEST_CON 0
 
@@ -85,12 +85,14 @@ HRESULT InitPlayer(void)
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.oldpos = g_Player.pos;
 	g_Player.size = 120.0f;
+	g_Player.hitsize = g_Player.size - 2.0f;
 	g_Player.status = normal;
 
 	g_Player.warpframe = 0;
 	g_Player.waitafterwarp = 0;
 	g_Player.warppower = 0.0f;
-	g_Player.gravity = 4.0f;
+	g_Player.gravity = 0.6f;
+	g_Player.dorpspeed = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.warpFlag = 0;//int
 
 	g_Player.LandingFlag = false; //着地フラグ
@@ -115,7 +117,6 @@ HRESULT InitPlayer(void)
 //=============================================================================
 void UninitPlayer(void)
 {
-
 }
 
 //=============================================================================
@@ -123,7 +124,9 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	//１フレーム前のポジションを更新
 	g_Player.oldpos = g_Player.pos;
+
 	DWORD result = 0;
 	//プレーヤーの状態変化（ステータス）
 	switch (g_Player.status)
@@ -132,13 +135,13 @@ void UpdatePlayer(void)
 	case normal:
 		PlayerStatusNormal();
 		result = hitChackNormalPlayer_Block(g_Player.vel);
-		g_Player.vel.y += g_Player.gravity;
+		g_Player.dorpspeed.y += g_Player.gravity;
 		break;
 		//ワープ待機状態
 	case warpwait:
 		PlayerStatusWarpwait();
 		result = hitChackNormalPlayer_Block(g_Player.vel);
-		g_Player.vel.y += g_Player.gravity / 4;
+		g_Player.dorpspeed.y = 1.0f;
 		break;
 		//ワ－プ状態
 	case warp:
@@ -148,23 +151,23 @@ void UpdatePlayer(void)
 	}
 
 	//当たり判定処理
-	if (result & HIT_LEFT) 
+	if (result & HIT_LEFT)
 	{
 		if (g_Player.vel.x > 0.0)
 			g_Player.vel.x = 0.0f;
 	}
-	if (result & HIT_RIGHT) 
+	if (result & HIT_RIGHT)
 	{
 		if (g_Player.vel.x < 0.0)
 			g_Player.vel.x = 0.0f;
 	}
 
-	result = hitChackNormalPlayer_Block(g_Player.vel);
+	result = hitChackNormalPlayer_Block(g_Player.dorpspeed);
 
 	//落下させるか？処理
 	if ((result & HIT_UP) == 0 && g_Player.LandingFlag == true)
 	{
-		g_Player.LandingFlag = false; 
+		g_Player.LandingFlag = false;
 	}
 
 	//落下処理
@@ -173,7 +176,7 @@ void UpdatePlayer(void)
 		if (g_Player.waitafterwarp > 0)
 		{
 			g_Player.waitafterwarp--;
-			g_Player.vel.y = 0.0f;
+			g_Player.dorpspeed.y = 0.0f;
 		}
 		else
 		{
@@ -181,17 +184,18 @@ void UpdatePlayer(void)
 			{
 				g_Player.LandingFlag = true;
 				g_Player.pos.y = GetBlockHeight() - (g_Player.size / 2);
-				g_Player.vel.y = 0.0f;
+				g_Player.dorpspeed.y = 0.0f;
 				g_Player.waitafterwarp = 0;
 			}
 		}
 	}
 	else // 最終的に地面に触れている
 	{
-		g_Player.vel.y = 0.0f;
+		g_Player.dorpspeed.y = 0.0f;
 	}
 
 	g_Player.pos += g_Player.vel;
+	g_Player.pos += g_Player.dorpspeed;
 
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 
@@ -217,17 +221,12 @@ void UpdatePlayer(void)
 	//カメラ座標の更新
 	CAMERA_2D* pCamera = GetCamera();
 	pCamera->pos.x = g_Player.pos.x - PLAYER_DISP_X;
-	pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y - 60.0f;
+	//pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y - 60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
 	if (pCamera->pos.y < 0)
 		pCamera->pos.y = 0;*/
 
-}
-
-void UpdateEndPlayer(void)
-{
-	// g_Player.oldpos = g_Player.pos;
 }
 
 
@@ -396,25 +395,3 @@ D3DXVECTOR2 GetRightStick(int padNo)
 {
 	return D3DXVECTOR2(GetThumbRightX(padNo), GetThumbRightY(padNo));
 }
-
-
-//void SetMap(MAPS map)
-//{
-//	g_Player.pos = D3DXVECTOR2(PLAYER_DISP_X, PLAYER_DISP_Y);
-//	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
-//	g_Player.oldpos = g_Player.pos;
-//	g_Player.status = normal;
-//
-//	g_Player.warpframe = 0;
-//	g_Player.warppower = 0.0f;
-//	g_Player.gravity = 0.2f;
-//	g_Player.warpFlag = 0;
-//
-//	g_Player.muki = 0;
-//	g_Player.animePtn = 0;
-//	g_Player.animeCounter = 0;
-//
-//	g_Player.move = false;
-//
-//	g_Player.map = map;
-//}

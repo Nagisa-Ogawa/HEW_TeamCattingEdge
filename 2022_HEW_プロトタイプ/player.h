@@ -28,7 +28,8 @@ struct PLAYER
 	D3DXVECTOR2 pos;		//現在座標
 	D3DXVECTOR2 oldpos;		//１フレーム前の座標
 	D3DXVECTOR2 warppos;	//ワープ地点の座標
-	float		size;
+	float		size;		//サイズ
+	float       hitsize;    //ヒットサイズ
 	D3DXVECTOR2	vel;		//速度ベクトル
 	STATUS		status;		//プレイヤーの状態
 
@@ -37,6 +38,7 @@ struct PLAYER
 	int         waitafterwarp;//ワープ後の停止時間
 	float		warppower;  //ワープ力
 	float		gravity;    //重力
+	D3DXVECTOR2		dorpspeed;  //落下速度
 	int			warpFlag;	//ワープ回数フラグ
 
 	bool        LandingFlag; //着地フラグ
@@ -48,7 +50,6 @@ struct PLAYER
 	bool		move;
 
 	int			attackflag;
-
 	int			hp;			//HP
 };
 
@@ -58,7 +59,6 @@ struct PLAYER
 HRESULT InitPlayer(void);
 void UninitPlayer(void);
 void UpdatePlayer(void);
-void UpdateEndPlayer(void);
 void DrawPlayer(void);
 
 void AdjustPlayer(D3DXVECTOR2 pos);

@@ -38,30 +38,30 @@ bool HitCheckBox(D3DXVECTOR2 box1pos, float box1width, float box1height,
 
 
 
-void Collision_Bullet_Enemy(void)
-{
-	ENEMY* pEnemy = GetEnemy();
-	BULLET* pBullet = GetBullet();
-
-	//敵バッファのすべてをチェックする
-	for (int e = 0; e < MAX_ENEMY; e++)
-	{
-		//敵の可視フラグがオフの場合はスキップする
-		if (pEnemy[e].use == false)
-			continue;
-
-		//弾バッファのすべてをチェックする
-		for (int b = 0; b < MAX_BULLET; b++)
-		{
-			//弾の可視フラグがオフの場合はスキップする
-			if (pBullet[b].use == false)
-				continue;
-
-			if (HitCheckBox(pEnemy[e].pos, 64.0f, 64.0f, pBullet[b].pos, 64.0f, 64.0f))
-			{
-				pEnemy[e].use = false; //敵を消す
-				pBullet[b].use = false;//弾を消す
-			}
-		}
-	}
-}
+//void Collision_Bullet_Enemy(void)
+//{
+//	ENEMY* pEnemy = GetEnemy();
+//	BULLET* pBullet = GetBullet();
+//
+//	//敵バッファのすべてをチェックする
+//	for (int e = 0; e < MAX_ENEMY; e++)
+//	{
+//		//敵の可視フラグがオフの場合はスキップする
+//		if (pEnemy[e].use == false)
+//			continue;
+//
+//		//弾バッファのすべてをチェックする
+//		for (int b = 0; b < MAX_BULLET; b++)
+//		{
+//			//弾の可視フラグがオフの場合はスキップする
+//			if (pBullet[b].use == false)
+//				continue;
+//
+//			if (HitCheckBox(pEnemy[e].pos, 64.0f, 64.0f, pBullet[b].pos, 64.0f, 64.0f))
+//			{
+//				pEnemy[e].use = false; //敵を消す
+//				pBullet[b].use = false;//弾を消す
+//			}
+//		}
+//	}
+//}

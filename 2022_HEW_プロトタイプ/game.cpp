@@ -23,6 +23,7 @@
 #include "camera.h"
 #include "enemyemitter.h"
 #include "inputx.h"
+#include "EnemyFactory.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -40,14 +41,13 @@
 static int g_BGMNo;
 static int g_TextureCloud = 0;
 
+static EnemyFactory enemyFactory;
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
 void InitGame(void)
 {
-	// 頂点管理の初期化処理
-//	InitPolygon();
-
 	// プレイヤーの初期化
 	InitPlayer();
 
@@ -65,6 +65,7 @@ void InitGame(void)
 
 	// 敵の初期化
 	//InitEnemy();
+	enemyFactory.Init();
 
 	//数値表示の初期化
 	InitNumber();
@@ -74,15 +75,6 @@ void InitGame(void)
 
 	//敵の発生制御
 	//InitEnemyEmitter();
-
-	////敵の初期配置
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	D3DXVECTOR2 pos;
-	//	pos.x = rand() % SCREEN_WIDTH;
-	//	pos.y = rand() % SCREEN_HEIGHT;
-	//	SetEnemy(pos, 0);
-	//}
 
 	//ゲーム用BGMの読み込み
 	g_BGMNo = LoadSound((char*)"data/BGM/sample001.wav");
@@ -103,6 +95,7 @@ void UninitGame(void)
 
 	//敵の終了処理
 	//UninitEnemy();
+	enemyFactory.Uninit();
 
 	// 弾の終了処理
 	UninitBullet();
@@ -118,25 +111,15 @@ void UninitGame(void)
 
 	// プレイヤーの終了処理
 	UninitPlayer();
-
-	// 頂点管理の終了処理
-//	UninitPolygon();
-
-	//テクスチャの解放
-//	UninitTexture();
 }
 
 void UpdateGame(void)
 {
-	// 頂点管理の更新処理
-//	UpdatePolygon();
-
 	//敵の発生制御
 	//UpdateEnemyEmitter();
 
-
 	// 敵の更新処理
-	//UpdateEnemy();
+	enemyFactory.Update();
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
@@ -157,13 +140,11 @@ void UpdateGame(void)
 	//カメラの更新処理
 	UpdateCamera();
 
-	UpdateEndPlayer();
-
 	//数値表示の更新処理
 	UpdateNumber();
 
 	//全てのアップデートが終わったら当たり判定を行う
-	Collision_Bullet_Enemy();
+	// Collision_Bullet_Enemy();
 }
 
 void DrawGame(void)
@@ -171,17 +152,11 @@ void DrawGame(void)
 	// 背景の描画
 	DrawBG();
 
-	// 頂点管理の描画処理
-//	DrawPolygon();
-
-	//// 弾の描画処理
-	//DrawBullet();
-
-	// 敵の描画処理
-	//DrawEnemy();
-
 	// ステージの描画処理
 	DrawBlock();
+
+	// 敵の描画処理
+	enemyFactory.Draw();
 
 	// プレイヤーの描画処理
 	DrawPlayer();

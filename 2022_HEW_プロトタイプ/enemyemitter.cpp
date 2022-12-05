@@ -73,7 +73,7 @@ void UpdateEnemyEmitter(void)
 		for (int i = 0; i < g_EnemyEmitTbl[g_EmitCount].num; i++)
 		{
 			//敵の発生
-			SetEnemy();
+			// SetEnemy();
 		}
 
 		//インデックスを進める
