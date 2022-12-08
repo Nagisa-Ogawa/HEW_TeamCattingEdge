@@ -30,8 +30,17 @@ protected:
 	float m_Gravity = 0.98;		// 重力
 	bool m_IsGround = false;	// 敵の設置判定フラグ
 	int m_HP;
+	D3DXVECTOR2 m_divid;
+	D3DXVECTOR2 m_pttern;
+	bool m_IsActive = false;
 public:
-	Enemy(D3DXVECTOR2 pos,int ID) :m_Pos(pos),m_ID(ID) {};
+	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid) :
+			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) 
+	{ 
+		m_pttern.x = 1.0f / m_divid.x;
+		m_pttern.y = 1.0f / m_divid.y;
+		m_IsActive = true;
+	};
 	// エネミーの初期化処理
 	virtual void Init() = 0;
 	// エネミーの終了処理
@@ -44,6 +53,7 @@ public:
 	// Get系関数
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
+	bool GetIsActive() { return m_IsActive; };
 	~Enemy() {};
 };
 

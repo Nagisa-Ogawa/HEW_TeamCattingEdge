@@ -32,7 +32,6 @@
 #define PLAYER_DISP_Y (SCREEN_HEIGHT/2)	//プレイヤーの表示座標Y
 
 #define PLAYER_SPEED	4.0f //プレーヤーのスピード
-#define WARP_POWER		420.0f //ワープの最大距離
 
 #define TEST_CON 0
 
@@ -81,6 +80,8 @@ HRESULT InitPlayer(void)
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/pipo-xmaschara03.png");
 
 	//データの初期化
+
+	//基礎情報の初期化
 	g_Player.pos = D3DXVECTOR2(200.0f, 800.0f);
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.oldpos = g_Player.pos;
@@ -88,26 +89,32 @@ HRESULT InitPlayer(void)
 	g_Player.hitsize = g_Player.size - 2.0f;
 	g_Player.status = normal;
 
+	//ワープ関連情報の初期化
 	g_Player.warpframe = 0;
+	g_Player.warpRecast = 0;
+	g_Player.warpStartRecast = 0;
 	g_Player.waitafterwarp = 0;
-	g_Player.warppower = 0.0f;
+	g_Player.warppower = 420.0f;
 	g_Player.gravity = 0.6f;
-	g_Player.dorpspeed = D3DXVECTOR2(0.0f, 0.0f);
-	g_Player.warpFlag = 0;//int
+	g_Player.warpFlag = 3;//int
 
+	//落下処理関連の初期化
+	g_Player.dorpspeed = D3DXVECTOR2(0.0f, 0.0f);
 	g_Player.LandingFlag = false; //着地フラグ
 
+	//アニメーション関連の初期化
 	g_Player.muki = 0;
 	g_Player.animePtn = 0;
 	g_Player.animeCounter = 0;
-
 	g_Player.move = false;
 
-	SetNumber(32768); //スコアの描画
-
+	//戦闘関連情報の初期化
+	g_Player.mutekiflag = true;
+	g_Player.mutekitime = 0;
 	g_Player.attackflag = 0;
-
 	g_Player.hp = 10;
+
+	SetNumber(32768); //スコアの描画
 
 	return S_OK;
 }
@@ -213,6 +220,18 @@ void UpdatePlayer(void)
 	//}
 	//g_Player.animeCounter++;
 
+	//無敵判定の処理
+	if (g_Player.mutekiflag == true)
+	{
+		g_Player.mutekitime++;
+
+		if (g_Player.mutekitime >= 120)
+		{
+			g_Player.mutekitime = 0;
+			g_Player.mutekiflag = false;
+		}
+	}
+
 	if (g_Player.pos.y > 1200.0f)
 	{
 		SceneTransition(SCENE_OVER_GAME);
@@ -243,15 +262,32 @@ void DrawPlayer(void)
 	{
 		//徒歩状態
 	case normal:
-		DrawSpriteColor(g_TextureNo,
-			basePos.x + g_Player.pos.x,
-			basePos.y + (g_Player.pos.y),
-			g_Player.size, g_Player.size,
-			g_AnimeTable[g_Player.animePtn],
-			g_MukiTable[g_Player.muki],
-			PATTERN_WIDTH,
-			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		if (g_Player.mutekiflag == true)
+		{
+			float color = g_Player.mutekitime % 30;
+
+			DrawSpriteColor(g_TextureNo,
+				basePos.x + g_Player.pos.x,
+				basePos.y + (g_Player.pos.y),
+				g_Player.size, g_Player.size,
+				g_AnimeTable[g_Player.animePtn],
+				g_MukiTable[g_Player.muki],
+				PATTERN_WIDTH,
+				PATTERN_HEIGHT,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+		}
+		else
+		{
+			DrawSpriteColor(g_TextureNo,
+				basePos.x + g_Player.pos.x,
+				basePos.y + (g_Player.pos.y),
+				g_Player.size, g_Player.size,
+				g_AnimeTable[g_Player.animePtn],
+				g_MukiTable[g_Player.muki],
+				PATTERN_WIDTH,
+				PATTERN_HEIGHT,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		}
 		break;
 		//ワープ待機状態
 	case warpwait:
@@ -320,14 +356,11 @@ void DrawPlayer(void)
 	}
 }
 
-void AdjustPlayer(D3DXVECTOR2 pos)
+void PlayerDamage(int num)
 {
-	g_Player.pos += pos;
-}
+	g_Player.hp -= num;
 
-PLAYER* GetPlayer(void)
-{
-	return &g_Player;
+	g_Player.mutekiflag = true;
 }
 
 void PlayerStatusNormal(void)
@@ -338,12 +371,35 @@ void PlayerStatusNormal(void)
 	//ワープ処理(ワープ中ではない状態でスペースキーが押されたとき)
 	if (0.0 != GetThumbRightX(TEST_CON) || 0.0 != GetThumbRightY(TEST_CON))
 	{
-		g_Player.status = warpwait;
+		if (g_Player.warpFlag != 0)
+		{
+			g_Player.status = warpwait;
+		}
 	}
 
 	//攻撃処理移行フラグ
 	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
+	}
+
+	//ワープリキャスト処理
+	if (g_Player.warpFlag < 3)
+	{
+		g_Player.warpRecast = timeGetTime();
+
+		if (g_Player.warpRecast - g_Player.warpStartRecast >= 10000)//10.000
+		{
+			g_Player.warpFlag++;
+
+			if (g_Player.warpFlag == 3)
+			{
+				g_Player.warpStartRecast = 0;
+			}
+			else
+			{
+				g_Player.warpStartRecast = timeGetTime();
+			}
+		}
 	}
 }
 
@@ -367,8 +423,8 @@ void PlayerStatusWarpwait(void)
 
 		D3DXVec2Normalize(&Direction, &Direction);
 
-		g_Player.warppos.x = g_Player.pos.x + (Direction.x * -1) * (WARP_POWER * ((float)g_Player.warpframe / 60.0f));
-		g_Player.warppos.y = g_Player.pos.y + (Direction.y) * (WARP_POWER * ((float)g_Player.warpframe / 60.0f));
+		g_Player.warppos.x = g_Player.pos.x + (Direction.x * -1) * (g_Player.warppower * ((float)g_Player.warpframe / 60.0f));
+		g_Player.warppos.y = g_Player.pos.y + (Direction.y) * (g_Player.warppower * ((float)g_Player.warpframe / 60.0f));
 	}
 }
 
@@ -378,12 +434,27 @@ void PlayerStatusWarp(void)
 	g_Player.pos.y = g_Player.warppos.y;
 
 	g_Player.warpframe = 0;
-
 	g_Player.waitafterwarp = 9;
+	g_Player.warpFlag--;
 
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 
 	g_Player.status = normal;
+
+	if (g_Player.warpStartRecast == 0)
+	{
+		g_Player.warpStartRecast = timeGetTime();
+	}
+}
+
+void AdjustPlayer(D3DXVECTOR2 pos)
+{
+	g_Player.pos += pos;
+}
+
+PLAYER* GetPlayer(void)
+{
+	return &g_Player;
 }
 
 D3DXVECTOR2 GetLeftStick(int padNo)

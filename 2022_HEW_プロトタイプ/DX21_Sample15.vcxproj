@@ -131,6 +131,8 @@
   <ItemGroup>
     <ClInclude Include="bg.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Bomb.h" />
+    <ClInclude Include="BombFactory.h" />
     <ClInclude Include="bullet.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
@@ -141,6 +143,8 @@
     <ClInclude Include="enemy_cloud.h" />
     <ClInclude Include="Enemy_HitDrop.h" />
     <ClInclude Include="enemy_prototype.h" />
+    <ClInclude Include="Enemy_SelfDestruct.h" />
+    <ClInclude Include="Enemy_ThrowBomb.h" />
     <ClInclude Include="enemy_turret.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
@@ -164,6 +168,8 @@
   <ItemGroup>
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="BombFactory.cpp" />
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
@@ -172,6 +178,8 @@
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="enemy_cloud.cpp" />
     <ClCompile Include="Enemy_HitDrop.cpp" />
+    <ClCompile Include="Enemy_SelfDestruct.cpp" />
+    <ClCompile Include="Enemy_ThrowBomb.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameover.cpp" />

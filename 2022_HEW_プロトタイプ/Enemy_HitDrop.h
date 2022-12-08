@@ -4,13 +4,6 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define DIVIDE_X 4	//横の分割数
-#define DIVIDE_Y 2	//縦の分割数
-
-#define PATTERN_WIDTH (1.0f / DIVIDE_X)
-#define PATTERN_HEIGHT (1.0f / DIVIDE_Y)
-
-#define ENEMY_SIZE (120)	//　プレイヤーのサイズ
 
 // 敵のジャンプパワー
 #define ENEMY_JUMPPOWER_X (4.0f)	
@@ -26,21 +19,22 @@
 #define ENEMY_DROPPOWER (0.98f)		// ドロップ中の加速係数
 
 
-enum STATE_ENEMY_HITDROP 
-{
-	IDLE,
-	SETUP,
-	JUMP,
-	DROP,
-	AFTERDROP,
-	WAIT,
-};
 
 //*****************************************************************************
 // ヒットドロップする敵のクラス
 //*****************************************************************************
 class Enemy_HitDrop :public Enemy
 {
+public:
+	enum STATE_ENEMY_HITDROP
+	{
+		IDLE,
+		SETUP,
+		JUMP,
+		DROP,
+		AFTERDROP,
+		WAIT,
+	};
 private:
 	// アニメーションのUV値の指定に使う配列
 	const float m_AnimeTable[4] =

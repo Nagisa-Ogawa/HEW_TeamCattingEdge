@@ -2,6 +2,7 @@
 
 #include <list>
 #include "enemy.h"
+#include "player.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -15,6 +16,7 @@ class EnemyFactory
 {
 private:
 	std::list<Enemy*> m_pEnemyList;
+	PLAYER* m_pPlayer = nullptr;
 public:
 	EnemyFactory();
 	// エネミー工場の初期化処理
@@ -25,6 +27,13 @@ public:
 	void Update();
 	// エネミー工場の描画処理
 	void Draw();
+
+	// 当たり判定系関数
+	// プレイヤーとエネミーの当たり判定(プレイヤーへのダメージ)
+	void CollisionPlayerToEnemy();
+	// プレイヤー攻撃とエネミーの当たり判定(エネミーへのダメージ）
+
+
 	~EnemyFactory();
 };
 

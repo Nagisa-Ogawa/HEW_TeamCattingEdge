@@ -12,7 +12,7 @@ enum STATUS
 	normal,
 	warpwait,
 	warp,
-	fall,
+	
 	STATUS_NUM,
 };
 
@@ -25,6 +25,7 @@ enum MAPS
 
 struct PLAYER
 {
+	//基礎情報
 	D3DXVECTOR2 pos;		//現在座標
 	D3DXVECTOR2 oldpos;		//１フレーム前の座標
 	D3DXVECTOR2 warppos;	//ワープ地点の座標
@@ -34,23 +35,29 @@ struct PLAYER
 	STATUS		status;		//プレイヤーの状態
 
 	//ワープ関連
-	int			warpframe;  //ワープ時の入力時間
-	int         waitafterwarp;//ワープ後の停止時間
-	float		warppower;  //ワープ力
-	float		gravity;    //重力
-	D3DXVECTOR2		dorpspeed;  //落下速度
-	int			warpFlag;	//ワープ回数フラグ
+	int			warpframe;		//ワープ時の入力時間
+	DWORD		warpRecast;		//ワープのリキャスト時間
+	DWORD		warpStartRecast;//ワープのリキャストの初めの時間
+	int         waitafterwarp;	//ワープ後の停止時間
+	float		warppower;		//ワープ力
+	float		gravity;		//重力
+	int			warpFlag;		//ワープ回数フラグ
 
-	bool        LandingFlag; //着地フラグ
+	//落下処理関連
+	D3DXVECTOR2	dorpspeed;		//落下速度
+	bool        LandingFlag;	//着地フラグ
 
+	//アニメーション関連
 	int			muki;
 	int			animePtn;
 	int			animeCounter;
-
 	bool		move;
 
-	int			attackflag;
-	int			hp;			//HP
+	//戦闘関連
+	bool		mutekiflag;		//無敵フラグ
+	int			mutekitime;		//無敵時間
+	int			attackflag;		//アタックフラグ
+	int			hp;				//HP
 };
 
 //*****************************************************************************
@@ -62,5 +69,8 @@ void UpdatePlayer(void);
 void DrawPlayer(void);
 
 void AdjustPlayer(D3DXVECTOR2 pos);
+
+//ダメージ関数
+void PlayerDamage(int num);
 
 PLAYER* GetPlayer(void);

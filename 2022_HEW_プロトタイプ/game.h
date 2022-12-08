@@ -2,6 +2,7 @@
 
 #include "main.h"
 #include "renderer.h"
+#include "BombFactory.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -15,3 +16,5 @@ void InitGame(void);
 void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
+
+BombFactory* GetBombFactory();

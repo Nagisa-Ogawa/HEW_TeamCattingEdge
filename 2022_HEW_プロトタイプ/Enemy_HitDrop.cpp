@@ -5,12 +5,13 @@
 #include "Block.h"
 #include "player.h"
 
-Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos,int ID):Enemy(pos,ID)
+Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID) :
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 2.0f))
 {
 	// 敵のサイズを設定
-	m_Size = D3DXVECTOR2(ENEMY_SIZE, ENEMY_SIZE);
 	m_Gravity = 4.0f;
 	m_DropPower = ENEMY_DROPPOWER;
+	m_HP = 1;
 }
 
 void Enemy_HitDrop::Init()
@@ -33,7 +34,7 @@ void Enemy_HitDrop::Update()
 	switch (m_State)
 	{
 	
-	case IDLE:
+	case Enemy_HitDrop::IDLE:
 	{
 		D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 		float len = D3DXVec2Length(&pVec);
@@ -42,15 +43,13 @@ void Enemy_HitDrop::Update()
 		{
 			ChangeSetUp();
 		}
-		m_Vel.y += m_Gravity;
-		LookPlayer();
 		break;
 	}
-	case SETUP:
+	case Enemy_HitDrop::SETUP:
 		// 待機
 		if (m_WaitFrame >= ENEMY_WAITFRAME_SETUP)
 		{
-			m_State = JUMP;
+			m_State = Enemy_HitDrop::JUMP;
 			m_WaitFrame = 0;
 			// ジャンプアニメーションにする
 			m_AnimationPtn++;
@@ -60,27 +59,25 @@ void Enemy_HitDrop::Update()
 			m_WaitFrame++;
 		}
 		LookPlayer();
-		m_Vel.y += m_Gravity;
 		break;
-	case JUMP:
+	case Enemy_HitDrop::JUMP:
 		// ジャンプ処理
 		Jump();
 		break;
-	case DROP:
-		m_Vel.y += m_DropPower;
+	case Enemy_HitDrop::DROP:
 		m_DropPower += ENEMY_DROPPOWER;
 		if (m_IsGround)
 		{
 			// 準備アニメーションへ
 			// m_AnimationPtn = 0;
 			m_DropPower = ENEMY_DROPPOWER;
-			m_State = AFTERDROP;
+			m_State = Enemy_HitDrop::AFTERDROP;
 		}
 		break;
-	case AFTERDROP:
+	case Enemy_HitDrop::AFTERDROP:
 		if (m_WaitFrame >= ENEMY_WAITFRAME_AFTERDROP)
 		{
-			m_State = WAIT;
+			m_State = Enemy_HitDrop::WAIT;
 			m_WaitFrame = 0;
 			// 待機アニメーションにする
 			m_AnimationPtn = 0;
@@ -89,19 +86,17 @@ void Enemy_HitDrop::Update()
 		{
 			m_WaitFrame++;
 		}
-		m_Vel.y += m_Gravity;
 		break;
-	case WAIT:
+	case Enemy_HitDrop::WAIT:
 		if (m_WaitFrame >= ENEMY_WAITFRAME_WAIT)
 		{
-			m_State = IDLE;
+			m_State = Enemy_HitDrop::IDLE;
 			m_WaitFrame = 0;
 		}
 		else
 		{
 			m_WaitFrame++;
 		}
-		m_Vel.y += m_Gravity;
 		LookPlayer();
 		break;
 	default:
@@ -121,8 +116,22 @@ void Enemy_HitDrop::Update()
 			m_Vel.x = 0.0f;
 	}
 
-	result = HitChackEnemy_Block(m_Pos,m_Size,m_Vel);
+	m_Pos.x += m_Vel.x;
 
+	if (m_State == Enemy_HitDrop::JUMP)
+	{
+		m_Vel.y += m_JumpPower.y;
+	}
+	else if (m_State == Enemy_HitDrop::DROP)
+	{
+		m_Vel.y += m_DropPower;
+	}
+	else
+	{
+		m_Vel.y += m_Gravity;
+	}
+
+	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
 	//落下させるか？処理
 	if ((result & HIT_UP) == 0 && m_IsGround == true)
 	{
@@ -144,31 +153,22 @@ void Enemy_HitDrop::Update()
 		m_Vel.y = 0.0f;
 	}
 
-	m_Pos += m_Vel;
+	m_Pos.y += m_Vel.y;
+	LookPlayer();
 
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 
 
-	////アニメーションカウンターをカウントアップして、ウエイト値を超えたら
-	//if (m_AnimationCounter > 50)
-	//{
-	//	//アニメーションパターンを切り替える
-	//	m_AnimationPtn++;
-	//	//最後のアニメーションパターンを表示したらリセットする
-	//	if (m_AnimationPtn >= 4)
-	//		m_AnimationPtn = 0;
-
-	//	//アニメーションカウンターのリセット
-	//	m_AnimationCounter = 0;
-	//}
-	//m_AnimationCounter++;
 }
 
 void Enemy_HitDrop::Draw()
 {
-	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], PATTERN_WIDTH, PATTERN_HEIGHT);
+	if (m_IsActive)
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+	}
 }
 
 Enemy_HitDrop::~Enemy_HitDrop()
@@ -177,7 +177,7 @@ Enemy_HitDrop::~Enemy_HitDrop()
 
 void Enemy_HitDrop::ChangeSetUp()
 {
-	m_State = SETUP;
+	m_State = Enemy_HitDrop::SETUP;
 	PLAYER* pPlayer = GetPlayer();
 	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 	// プレイヤーと敵の位置から飛ぶ方向と落下予定座標を決定
@@ -200,7 +200,6 @@ void Enemy_HitDrop::Jump()
 {
 	// ジャンプ
 	m_Vel.x += m_JumpPower.x;
-	m_Vel.y += m_JumpPower.y;
 	// 減衰
 	m_JumpPower.y += m_JumpAttenuation.y;
 	// 移動中にプレイヤーがいた座標まで来たならそこに落下
@@ -210,7 +209,7 @@ void Enemy_HitDrop::Jump()
 	{
 		if (enemyPos.x >= m_DropPosX)
 		{
-			m_State = DROP;
+			m_State = Enemy_HitDrop::DROP;
 			m_AnimationPtn++;
 		}
 	}
@@ -218,13 +217,13 @@ void Enemy_HitDrop::Jump()
 	{
 		if (enemyPos.x <= m_DropPosX)
 		{
-			m_State = DROP;
+			m_State = Enemy_HitDrop::DROP;
 			m_AnimationPtn++;
 		}
 	}
 	if (m_JumpPower.y >= 0.0f)
 	{
-		m_State = DROP;
+		m_State = Enemy_HitDrop::DROP;
 		m_AnimationPtn++;
 	}
 }

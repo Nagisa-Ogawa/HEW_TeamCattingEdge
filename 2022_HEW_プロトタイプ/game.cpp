@@ -34,7 +34,6 @@
 // プロトタイプ宣言
 //*****************************************************************************
 
-
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
@@ -42,6 +41,7 @@ static int g_BGMNo;
 static int g_TextureCloud = 0;
 
 static EnemyFactory enemyFactory;
+BombFactory bombFactory;
 
 //=============================================================================
 // 初期化処理
@@ -66,6 +66,8 @@ void InitGame(void)
 	// 敵の初期化
 	//InitEnemy();
 	enemyFactory.Init();
+
+	bombFactory.Init();
 
 	//数値表示の初期化
 	InitNumber();
@@ -93,6 +95,7 @@ void UninitGame(void)
 	//数値表示の終了処理
 	UninitNumber();
 
+	bombFactory.Uninit();
 	//敵の終了処理
 	//UninitEnemy();
 	enemyFactory.Uninit();
@@ -118,21 +121,18 @@ void UpdateGame(void)
 	//敵の発生制御
 	//UpdateEnemyEmitter();
 
-	// 敵の更新処理
-	enemyFactory.Update();
-
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
-	// 弾の更新処理
-	UpdateBullet();
+
+
+	// 敵の更新処理
+	enemyFactory.Update();
+
+	bombFactory.Update();
 
 	// ステージの更新処理
 	UpdateBlock();
-
-	// ゴールの更新処理
-	UpdateGoal();
-
 
 	// 背景の更新
 	UpdateBG();
@@ -158,6 +158,8 @@ void DrawGame(void)
 	// 敵の描画処理
 	enemyFactory.Draw();
 
+	bombFactory.Draw();
+
 	// プレイヤーの描画処理
 	DrawPlayer();
 
@@ -177,4 +179,9 @@ void DrawGame(void)
 
 	//数値表示の描画処理
 	//DrawNumber();
+}
+
+BombFactory* GetBombFactory()
+{
+	return &bombFactory;
 }
