@@ -138,8 +138,8 @@ void Enemy_ThrowBomb::Throw()
 	// 爆弾を投げる場所を決定
 	PLAYER* pPlayer = GetPlayer();
 	// 始点と終点と開始ベクトルと終了ベクトルを決定
-	D3DXVECTOR2 startVec = D3DXVECTOR2(-1.0f, -500.0f);
-	D3DXVECTOR2 endVec = D3DXVECTOR2( -1.0f,  500.0f);
+	D3DXVECTOR2 startVec = D3DXVECTOR2(-10.0f, -500.0f);
+	D3DXVECTOR2 endVec = D3DXVECTOR2( -10.0f,  500.0f);
 	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 	//if (pVec.x < 0)
 	//{

@@ -204,7 +204,7 @@ void Enemy_HitDrop::Jump()
 	m_JumpPower.y += m_JumpAttenuation.y;
 	// 移動中にプレイヤーがいた座標まで来たならそこに落下
 	// 敵の向きによって変える
-	D3DXVECTOR2 enemyPos = m_Pos += m_Vel;
+	D3DXVECTOR2 enemyPos = m_Pos + m_Vel;
 	if (m_Muki == 0)
 	{
 		if (enemyPos.x >= m_DropPosX)

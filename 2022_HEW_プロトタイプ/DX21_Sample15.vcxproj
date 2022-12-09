@@ -146,6 +146,8 @@
     <ClInclude Include="Enemy_SelfDestruct.h" />
     <ClInclude Include="Enemy_ThrowBomb.h" />
     <ClInclude Include="enemy_turret.h" />
+    <ClInclude Include="Explosion.h" />
+    <ClInclude Include="ExplosionFactory.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameover.h" />
@@ -180,6 +182,8 @@
     <ClCompile Include="Enemy_HitDrop.cpp" />
     <ClCompile Include="Enemy_SelfDestruct.cpp" />
     <ClCompile Include="Enemy_ThrowBomb.cpp" />
+    <ClCompile Include="Explosion.cpp" />
+    <ClCompile Include="ExplosionFactory.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameover.cpp" />

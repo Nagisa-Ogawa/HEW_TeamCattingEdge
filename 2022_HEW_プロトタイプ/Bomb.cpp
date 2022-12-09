@@ -3,7 +3,25 @@
 #include "Bomb.h"
 #include "sprite.h"
 #include "camera.h"
+#include "texture.h"
+#include "Block.h"
+// #include "game.h"
 
+Bomb::Bomb(D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec) :
+	m_Pos(pos), m_StartPos(pos), m_EndPos(endPos), m_StartVec(startVec), m_EndVec(endVec)
+{
+	m_divid = D3DXVECTOR2(2.0f, 1.0f);
+	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
+	m_Size = D3DXVECTOR2(60.0f, 60.0f);
+	m_ThrowFrame = 70;
+	m_NowFrame = 0;
+	// 敵のテクスチャを読み込み
+	m_TextureNo = LoadTexture((char*)"data/TEXTURE/bomb.png");
+	m_IsActive = true;
+	m_pPlayer = GetPlayer();
+	m_CollisionRad = m_Size.x / 2.0f;
+	m_pExplosionFactory = GetExplosionFactory();
+};
 
 void Bomb::Init()
 {
@@ -31,7 +49,6 @@ void Bomb::Update()
 		else
 		{
 			m_State = Bomb::EXPLOSION;
-			m_IsActive = false;
 		}
 		// 爆弾と地面の当たり判定
 		CollisionBombToBlock();
@@ -39,7 +56,6 @@ void Bomb::Update()
 		if (HitCheckCircle())
 		{
 			m_State = Bomb::EXPLOSION;
-			m_IsActive = false;
 			PlayerDamage(10);
 		}
 		//アニメーションカウンターをカウントアップして、ウエイト値を超えたら
@@ -57,9 +73,9 @@ void Bomb::Update()
 		m_AnimationCounter++;
 		break;
 	case Bomb::EXPLOSION:
-		// 爆発のアニメーション
-		// 爆風のサイズを変更
-		// 爆風とプレイヤーの当たり判定
+		// 爆発を作成
+		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(100.0f, 100.0f));
+		m_IsActive = false;
 		break;
 	default:
 		break;
@@ -73,9 +89,9 @@ void Bomb::Draw()
 	{
 		return;
 	}
-D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_TextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[0], m_pttern.x, m_pttern.y);
+	D3DXVECTOR2 basePos = GetBase();
+		DrawSprite(m_TextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[0], m_pttern.x, m_pttern.y);
 }
 
 Bomb::~Bomb()
@@ -152,7 +168,6 @@ void Bomb::CollisionBombToBlock()
 			if (HitCheckBlock(D3DXVECTOR2(x*BLOCK_SIZE, y*BLOCK_SIZE), D3DXVECTOR2(BLOCK_SIZE, BLOCK_SIZE)))
 			{
 				m_State = Bomb::EXPLOSION;
-				m_IsActive = false;
 			}
 		}
 	}

@@ -28,7 +28,7 @@ static D3DXVECTOR2  g_Base;		// マップ全体の親座標
 //=============================================================================
 void InitCamera(void)
 {
-	g_Camera.pos = D3DXVECTOR2(0.0f, 0.0f);
+	g_Camera.pos = D3DXVECTOR2(0.0f, 60.0f);
 
 	g_Base = D3DXVECTOR2(0.0f, 0.0f);
 }

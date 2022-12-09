@@ -1,4 +1,5 @@
 #include "BombFactory.h"
+#include "Bomb.h"
 
 BombFactory::BombFactory()
 {

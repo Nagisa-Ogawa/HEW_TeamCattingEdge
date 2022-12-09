@@ -1,7 +1,8 @@
 #pragma once
-#include <list>
 #include "main.h"
-#include "Bomb.h"
+#include <list>
+
+class Bomb;
 
 class BombFactory
 {
@@ -19,6 +20,5 @@ public:
 	// ”š’eHê‚Ì•`‰æˆ—
 	void Draw();
 	// ”š’eHê‚Ìƒ|ƒCƒ“ƒ^‚ğ“n‚·
-	BombFactory* GetBombFactory() { return this; };
 	~BombFactory();
 };

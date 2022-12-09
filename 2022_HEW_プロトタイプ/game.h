@@ -3,6 +3,7 @@
 #include "main.h"
 #include "renderer.h"
 #include "BombFactory.h"
+#include "ExplosionFactory.h"
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -18,3 +19,4 @@ void UpdateGame(void);
 void DrawGame(void);
 
 BombFactory* GetBombFactory();
+ExplosionFactory* GetExplosionFactory();

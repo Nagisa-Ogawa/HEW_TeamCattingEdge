@@ -1,9 +1,9 @@
 #pragma once
 
-#include "main.h"
-#include "texture.h"
+#include "game.h"
+// #include "main.h"
 #include "player.h"
-#include "Block.h"
+
 class Bomb
 {
 public:
@@ -23,6 +23,7 @@ public:
 		EXPLOSION,
 	};
 private:
+	
 	D3DXVECTOR2 m_Pos;
 	D3DXVECTOR2 m_StartPos;
 	D3DXVECTOR2 m_EndPos;
@@ -31,6 +32,8 @@ private:
 	D3DXVECTOR2 m_NextPos;
 
 	PLAYER* m_pPlayer = nullptr;	// プレイヤーのポインタ
+	ExplosionFactory* m_pExplosionFactory = nullptr;
+
 	float m_CollisionRad = 0.0f;	// 爆弾の当たり判定用の半径
 
 	int	m_ThrowFrame;
@@ -44,20 +47,7 @@ private:
 	bool m_IsActive = false;
 	STATE_BOMB m_State = STATE_BOMB::THROW;
 public:
-	Bomb(D3DXVECTOR2 pos,D3DXVECTOR2 endPos,D3DXVECTOR2 startVec,D3DXVECTOR2 endVec) :
-			m_Pos(pos),m_StartPos(pos) ,m_EndPos(endPos),m_StartVec(startVec),m_EndVec(endVec)
-	{ 
-		m_divid = D3DXVECTOR2(2.0f, 1.0f);
-		m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
-		m_Size = D3DXVECTOR2(60.0f, 60.0f);
-		m_ThrowFrame = 70;
-		m_NowFrame = 0;
-		// 敵のテクスチャを読み込み
-		m_TextureNo = LoadTexture((char*)"data/TEXTURE/bomb.png");
-		m_IsActive = true;
-		m_pPlayer = GetPlayer();
-		m_CollisionRad = m_Size.x / 2.0f;
-	};
+	Bomb(D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
 	// 爆弾の初期化処理
 	void Init();
 	// 爆弾の終了処理

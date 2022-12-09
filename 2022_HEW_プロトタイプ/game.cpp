@@ -42,6 +42,7 @@ static int g_TextureCloud = 0;
 
 static EnemyFactory enemyFactory;
 BombFactory bombFactory;
+ExplosionFactory explosionFactory;
 
 //=============================================================================
 // 初期化処理
@@ -69,6 +70,8 @@ void InitGame(void)
 
 	bombFactory.Init();
 
+	explosionFactory.Init();
+
 	//数値表示の初期化
 	InitNumber();
 
@@ -94,6 +97,8 @@ void UninitGame(void)
 
 	//数値表示の終了処理
 	UninitNumber();
+
+	explosionFactory.Uninit();
 
 	bombFactory.Uninit();
 	//敵の終了処理
@@ -131,6 +136,8 @@ void UpdateGame(void)
 
 	bombFactory.Update();
 
+	explosionFactory.Update();
+
 	// ステージの更新処理
 	UpdateBlock();
 
@@ -160,6 +167,8 @@ void DrawGame(void)
 
 	bombFactory.Draw();
 
+	explosionFactory.Draw();
+
 	// プレイヤーの描画処理
 	DrawPlayer();
 
@@ -185,3 +194,9 @@ BombFactory* GetBombFactory()
 {
 	return &bombFactory;
 }
+
+ExplosionFactory* GetExplosionFactory()
+{
+	return &explosionFactory;
+}
+

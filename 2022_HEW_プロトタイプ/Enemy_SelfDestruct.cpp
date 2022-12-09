@@ -18,6 +18,7 @@ Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID):
 	m_BombRange = 200.0f;
 	m_MaxSize = 30.0f;
 	m_ChangeSizeValue = m_MaxSize / m_BombFrame;
+	m_pExplosionFactory = GetExplosionFactory();
 }
 
 void Enemy_SelfDestruct::Init()
@@ -32,6 +33,10 @@ void Enemy_SelfDestruct::Uninit()
 
 void Enemy_SelfDestruct::Update()
 {
+	if (!m_IsActive)
+	{
+		return;
+	}
 	m_OldPos = m_Pos;
 	DWORD result = 0;
 	PLAYER* pPlayer = GetPlayer();
@@ -67,8 +72,11 @@ void Enemy_SelfDestruct::Update()
 		SetUp();
 		break;
 	case Enemy_SelfDestruct::BOMB:
+		// Ž©‰ó
+		// ”š”­‚ðì¬
+		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
 		m_IsActive = false;
-		m_State = Enemy_SelfDestruct::IDLE;
+		// m_State = Enemy_SelfDestruct::IDLE;
 		break;
 	default:
 		break;

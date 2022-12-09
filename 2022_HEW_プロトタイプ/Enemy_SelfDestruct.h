@@ -1,6 +1,7 @@
 #pragma once
 #include "main.h"
 #include "enemy.h"
+#include "game.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -42,7 +43,7 @@ private:
 	int m_BombFrame = 0;	// 爆発するまでのフレーム
 	float m_MaxSize = 0.0f;	// 爆発前の最大サイズ
 	float m_ChangeSizeValue = 0.0f;// 爆発前のサイズの1フレーム当たりの変化量
-
+	ExplosionFactory* m_pExplosionFactory = nullptr;
 
 	// 待機フレーム
 	int m_WaitFrame = 0;
