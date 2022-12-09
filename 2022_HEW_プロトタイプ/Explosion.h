@@ -27,7 +27,6 @@ class Explosion
 private:
 	D3DXVECTOR2 m_Pos;
 
-	float m_CollisionRad = 0.0f;	// 爆弾の当たり判定用の半径
 
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 爆弾の表示サイズ
 	int m_AnimationPtn = 0;		// 爆弾のアニメーションのパターン番号
@@ -37,8 +36,15 @@ private:
 	bool m_IsActive = false;
 	STATE_EXPLOSION m_State;
 	int m_TextureNo = 0;
+
+	// 爆風関連
+	float m_CollisionRad = 0.0f;	// 現在の爆風の当たり判定用円の半径
+	float m_LastRad = 0.0f;			// 最終的な爆風の半径
+	int m_BlastFrame = 0;	// 爆風の有効フレーム
+	float m_ChangeBlastSize = 0.0f;	// 爆風の1フレームでの変化値
+
 public:
-	Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size);
+	Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad,float lastRad);
 	// 爆発の初期化処理
 	void Init();
 	// 爆発の終了処理
@@ -47,7 +53,11 @@ public:
 	void Update();
 	// 爆発の描画処理
 	void Draw();
-	// 
+
+	// Get系関数
+	float GetCollsionRad() { return m_CollisionRad; };
+	bool GetIsActive() { return m_IsActive; };
+	D3DXVECTOR2 GetPos() { return m_Pos; };
 	~Explosion();
 };
 

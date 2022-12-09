@@ -387,7 +387,7 @@ void PlayerStatusNormal(void)
 	{
 		g_Player.warpRecast = timeGetTime();
 
-		if (g_Player.warpRecast - g_Player.warpStartRecast >= 10000)//10.000
+		if (g_Player.warpRecast - g_Player.warpStartRecast >= 1000)//10.000
 		{
 			g_Player.warpFlag++;
 

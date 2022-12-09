@@ -3,7 +3,8 @@
 #include "sprite.h"
 #include "camera.h"
 
-Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size):m_Pos(pos),m_Size(size)
+Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad, float lastRad):
+			m_Pos(pos),m_Size(size),m_CollisionRad(collisionRad),m_LastRad(lastRad)
 {
 	m_divid = D3DXVECTOR2(7.0f, 1.0f);
 	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
@@ -11,6 +12,10 @@ Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size):m_Pos(pos),m_Size(size)
 	m_TextureNo = LoadTexture((char*)"data/TEXTURE/explosion.png");
 	m_IsActive = true;
 	m_CollisionRad = m_Size.x / 2.0f;
+	// 爆風の有効フレームをセット
+	m_BlastFrame = 42;
+	// 1フレームに変化する爆風の範囲を計算
+	m_ChangeBlastSize = (m_LastRad - m_CollisionRad) / (float)m_BlastFrame;
 };
 
 void Explosion::Init()
@@ -27,6 +32,8 @@ void Explosion::Update()
 	{
 		return;
 	}
+	// 爆風の当たり判定を増やす
+	m_CollisionRad += m_ChangeBlastSize;
 	//アニメーションカウンターをカウントアップして、ウエイト値を超えたら
 	if (m_AnimationCounter > 6)
 	{

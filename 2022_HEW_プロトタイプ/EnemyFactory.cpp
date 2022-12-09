@@ -14,8 +14,8 @@ EnemyFactory::EnemyFactory()
 	//m_pEnemyList.insert(enemyIt, new Enemy_HitDrop(D3DXVECTOR2(900.0f, 200.0f), 0));
 	m_pEnemyList.insert(enemyIt, new Enemy_SelfDestruct(D3DXVECTOR2(1100.0f, 100.0f), 0));
 	m_pEnemyList.insert(enemyIt, new Enemy_SelfDestruct(D3DXVECTOR2(1300.0f, 200.0f), 0));
-	m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(D3DXVECTOR2(700.0f, 100.0f), 0));
-	 m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(D3DXVECTOR2(900.0f, 200.0f), 0));
+	//m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(D3DXVECTOR2(700.0f, 100.0f), 0));
+	// m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(D3DXVECTOR2(900.0f, 200.0f), 0));
 }
 
 void EnemyFactory::Init()

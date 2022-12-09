@@ -19,5 +19,8 @@ public:
 	// ”š’eHê‚Ì•`‰æˆ—
 	void Draw();
 	~ExplosionFactory();
+
+	// ƒvƒŒƒCƒ„[‚Æ”š•—‚Ì“–‚½‚è”»’è
+	void CollisionBlastToPlayer();
 };
 
