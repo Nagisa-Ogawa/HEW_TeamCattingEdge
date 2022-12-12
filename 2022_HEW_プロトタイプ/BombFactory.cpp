@@ -1,13 +1,25 @@
+#include <algorithm>
 #include "BombFactory.h"
 #include "Bomb.h"
+#include "ContactBomb.h"
+#include "InstallationBomb.h"
+#include "game.h"
+#include "ShockWaveFactory.h"
 
 BombFactory::BombFactory()
 {
 }
 
-void BombFactory::Create(D3DXVECTOR2 createPos,D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec)
+void BombFactory::CreateContactBomb(D3DXVECTOR2 createPos,D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec)
 {
-	m_pBombList.push_back(new Bomb(createPos,endPos,startVec,endVec));
+	m_nowID++;
+	m_pBombList.push_back(new ContactBomb(m_nowID, createPos,endPos,startVec,endVec));
+}
+
+void BombFactory::CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec)
+{
+	m_nowID++;
+	m_pBombList.push_back(new InstallationBomb(m_nowID, createPos, endPos, startVec, endVec));
 }
 
 void BombFactory::Init()
@@ -33,6 +45,8 @@ void BombFactory::Update()
 	{
 		bomb->Update();
 	}
+	// 爆発済みの爆弾がないかチェック
+	DeleteBomb();
 }
 
 void BombFactory::Draw()
@@ -50,4 +64,20 @@ BombFactory::~BombFactory()
 		delete bomb;
 	}
 	m_pBombList.clear();
+}
+
+void BombFactory::DeleteBomb()
+{
+	while (true)
+	{
+		auto deleteIt = std::find_if(m_pBombList.begin(), m_pBombList.end(), ([&](Bomb* bomb) {return (bomb->GetIsActive() == false); }));
+		// 表示していない爆弾が一個もないなら抜ける
+		if (deleteIt == m_pBombList.end())
+		{
+			break;
+		}
+		// 爆発済みの爆弾は削除
+		delete (*deleteIt);
+		m_pBombList.erase(deleteIt);
+	}
 }

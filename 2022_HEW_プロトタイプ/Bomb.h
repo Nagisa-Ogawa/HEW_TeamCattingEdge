@@ -1,8 +1,8 @@
 #pragma once
-
-#include "game.h"
-// #include "main.h"
+#include "main.h"
 #include "player.h"
+
+class ExplosionFactory;
 
 class Bomb
 {
@@ -17,13 +17,14 @@ public:
 	{
 		0.0f,	//右向き
 	};
-	enum STATE_BOMB
+	enum BOMB_TYPE
 	{
-		THROW,
-		EXPLOSION,
+		CONTACT,
+		INSTALLATION,
 	};
-private:
-	
+protected:
+	int m_ID = -1;
+
 	D3DXVECTOR2 m_Pos;
 	D3DXVECTOR2 m_StartPos;
 	D3DXVECTOR2 m_EndPos;
@@ -31,36 +32,49 @@ private:
 	D3DXVECTOR2 m_EndVec;
 	D3DXVECTOR2 m_NextPos;
 
+	BOMB_TYPE m_BombType;	// 爆弾の種類
+
+	int	m_ThrowFrame;	// 爆弾の移動フレーム
+
 	PLAYER* m_pPlayer = nullptr;	// プレイヤーのポインタ
 	ExplosionFactory* m_pExplosionFactory = nullptr;
 
 	float m_CollisionRad = 0.0f;	// 爆弾の当たり判定用の半径
 
-	int	m_ThrowFrame;
 	int m_NowFrame;
-	int m_TextureNo;		// 爆弾が使用するテクスチャの番号
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 爆弾の表示サイズ
 	int m_AnimationPtn = 0;		// 爆弾のアニメーションのパターン番号
 	int m_AnimationCounter = 0;	// 爆弾のアニメーションのカウンター
 	D3DXVECTOR2 m_divid;
 	D3DXVECTOR2 m_pttern;
 	bool m_IsActive = false;
-	STATE_BOMB m_State = STATE_BOMB::THROW;
 public:
-	Bomb(D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
 	// 爆弾の初期化処理
-	void Init();
+	virtual void Init() = 0;
 	// 爆弾の終了処理
-	void Uninit();
+	virtual void Uninit() = 0;
 	// 爆弾の更新処理
-	void Update();
+	virtual void Update() = 0;
 	// 爆弾の描画処理
-	void Draw();
+	virtual void Draw() = 0;
 	~Bomb();
 
+	// Get系関数
+	BOMB_TYPE GetBombType() { return m_BombType; };
+	D3DXVECTOR2 GetPos() { return m_Pos; };
+	D3DXVECTOR2 GetSize() { return m_Size; };
+	int GetID() { return m_ID; };
+	bool GetIsActive() { return m_IsActive; };
+
+	// 放物線に爆弾を投げる関数
 	void Throw();
+	// 円と円の当たり判定
 	bool HitCheckCircle();
+	// 四角と四角の当たり判定
 	bool HitCheckBlock(D3DXVECTOR2 blockPos, D3DXVECTOR2 blockSize);
-	void CollisionBombToBlock();
+	// ブロックとの当たり判定
+	bool CollisionBombToBlock();
+
 };
 

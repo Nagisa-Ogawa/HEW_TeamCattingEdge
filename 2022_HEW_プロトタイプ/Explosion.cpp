@@ -57,7 +57,7 @@ void Explosion::Draw()
 		return;
 	}
 	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_TextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+	DrawSprite(m_TextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_CollisionRad*2, m_CollisionRad * 2,
 		m_AnimeTable[m_AnimationPtn], M_MukiTable[0], m_pttern.x, m_pttern.y);
 }
 

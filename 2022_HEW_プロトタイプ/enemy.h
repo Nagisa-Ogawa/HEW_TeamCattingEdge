@@ -40,6 +40,7 @@ public:
 		m_pttern.x = 1.0f / m_divid.x;
 		m_pttern.y = 1.0f / m_divid.y;
 		m_IsActive = true;
+		m_IsGround = false;
 	};
 	// エネミーの初期化処理
 	virtual void Init() = 0;

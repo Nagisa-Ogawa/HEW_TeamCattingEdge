@@ -2,8 +2,11 @@
 
 #include "main.h"
 #include "renderer.h"
-#include "BombFactory.h"
-#include "ExplosionFactory.h"
+
+class EnemyFactory;
+class BombFactory;
+class ExplosionFactory;
+class ShockWaveFactory;
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -18,5 +21,7 @@ void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
 
+EnemyFactory* GetEnemyFactory();
 BombFactory* GetBombFactory();
 ExplosionFactory* GetExplosionFactory();
+ShockWaveFactory* GetShockWaveFactory();

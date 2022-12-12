@@ -24,6 +24,9 @@
 #include "enemyemitter.h"
 #include "inputx.h"
 #include "EnemyFactory.h"
+#include "BombFactory.h"
+#include "ExplosionFactory.h"
+#include "ShockWaveFactory.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -43,6 +46,7 @@ static int g_TextureCloud = 0;
 static EnemyFactory enemyFactory;
 BombFactory bombFactory;
 ExplosionFactory explosionFactory;
+ShockWaveFactory shockWaveFactory;
 
 //=============================================================================
 // 初期化処理
@@ -72,6 +76,8 @@ void InitGame(void)
 
 	explosionFactory.Init();
 
+	shockWaveFactory.Init();
+
 	//数値表示の初期化
 	InitNumber();
 
@@ -97,6 +103,8 @@ void UninitGame(void)
 
 	//数値表示の終了処理
 	UninitNumber();
+
+	shockWaveFactory.Uninit();
 
 	explosionFactory.Uninit();
 
@@ -138,6 +146,8 @@ void UpdateGame(void)
 
 	explosionFactory.Update();
 
+	shockWaveFactory.Update();
+
 	// ステージの更新処理
 	UpdateBlock();
 
@@ -162,12 +172,14 @@ void DrawGame(void)
 	// ステージの描画処理
 	DrawBlock();
 
-	// 敵の描画処理
-	enemyFactory.Draw();
+	shockWaveFactory.Draw();
 
 	bombFactory.Draw();
 
 	explosionFactory.Draw();
+	// 敵の描画処理
+	enemyFactory.Draw();
+
 
 	// プレイヤーの描画処理
 	DrawPlayer();
@@ -190,6 +202,11 @@ void DrawGame(void)
 	//DrawNumber();
 }
 
+EnemyFactory* GetEnemyFactory()
+{
+	return &enemyFactory;
+}
+
 BombFactory* GetBombFactory()
 {
 	return &bombFactory;
@@ -198,5 +215,10 @@ BombFactory* GetBombFactory()
 ExplosionFactory* GetExplosionFactory()
 {
 	return &explosionFactory;
+}
+
+ShockWaveFactory * GetShockWaveFactory()
+{
+	return  &shockWaveFactory;
 }
 

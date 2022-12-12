@@ -4,6 +4,8 @@
 #include "sprite.h"
 #include "player.h"
 #include "Block.h"
+#include "game.h"
+#include "ExplosionFactory.h"
 
 
 Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID):

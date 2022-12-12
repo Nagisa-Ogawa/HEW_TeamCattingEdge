@@ -8,10 +8,12 @@ class BombFactory
 {
 private:
 	std::list<Bomb*> m_pBombList;
+	int m_nowID = -1;
 public:
 	BombFactory();
 	// “G‚ğì¬
-	void Create(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	void CreateContactBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	void CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
 	void Init();
 	// ”š’eHê‚ÌI—¹ˆ—
 	void Uninit();
@@ -21,4 +23,7 @@ public:
 	void Draw();
 	// ”š’eHê‚Ìƒ|ƒCƒ“ƒ^‚ğ“n‚·
 	~BombFactory();
+
+	// w’è‚³‚ê‚½”š’e‚ğƒŠƒXƒg‚©‚çíœ‚·‚é
+	void DeleteBomb();
 };

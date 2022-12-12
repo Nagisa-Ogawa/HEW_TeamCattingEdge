@@ -16,6 +16,7 @@
 #include "camera.h"
 #include "inputx.h"
 #include "Block.h"
+#include "game.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -109,10 +110,13 @@ HRESULT InitPlayer(void)
 	g_Player.move = false;
 
 	//戦闘関連情報の初期化
-	g_Player.mutekiflag = true;
+	g_Player.mutekiflag = false;
 	g_Player.mutekitime = 0;
 	g_Player.attackflag = 0;
 	g_Player.hp = 10;
+
+	//その他の初期化
+	g_Player.enemyfactory = GetEnemyFactory();
 
 	SetNumber(32768); //スコアの描画
 
