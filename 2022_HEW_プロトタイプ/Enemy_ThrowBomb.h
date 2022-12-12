@@ -34,6 +34,8 @@ private:
 	float m_ActiveRange = 0.0f;	// 爆弾を投げ始める範囲
 	int m_WaitTime = 0;	// 爆弾を投げた後の待機時間
 	int m_CooldownTime = 0;	// 爆弾を投げ終わった後のクールタイム時間
+	D3DXVECTOR2 m_ThrowPower;	// 距離1につき投げるパワー
+
 	// 待機フレーム
 	int m_WaitFrame = 0;
 public:

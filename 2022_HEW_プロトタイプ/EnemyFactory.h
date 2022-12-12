@@ -16,7 +16,6 @@ class EnemyFactory
 {
 private:
 	std::list<Enemy*> m_pEnemyList;
-	Enemy* m_pBoss = nullptr;
 	PLAYER* m_pPlayer = nullptr;
 	int m_nowID = -1;
 public:
@@ -33,6 +32,7 @@ public:
 	void Create_HitDrop(D3DXVECTOR2 pos);
 	void Create_SelfDestruction(D3DXVECTOR2 pos);
 	void Create_ThrowBomb(D3DXVECTOR2 pos);
+	void Create_Boss(D3DXVECTOR2 pos);
 
 	// マップ情報からエネミーを作成
 	void SetEnemy();
@@ -41,8 +41,9 @@ public:
 	// プレイヤーとエネミーの当たり判定(プレイヤーへのダメージ)
 	void CollisionPlayerToEnemy();
 	// プレイヤーとボスの当たり判定(プレイヤーへのダメージ)
-	void CollisionPlayerToBoss();
+	// void CollisionPlayerToBoss();
 	// プレイヤー攻撃とエネミーの当たり判定(エネミーへのダメージ）
+	void CollisoinAttacktoEnemy(D3DXVECTOR2 AttackPos);
 
 	// エネミーを削除する
 	void DeleteEnemy();

@@ -151,8 +151,6 @@ void Enemy_ThrowBomb::Throw()
 		startVec.x = 5.0f;
 		endVec.x = 5.0f;
 	}
-	//D3DXVec2Normalize(&startVec, &startVec);
-	//D3DXVec2Normalize(&endVec, &endVec);
 	// ”š’e‚ð¶¬
 	m_pBombFactory->CreateContactBomb(m_Pos,pPlayer->pos,startVec,endVec);
 	m_State = STATE_ENEMY_THROWBOMB::WAIT;

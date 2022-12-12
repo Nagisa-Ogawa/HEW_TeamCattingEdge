@@ -85,7 +85,7 @@ bool Bomb::CollisionBombToBlock()
 	{
 		for (int x = 0; x < STAGE_WIDTH; x++)
 		{
-			if (blocks[y][x] == 0)
+			if (blocks[y][x] != 1)
 			{
 				continue;
 			}

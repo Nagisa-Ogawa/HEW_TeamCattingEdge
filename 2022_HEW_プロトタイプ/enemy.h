@@ -50,7 +50,12 @@ public:
 	virtual void Update() = 0;
 	// エネミーの描画処理
 	virtual void Draw() = 0;
-	int Dameage(int damage) { m_HP -= damage; };
+
+	// エネミーの戦闘系関数
+	// プレイヤーの攻撃との当たり判定関数
+	void HitCheckPlayerAttack(D3DXVECTOR2 AttackPos);
+	// ダメージ関数
+	void Damege(int damage);
 	// Get系関数
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };

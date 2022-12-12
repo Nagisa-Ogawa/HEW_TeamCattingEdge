@@ -21,7 +21,6 @@
 #include "collision.h"
 #include "number.h"
 #include "camera.h"
-#include "enemyemitter.h"
 #include "inputx.h"
 #include "EnemyFactory.h"
 #include "BombFactory.h"
@@ -68,14 +67,16 @@ void InitGame(void)
 	// 弾の初期化
 	InitBullet();
 
-	// 敵の初期化
-	//InitEnemy();
+	// エネミー工場の初期化
 	enemyFactory.Init();
 
+	// 爆弾工場の初期化
 	bombFactory.Init();
 
+	// 爆発工場の初期化
 	explosionFactory.Init();
 
+	// 衝撃波工場の初期化
 	shockWaveFactory.Init();
 
 	//数値表示の初期化
@@ -83,9 +84,6 @@ void InitGame(void)
 
 	//カメラの初期化
 	InitCamera();
-
-	//敵の発生制御
-	//InitEnemyEmitter();
 
 	//ゲーム用BGMの読み込み
 	g_BGMNo = LoadSound((char*)"data/BGM/sample001.wav");
@@ -96,21 +94,22 @@ void InitGame(void)
 
 void UninitGame(void)
 {
-	//UninitEnemyEmitter();
-
 	//カメラの終了処理
 	UninitCamera();
 
 	//数値表示の終了処理
 	UninitNumber();
 
+	// 衝撃波工場の終了処理
 	shockWaveFactory.Uninit();
 
+	// 爆発工場の終了処理
 	explosionFactory.Uninit();
 
+	// 爆発工場の終了処理
 	bombFactory.Uninit();
-	//敵の終了処理
-	//UninitEnemy();
+
+	//エネミー工場の終了処理
 	enemyFactory.Uninit();
 
 	// 弾の終了処理
@@ -131,21 +130,20 @@ void UninitGame(void)
 
 void UpdateGame(void)
 {
-	//敵の発生制御
-	//UpdateEnemyEmitter();
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
 
-
-
 	// 敵の更新処理
 	enemyFactory.Update();
 
+	// 爆弾工場の更新処理
 	bombFactory.Update();
 
+	// 爆弾工場の更新処理
 	explosionFactory.Update();
 
+	// 衝撃波工場の更新処理
 	shockWaveFactory.Update();
 
 	// ステージの更新処理
@@ -160,8 +158,6 @@ void UpdateGame(void)
 	//数値表示の更新処理
 	UpdateNumber();
 
-	//全てのアップデートが終わったら当たり判定を行う
-	// Collision_Bullet_Enemy();
 }
 
 void DrawGame(void)
@@ -172,14 +168,17 @@ void DrawGame(void)
 	// ステージの描画処理
 	DrawBlock();
 
+	// 衝撃波工場の描画処理
 	shockWaveFactory.Draw();
 
+	// 爆弾工場の描画処理
 	bombFactory.Draw();
 
+	// 爆発工場の描画処理
 	explosionFactory.Draw();
+
 	// 敵の描画処理
 	enemyFactory.Draw();
-
 
 	// プレイヤーの描画処理
 	DrawPlayer();
@@ -192,8 +191,6 @@ void DrawGame(void)
 
 	// 弾の描画処理
 	DrawBullet();
-
-	//DrawEnemyEmitter();
 
 	//ここからUIの描画
 	//ゲーム関係の描画が全て終わってからUIの描画をする

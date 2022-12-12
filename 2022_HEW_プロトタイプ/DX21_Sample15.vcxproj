@@ -139,15 +139,10 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
-    <ClInclude Include="enemyemitter.h" />
     <ClInclude Include="EnemyFactory.h" />
-    <ClInclude Include="enemy_bass.h" />
-    <ClInclude Include="enemy_cloud.h" />
     <ClInclude Include="Enemy_HitDrop.h" />
-    <ClInclude Include="enemy_prototype.h" />
     <ClInclude Include="Enemy_SelfDestruct.h" />
     <ClInclude Include="Enemy_ThrowBomb.h" />
-    <ClInclude Include="enemy_turret.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionFactory.h" />
     <ClInclude Include="fade.h" />
@@ -183,9 +178,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="enemy.cpp" />
-    <ClCompile Include="enemyemitter.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
-    <ClCompile Include="enemy_cloud.cpp" />
     <ClCompile Include="Enemy_HitDrop.cpp" />
     <ClCompile Include="Enemy_SelfDestruct.cpp" />
     <ClCompile Include="Enemy_ThrowBomb.cpp" />

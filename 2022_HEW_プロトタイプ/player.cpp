@@ -17,6 +17,7 @@
 #include "inputx.h"
 #include "Block.h"
 #include "game.h"
+#include "EnemyFactory.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -384,6 +385,7 @@ void PlayerStatusNormal(void)
 	//攻撃処理移行フラグ
 	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_RIGHT_SHOULDER))
 	{
+		g_Player.enemyfactory->CollisoinAttacktoEnemy(D3DXVECTOR2(g_Player.pos.x + 120.0f, g_Player.pos.y));
 	}
 
 	//ワープリキャスト処理

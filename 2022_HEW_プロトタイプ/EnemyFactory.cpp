@@ -36,6 +36,13 @@ void EnemyFactory::Create_ThrowBomb(D3DXVECTOR2 pos)
 	m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(pos, m_nowID));
 }
 
+void EnemyFactory::Create_Boss(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Boss_Tengu(pos, m_nowID));
+}
+
 void EnemyFactory::Init()
 {
 	// マップ情報からエネミーを生成
@@ -43,10 +50,6 @@ void EnemyFactory::Init()
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
 		pEnemy->Init();
-	}
-	if (m_pBoss != nullptr)
-	{
-		m_pBoss->Init();
 	}
 }
 
@@ -56,15 +59,6 @@ void EnemyFactory::Uninit()
 	{
 		pEnemy->Uninit();
 	}
-	if (m_pBoss != nullptr)
-	{
-		delete m_pBoss;
-		m_pBoss = nullptr;
-	}
-	if (m_pBoss != nullptr)
-	{
-		m_pBoss->Uninit();
-	}
 }
 
 void EnemyFactory::Update()
@@ -73,14 +67,10 @@ void EnemyFactory::Update()
 	{
 		pEnemy->Update();
 	}
-	if (m_pBoss != nullptr)
-	{
-		m_pBoss->Update();
-	}
 	// プレイヤーとエネミーの当たり判定
 	CollisionPlayerToEnemy();
 	// プレイヤーとボスの当たり判定
-	CollisionPlayerToBoss();
+	// CollisionPlayerToBoss();
 	// 表示していない敵は削除
 	DeleteEnemy();
 }
@@ -90,10 +80,6 @@ void EnemyFactory::Draw()
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
 		pEnemy->Draw();
-	}
-	if (m_pBoss != nullptr)
-	{
-		m_pBoss->Draw();
 	}
 }
 
@@ -111,22 +97,22 @@ void EnemyFactory::SetEnemy()
 			}
 			D3DXVECTOR2 pos = D3DXVECTOR2(BLOCK_SIZE*x + BLOCK_SIZE / 2, BLOCK_SIZE*y + BLOCK_SIZE / 2);
 			pos.y -= 100.0f;
-			if (pMaps[y][x] == 2)
+			if (pMaps[y][x] == 100)
 			{
 				Create_HitDrop(pos);
 			}
-			if (pMaps[y][x] == 3)
+			if (pMaps[y][x] == 101)
 			{
 				Create_SelfDestruction(pos);
 			}
-			if (pMaps[y][x] == 4)
+			if (pMaps[y][x] == 102)
 			{
 				Create_ThrowBomb(pos);
 			}
-			if (pMaps[y][x] == 5)
+			if (pMaps[y][x] == 200)
 			{
 				// ボス作成
-				m_pBoss = new Boss_Tengu(pos, 0);
+				Create_Boss(pos);
 			}
 		}
 	}
@@ -157,26 +143,13 @@ void EnemyFactory::CollisionPlayerToEnemy()
 	return ;
 }
 
-void EnemyFactory::CollisionPlayerToBoss()
+
+void EnemyFactory::CollisoinAttacktoEnemy(D3DXVECTOR2 AttackPos)
 {
-	// プレイヤーが無敵ならスキップ
-	if (m_pPlayer->mutekiflag)
+	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		return;
+		pEnemy->HitCheckPlayerAttack(AttackPos);
 	}
-	// 画面外ならスキップ
-	if (!(m_pBoss->GetIsActive()))
-	{
-		return;
-	}
-	// 敵と当たったなら
-	if (HitCheckBox(m_pBoss->GetPos(), m_pBoss->GetSize(),
-		m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size)))
-	{
-		// プレイヤーのHPを減らす
-		PlayerDamage(1);
-	}
-	return;
 }
 
 void EnemyFactory::DeleteEnemy()
