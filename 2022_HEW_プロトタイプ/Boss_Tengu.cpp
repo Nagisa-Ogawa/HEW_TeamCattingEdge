@@ -351,7 +351,7 @@ void Boss_Tengu::Throw()
 	// 3‚Â”š’e‚ğ¶¬
 	for (int i = 0; i < 3; i++)
 	{
-		m_pBombFactory->CreateInstallationBomb(m_Pos, D3DXVECTOR2(m_Pos.x+(i*distance)+offset , pPlayer->pos.y), startVec, endVec);
+		m_pBombFactory->CreateInstallationBomb(m_Pos, D3DXVECTOR2(m_Pos.x+(i*distance)+offset , pPlayer->pos.y));
 	}
 	m_State = Boss_Tengu::WAIT;
 }

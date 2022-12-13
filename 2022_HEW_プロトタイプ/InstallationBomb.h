@@ -23,7 +23,7 @@ private:
 
 	STATE_INSTALLATIONBOMB m_State = STATE_INSTALLATIONBOMB::THROW;
 public:
-	InstallationBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	InstallationBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos);
 	// ”š’e‚Ì‰Šú‰»ˆ—
 	void Init() override;
 	// ”š’e‚ÌI—¹ˆ—

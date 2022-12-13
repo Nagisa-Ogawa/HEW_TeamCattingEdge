@@ -12,8 +12,8 @@ private:
 public:
 	BombFactory();
 	// “G‚ğì¬
-	void CreateContactBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
-	void CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	void CreateContactBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos);
+	void CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos);
 	void Init();
 	// ”š’eHê‚ÌI—¹ˆ—
 	void Uninit();

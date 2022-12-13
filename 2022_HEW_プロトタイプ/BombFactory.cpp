@@ -10,16 +10,16 @@ BombFactory::BombFactory()
 {
 }
 
-void BombFactory::CreateContactBomb(D3DXVECTOR2 createPos,D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec)
+void BombFactory::CreateContactBomb(D3DXVECTOR2 createPos,D3DXVECTOR2 endPos)
 {
 	m_nowID++;
-	m_pBombList.push_back(new ContactBomb(m_nowID, createPos,endPos,startVec,endVec));
+	m_pBombList.push_back(new ContactBomb(m_nowID, createPos,endPos));
 }
 
-void BombFactory::CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec)
+void BombFactory::CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos)
 {
 	m_nowID++;
-	m_pBombList.push_back(new InstallationBomb(m_nowID, createPos, endPos, startVec, endVec));
+	m_pBombList.push_back(new InstallationBomb(m_nowID, createPos, endPos));
 }
 
 void BombFactory::Init()

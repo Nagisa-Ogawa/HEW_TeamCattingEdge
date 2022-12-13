@@ -17,7 +17,7 @@ private:
 
 	STATE_CONTACTBOMB m_State = STATE_CONTACTBOMB::THROW;
 public:
-	ContactBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	ContactBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos);
 	// ”š’e‚Ì‰Šú‰»ˆ—
 	void Init() override;
 	// ”š’e‚ÌI—¹ˆ—

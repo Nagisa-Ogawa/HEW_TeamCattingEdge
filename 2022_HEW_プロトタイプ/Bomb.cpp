@@ -6,8 +6,8 @@
 #include "Block.h"
 
 
-Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec)
-		: m_ID(ID),m_Pos(pos), m_StartPos(pos), m_EndPos(endPos), m_StartVec(startVec), m_EndVec(endVec)
+Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos)
+		: m_ID(ID),m_Pos(pos), m_StartPos(pos), m_EndPos(endPos)
 {
 	m_divid = D3DXVECTOR2(2.0f, 1.0f);
 	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
@@ -16,6 +16,36 @@ Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3D
 	m_pPlayer = GetPlayer();
 	m_CollisionRad = m_Size.x / 2.0f;
 	m_pExplosionFactory = GetExplosionFactory();
+
+	// 開始点と終了点からベクトルを作成
+	D3DXVECTOR2 startVec = D3DXVECTOR2(0.0f, -500.0f);
+	D3DXVECTOR2 endVec = D3DXVECTOR2( 0.0f,  500.0f);
+	D3DXVECTOR2 pVec = m_EndPos - m_StartPos;
+	if (pVec.x < 0)
+	{
+		startVec.x = -5.0f;
+		endVec.x =   -5.0f;
+	}
+	else
+	{
+		startVec.x = 5.0f;
+		endVec.x = 5.0f;
+	}
+	m_StartVec = startVec;
+	m_EndVec = endVec;
+
+	m_ThrowPower = D3DXVECTOR2(0.1f, -500.0f);
+	m_ThrowFrame = 70;
+	//D3DXVECTOR2 pVec = m_EndPos - m_StartPos;
+	//float distance = D3DXVec2Length(&pVec);
+	//m_ThrowFrame = distance/5.0f;
+	//m_StartVec = D3DXVECTOR2(distance*m_ThrowPower.x, m_ThrowPower.y);
+	//m_EndVec = D3DXVECTOR2(distance*m_ThrowPower.x, -1.0f*m_ThrowPower.y);
+	//if (pVec.x < 0)
+	//{
+	//	m_StartVec.x *= -1.0f;
+	//	m_EndVec.x *= -1.0f;
+	//}
 }
 
 Bomb::~Bomb()

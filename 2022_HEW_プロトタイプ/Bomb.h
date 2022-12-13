@@ -32,6 +32,8 @@ protected:
 	D3DXVECTOR2 m_EndVec;
 	D3DXVECTOR2 m_NextPos;
 
+	D3DXVECTOR2 m_ThrowPower = D3DXVECTOR2(0.0f, 0.0f);
+
 	BOMB_TYPE m_BombType;	// ”š’e‚Ìí—Ş
 
 	int	m_ThrowFrame;	// ”š’e‚ÌˆÚ“®ƒtƒŒ[ƒ€
@@ -49,7 +51,7 @@ protected:
 	D3DXVECTOR2 m_pttern;
 	bool m_IsActive = false;
 public:
-	Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec);
+	Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos);
 	// ”š’e‚Ì‰Šú‰»ˆ—
 	virtual void Init() = 0;
 	// ”š’e‚ÌI—¹ˆ—

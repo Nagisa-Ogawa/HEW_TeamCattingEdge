@@ -10,9 +10,8 @@
 #include "ShockWaveFactory.h"
 #include "BombFactory.h"
 
-InstallationBomb::InstallationBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec) : Bomb(ID,pos, endPos, startVec, endVec)
+InstallationBomb::InstallationBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos) : Bomb(ID,pos, endPos)
 {
-	m_ThrowFrame = 70;
 	m_NowFrame = 0;
 	m_Gravity = 4.0f;
 	// 敵のテクスチャを読み込み

@@ -138,21 +138,21 @@ void Enemy_ThrowBomb::Throw()
 	// 爆弾を投げる場所を決定
 	PLAYER* pPlayer = GetPlayer();
 	// 始点と終点と開始ベクトルと終了ベクトルを決定
-	D3DXVECTOR2 startVec = D3DXVECTOR2(0.0f, -500.0f);
-	D3DXVECTOR2 endVec = D3DXVECTOR2( 0.0f,  500.0f);
-	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
-	if (pVec.x < 0)
-	{
-		startVec.x = -5.0f;
-		endVec.x =   -5.0f;
-	}
-	else
-	{
-		startVec.x = 5.0f;
-		endVec.x = 5.0f;
-	}
+	//D3DXVECTOR2 startVec = D3DXVECTOR2(0.0f, -500.0f);
+	//D3DXVECTOR2 endVec = D3DXVECTOR2( 0.0f,  500.0f);
+	//D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
+	//if (pVec.x < 0)
+	//{
+	//	startVec.x = -5.0f;
+	//	endVec.x =   -5.0f;
+	//}
+	//else
+	//{
+	//	startVec.x = 5.0f;
+	//	endVec.x = 5.0f;
+	//}
 	// 爆弾を生成
-	m_pBombFactory->CreateContactBomb(m_Pos,pPlayer->pos,startVec,endVec);
+	m_pBombFactory->CreateContactBomb(m_Pos,pPlayer->pos);
 	m_State = STATE_ENEMY_THROWBOMB::WAIT;
 }
 

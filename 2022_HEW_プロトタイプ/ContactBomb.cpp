@@ -6,9 +6,8 @@
 #include "ExplosionFactory.h"
 #include "texture.h"
 
-ContactBomb::ContactBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos, D3DXVECTOR2 startVec, D3DXVECTOR2 endVec) : Bomb(ID,pos,endPos,startVec,endVec)
+ContactBomb::ContactBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos) : Bomb(ID,pos,endPos)
 {
-	m_ThrowFrame = 70;
 	m_NowFrame = 0;
 	// 敵のテクスチャを読み込み
 	m_TextureNo = LoadTexture((char*)"data/TEXTURE/bomb.png");
