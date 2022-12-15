@@ -10,6 +10,7 @@
 #define TENGU_WAITFRAME_SETUP (120)
 #define TENGU_WAITFRAME_AFTERDROP (20)
 #define TENGU_WAITFRAME_WAIT (60)
+#define TENGU_WAITFRAME_AFTERTHROW (60)
 
 Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID):Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,4.0f))
 {
@@ -122,6 +123,19 @@ void Boss_Tengu::Update()
 	case Boss_Tengu::THROW:
 		Throw();
 		m_ActiveRad_Jump = 600.0f;
+		break;
+	case Boss_Tengu::AFTERTHROW:
+		if (m_WaitFrame >= TENGU_WAITFRAME_AFTERTHROW)
+		{
+			m_Muki -= 2;
+			m_AnimationPtn = 0;
+			m_State = Boss_Tengu::WAIT;
+			m_WaitFrame = 0;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	case Boss_Tengu::WAIT:
 		if (m_WaitFrame >= TENGU_WAITFRAME_WAIT)
@@ -353,13 +367,24 @@ void Boss_Tengu::Throw()
 	{
 		m_pBombFactory->CreateInstallationBomb(m_Pos, D3DXVECTOR2(m_Pos.x+(i*distance)+offset , pPlayer->pos.y));
 	}
-	m_State = Boss_Tengu::WAIT;
+	// 向きによってアニメーションを変える
+	if (m_Muki == 0) 
+	{
+		m_Muki = 2;
+	}
+	else 
+	{
+		m_Muki = 3;
+	}
+	m_AnimationPtn = 1;
+	m_State = Boss_Tengu::AFTERTHROW;
 }
 
 void Boss_Tengu::LookPlayer()
 {
 	// 向きを変えてはいけない状態なら変えない
-	if (m_State== Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID || m_State == Boss_Tengu::DROP||m_State==Boss_Tengu::SETUP)
+	if (m_State== Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID || m_State == Boss_Tengu::DROP||
+			m_State==Boss_Tengu::SETUP||m_State==Boss_Tengu::THROW||m_State==Boss_Tengu::AFTERTHROW)
 	{
 		return;
 	}

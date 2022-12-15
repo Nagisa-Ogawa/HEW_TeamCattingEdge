@@ -15,6 +15,7 @@ public:
 		DROP,
 		AFTERDROP,
 		THROW,
+		AFTERTHROW,
 		WAIT,
 	};
 private:

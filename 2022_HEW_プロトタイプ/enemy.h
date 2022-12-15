@@ -20,7 +20,7 @@ protected:
 	D3DXVECTOR2 m_OldPos = D3DXVECTOR2(0.0f, 0.0);	// 1フレーム前の位置座標
 	D3DXVECTOR2 m_Vel = D3DXVECTOR2(0.0f, 0.0f);	// 速度ベクトル
 	D3DXVECTOR2 m_Dir = D3DXVECTOR2(0.0f, 0.0f);	// 移動方向
-	bool m_Muki = true;			// 敵が向いている方向(右ならtrue,左ならfalse)
+	int m_Muki = 0;			// 敵が向いている方向(右ならtrue,左ならfalse)
 	float m_Speed = 0.0f;		// 移動速度
 	//bool m_IsUse = false;		// 使用しているかのフラグ
 	int m_EnemyTextureNo;		// 敵が使用するテクスチャの番号
