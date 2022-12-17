@@ -26,6 +26,7 @@
 #include "BombFactory.h"
 #include "ExplosionFactory.h"
 #include "ShockWaveFactory.h"
+#include "UI.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -43,9 +44,10 @@ static int g_BGMNo;
 static int g_TextureCloud = 0;
 
 static EnemyFactory enemyFactory;
-BombFactory bombFactory;
-ExplosionFactory explosionFactory;
-ShockWaveFactory shockWaveFactory;
+static BombFactory bombFactory;
+static ExplosionFactory explosionFactory;
+static ShockWaveFactory shockWaveFactory;
+static UI ui(GetPlayer());
 
 //=============================================================================
 // 初期化処理
@@ -157,6 +159,8 @@ void UpdateGame(void)
 
 	//数値表示の更新処理
 	UpdateNumber();
+
+	ui.UpdateUI();
 
 }
 

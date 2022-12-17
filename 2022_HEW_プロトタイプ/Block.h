@@ -7,9 +7,7 @@
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
-#define BLOCK_SIZE (60)
-#define STAGE_WIDTH (74 + 2 + 2)
-#define STAGE_HEIGHT (18)
+#define BLOCK_SIZE (60.0f)
 
 #define HIT_VERTICAL	0x00000001
 #define HIT_HORIZONTAL	0x00000002

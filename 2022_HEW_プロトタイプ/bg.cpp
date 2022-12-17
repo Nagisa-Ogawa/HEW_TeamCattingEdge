@@ -117,7 +117,6 @@ HRESULT InitBG(void)
 
 	//ƒf[ƒ^‚Ì‰Šú‰»
 
-
 	return S_OK;
 }
 

@@ -111,9 +111,9 @@ bool Bomb::HitCheckBlock(D3DXVECTOR2 blockPos, D3DXVECTOR2 blockSize)
 bool Bomb::CollisionBombToBlock()
 {
 	std::vector<std::vector<int>> blocks = GetBlocks();
-	for (int y = 0; y < STAGE_HEIGHT; y++)
+	for (int y = 0; y < blocks.size(); y++)
 	{
-		for (int x = 0; x < STAGE_WIDTH; x++)
+		for (int x = 0; x < blocks[0].size(); x++)
 		{
 			if (blocks[y][x] != 1)
 			{

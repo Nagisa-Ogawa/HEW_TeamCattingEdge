@@ -20,14 +20,14 @@ protected:
 	D3DXVECTOR2 m_OldPos = D3DXVECTOR2(0.0f, 0.0);	// 1フレーム前の位置座標
 	D3DXVECTOR2 m_Vel = D3DXVECTOR2(0.0f, 0.0f);	// 速度ベクトル
 	D3DXVECTOR2 m_Dir = D3DXVECTOR2(0.0f, 0.0f);	// 移動方向
-	int m_Muki = 0;			// 敵が向いている方向(右ならtrue,左ならfalse)
+	bool m_Muki = true;			// 敵が向いている方向(右ならtrue,左ならfalse)
 	float m_Speed = 0.0f;		// 移動速度
 	//bool m_IsUse = false;		// 使用しているかのフラグ
 	int m_EnemyTextureNo;		// 敵が使用するテクスチャの番号
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 敵の表示サイズ
 	int m_AnimationPtn = 0;		// 敵のアニメーションのパターン番号
 	int m_AnimationCounter = 0;	// 敵のアニメーションのカウンター
-	float m_Gravity = 0.98;		// 重力
+	float m_Gravity = 0.98f;	// 重力
 	bool m_IsGround = false;	// 敵の設置判定フラグ
 	int m_HP;
 	D3DXVECTOR2 m_divid;

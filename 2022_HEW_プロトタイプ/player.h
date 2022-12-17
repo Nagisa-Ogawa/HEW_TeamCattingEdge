@@ -59,6 +59,7 @@ struct PLAYER
 	bool		mutekiflag;		//無敵フラグ
 	int			mutekitime;		//無敵時間
 	int			attackflag;		//アタックフラグ
+	int			attackRecast;	//アタックリキャスト
 	int			hp;				//HP
 
 	//その他

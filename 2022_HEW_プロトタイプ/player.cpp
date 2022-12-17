@@ -30,14 +30,13 @@
 #define PATTERN_WIDTH (1.0f / DIVIDE_X)
 #define PATTERN_HEIGHT (1.0f / DIVIDE_Y)
 
-#define PLAYER_DISP_X (SCREEN_WIDTH/2)	//プレイヤーの表示座標X
-#define PLAYER_DISP_Y (SCREEN_HEIGHT/2)	//プレイヤーの表示座標Y
-
 #define PLAYER_SPEED	4.0f //プレーヤーのスピード
 
 #define TEST_CON 0
 
 #define MONOSIZE 64.0f
+
+#define WARPRECAST 7000
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -56,7 +55,7 @@ D3DXVECTOR2 GetRightStick(int padNo);
 static PLAYER g_Player;
 
 static int g_TextureNo = 0;//プレイヤー用テクスチャの識別子
-static int g_TextureAttack;
+static int g_TextureAttack = 0;
 
 static float g_AnimeTable[4] =
 {
@@ -97,8 +96,8 @@ HRESULT InitPlayer(void)
 	g_Player.warpStartRecast = 0;
 	g_Player.waitafterwarp = 0;
 	g_Player.warppower = 420.0f;
-	g_Player.gravity = 0.6f;
 	g_Player.warpFlag = 3;//int
+	g_Player.gravity = 0.6f;
 
 	//落下処理関連の初期化
 	g_Player.dorpspeed = D3DXVECTOR2(0.0f, 0.0f);
@@ -114,6 +113,7 @@ HRESULT InitPlayer(void)
 	g_Player.mutekiflag = false;
 	g_Player.mutekitime = 0;
 	g_Player.attackflag = 0;
+	g_Player.attackRecast = 0;
 	g_Player.hp = 10;
 
 	//その他の初期化
@@ -242,9 +242,21 @@ void UpdatePlayer(void)
 		SceneTransition(SCENE_OVER_GAME);
 	}
 
+	//攻撃リキャスト処理
+	if (g_Player.attackflag > 0)
+	{
+		g_Player.attackRecast++;
+
+		if (g_Player.attackRecast >= 60)
+		{
+			g_Player.attackflag = 0;
+			g_Player.attackRecast = 0;
+		}
+	}
+
 	//カメラ座標の更新
 	CAMERA_2D* pCamera = GetCamera();
-	pCamera->pos.x = g_Player.pos.x - PLAYER_DISP_X;
+	pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH / 2;
 	//pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y - 60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
@@ -269,7 +281,7 @@ void DrawPlayer(void)
 	case normal:
 		if (g_Player.mutekiflag == true)
 		{
-			float color = g_Player.mutekitime % 30;
+			float color = (float)(g_Player.mutekitime % 30);
 
 			DrawSpriteColor(g_TextureNo,
 				basePos.x + g_Player.pos.x,
@@ -339,7 +351,7 @@ void DrawPlayer(void)
 		if (g_Player.attackflag == 2)
 		{
 			DrawSpriteColorRotate(g_TextureAttack,
-				basePos.x + g_Player.pos.x + 32.0f,
+				basePos.x + g_Player.pos.x + 120.0f,
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
 				0.6f, 0.0f, -0.2f, 1.0f,
@@ -349,15 +361,13 @@ void DrawPlayer(void)
 		else
 		{
 			DrawSpriteColorRotate(g_TextureAttack,
-				basePos.x + g_Player.pos.x - 32.0f,
+				basePos.x + g_Player.pos.x - 120.0f,
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
 				0.4f, 0.0f, 0.2f, 1.0f,
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
 				0.0f);
 		}
-
-		g_Player.attackflag = 0;
 	}
 }
 
@@ -383,9 +393,20 @@ void PlayerStatusNormal(void)
 	}
 
 	//攻撃処理移行フラグ
-	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_RIGHT_SHOULDER))
+	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_RIGHT_SHOULDER) && g_Player.attackflag == 0)
 	{
-		g_Player.enemyfactory->CollisoinAttacktoEnemy(D3DXVECTOR2(g_Player.pos.x + 120.0f, g_Player.pos.y));
+		if (0.0f <= GetThumbLeftX(TEST_CON))
+		{
+			g_Player.enemyfactory->CollisoinAttacktoEnemy(D3DXVECTOR2(g_Player.pos.x + 120.0f, g_Player.pos.y));
+
+			g_Player.attackflag = 2;
+		}
+		else
+		{
+			g_Player.enemyfactory->CollisoinAttacktoEnemy(D3DXVECTOR2(g_Player.pos.x - 120.0f, g_Player.pos.y));
+
+			g_Player.attackflag = 1;
+		}
 	}
 
 	//ワープリキャスト処理
@@ -393,7 +414,7 @@ void PlayerStatusNormal(void)
 	{
 		g_Player.warpRecast = timeGetTime();
 
-		if (g_Player.warpRecast - g_Player.warpStartRecast >= 1000)//10.000
+		if (g_Player.warpRecast - g_Player.warpStartRecast >= WARPRECAST)//10.000
 		{
 			g_Player.warpFlag++;
 

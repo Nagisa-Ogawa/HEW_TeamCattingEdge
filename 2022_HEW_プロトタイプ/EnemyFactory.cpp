@@ -87,9 +87,9 @@ void EnemyFactory::Draw()
 void EnemyFactory::SetEnemy()
 {
 	auto pMaps = GetBlocks();
-	for (int y = 0; y < STAGE_HEIGHT; y++)
+	for (int y = 0; y < pMaps.size(); y++)
 	{
-		for (int x = 0; x < STAGE_WIDTH; x++)
+		for (int x = 0; x < pMaps[0].size(); x++)
 		{
 			if (pMaps[y][x] == 0 || pMaps[y][x] == 1)
 			{
