@@ -34,6 +34,7 @@ public:
 		DROP,
 		AFTERDROP,
 		WAIT,
+		DEAD,
 	};
 private:
 	// アニメーションのUV値の指定に使う配列
@@ -44,10 +45,12 @@ private:
 		0.50f,
 		0.75
 	};
-	const float M_MukiTable[2] =
+	const float M_MukiTable[4] =
 	{
-		0.0f,	//右向き
-		0.5f,	//左向き
+		0.00f,	//左向き
+		0.25f,	//右向き
+		0.50f,	//死亡時左向き
+		0.75f,	//死亡時右向き
 	};
 
 	// ジャンプ系変数

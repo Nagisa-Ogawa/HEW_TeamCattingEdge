@@ -29,6 +29,9 @@
 
 void Enemy::HitCheckPlayerAttack(D3DXVECTOR2 AttackPos)
 {
+	if (m_IsDead) {
+		return;
+	}
 	if (HitCheckBox(AttackPos,120.0f,120.0f,m_Pos,m_Size.x,m_Size.y))
 	{
 		Damege(1);
@@ -41,6 +44,7 @@ void Enemy::Damege(int damage)
 
 	if (m_HP <= 0)
 	{
-		m_IsActive = false;
+		m_IsDie = true;
+		m_IsDead = true;
 	}
 }

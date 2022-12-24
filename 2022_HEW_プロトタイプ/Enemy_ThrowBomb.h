@@ -14,17 +14,21 @@ public:
 		THROW,
 		WAIT,
 		COOLDOWN,
+		DEAD,
 	};
 private:
-	const float m_AnimeTable[2] =
+	const float m_AnimeTable[3] =
 	{
 		0.0f,
-		0.5f,
+		0.333f,
+		0.666f,
 	};
-	const float M_MukiTable[2] =
+	const float M_MukiTable[4] =
 	{
-		0.0f,	//‰EŒü‚«
-		0.5f,	//¶Œü‚«
+		0.00f,	//¶Œü‚«
+		0.25f,	//‰EŒü‚«
+		0.50f,	//€–S¶Œü‚«
+		0.75f,	//€–S‰EŒü‚«
 	};
 
 	BombFactory* m_pBombFactory = nullptr;

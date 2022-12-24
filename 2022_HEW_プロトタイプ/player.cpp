@@ -36,7 +36,7 @@
 
 #define MONOSIZE 64.0f
 
-#define WARPRECAST 7000
+#define WARPRECAST 5000
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -256,8 +256,8 @@ void UpdatePlayer(void)
 
 	//カメラ座標の更新
 	CAMERA_2D* pCamera = GetCamera();
-	pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH / 2;
-	//pCamera->pos.y = g_Player.pos.y - PLAYER_DISP_Y - 60.0f;
+	pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH  / 2;
+	//pCamera->pos.y = g_Player.pos.y - SCREEN_HEIGHT / 2 - 60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
 	if (pCamera->pos.y < 0)
@@ -482,6 +482,11 @@ void AdjustPlayer(D3DXVECTOR2 pos)
 PLAYER* GetPlayer(void)
 {
 	return &g_Player;
+}
+
+D3DXVECTOR2 GetPlayerPos(void)
+{
+	return g_Player.pos;
 }
 
 D3DXVECTOR2 GetLeftStick(int padNo)

@@ -6,12 +6,14 @@
 #include "player.h"
 
 Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID) :
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 2.0f))
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 4.0f))
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_DropPower = ENEMY_DROPPOWER;
 	m_HP = 1;
+	m_DeadAnimeNum = 3;
+	m_DeadAnimeFrame = 100;
 }
 
 void Enemy_HitDrop::Init()
@@ -29,6 +31,15 @@ void Enemy_HitDrop::Update()
 	m_OldPos = m_Pos;
 	DWORD result = 0;
 	PLAYER* pPlayer = GetPlayer();
+
+	// 死亡していたなら死亡状態へ
+	if (m_IsDie) {
+		m_IsDie = false;
+		m_AnimationPtn = 0;
+		m_Muki += 2;
+		m_WaitFrame = 0;
+		m_State = DEAD;
+	}
 
 	// ブロックと敵の当たり判定
 	switch (m_State)
@@ -98,6 +109,20 @@ void Enemy_HitDrop::Update()
 			m_WaitFrame++;
 		}
 		LookPlayer();
+		break;
+	case Enemy_HitDrop::DEAD:
+		if (m_WaitFrame >= m_DeadAnimeFrame)
+		{
+			m_AnimationPtn++;
+			m_WaitFrame = 0;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		if (m_AnimationPtn > m_DeadAnimeNum-1) {
+			m_IsActive = false;
+		}
 		break;
 	default:
 		break;
@@ -198,17 +223,23 @@ void Enemy_HitDrop::ChangeSetUp()
 
 void Enemy_HitDrop::Jump()
 {
+	D3DXVECTOR2 pPos = GetPlayer()->pos;
 	// ジャンプ
 	m_Vel.x += m_JumpPower.x;
 	// 減衰
 	m_JumpPower.y += m_JumpAttenuation.y;
 	// 移動中にプレイヤーがいた座標まで来たならそこに落下
+	// 移動中にプレイヤーがいたなら落下
 	// 敵の向きによって変える
 	D3DXVECTOR2 enemyPos = m_Pos + m_Vel;
-	if (m_Muki == 0)
+	if (m_Muki == 1)
 	{
 		if (enemyPos.x >= m_DropPosX)
 		{
+			m_State = Enemy_HitDrop::DROP;
+			m_AnimationPtn++;
+		}
+		if (enemyPos.x >= pPos.x) {
 			m_State = Enemy_HitDrop::DROP;
 			m_AnimationPtn++;
 		}
@@ -217,6 +248,10 @@ void Enemy_HitDrop::Jump()
 	{
 		if (enemyPos.x <= m_DropPosX)
 		{
+			m_State = Enemy_HitDrop::DROP;
+			m_AnimationPtn++;
+		}
+		if (enemyPos.x <= pPos.x) {
 			m_State = Enemy_HitDrop::DROP;
 			m_AnimationPtn++;
 		}
@@ -230,15 +265,18 @@ void Enemy_HitDrop::Jump()
 
 void Enemy_HitDrop::LookPlayer()
 {
+	if (m_State == DEAD) {
+		return;
+	}
 	PLAYER* pPlayer = GetPlayer();
 	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 	if (pVec.x > 0)
 	{
-		m_Muki = 1;
+		m_Muki = 0;
 	}
 	else
 	{
-		m_Muki = 0;
+		m_Muki = 1;
 	}
 }
 

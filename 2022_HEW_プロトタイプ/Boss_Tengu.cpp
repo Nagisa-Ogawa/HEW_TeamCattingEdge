@@ -12,11 +12,11 @@
 #define TENGU_WAITFRAME_WAIT (60)
 #define TENGU_WAITFRAME_AFTERTHROW (60)
 
-Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID):Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,4.0f))
+Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID):Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,6.0f))
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
-	m_HP = 10;
+	m_HP = 1;
 	// ヒットドロップ系変数初期化
 	m_DropPower = 0.98f;
 	m_ActiveRad_Jump = 600.0f;
@@ -33,6 +33,8 @@ Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID):Enemy(pos,ID,D3DXVECTOR2(480.0f,
 	m_pBombFactory = GetBombFactory();
 	m_ThrowDistance = 200.0f;
 	m_ThrowOffset = 300.0f;
+	m_DeadAnimeNum = 3;
+	m_DeadAnimeFrame = 10;
 }
 
 void Boss_Tengu::Init()
@@ -55,6 +57,20 @@ void Boss_Tengu::Update()
 	m_OldPos = m_Pos;
 	DWORD result = 0;
 	PLAYER* pPlayer = GetPlayer();
+
+	// 死亡していたなら死亡状態へ
+	if (m_IsDie) {
+		m_IsDie = false;
+		m_AnimationPtn = 0;
+		if (m_Muki % 2 == 0) {
+			m_Muki = 4;
+		}
+		else {
+			m_Muki = 5;
+		}
+		m_WaitFrame = 0;
+		m_State = DEAD;
+	}
 
 	switch (m_State)
 	{
@@ -146,6 +162,20 @@ void Boss_Tengu::Update()
 		else
 		{
 			m_WaitFrame++;
+		}
+		break;
+	case Boss_Tengu::DEAD:
+		if (m_WaitFrame >= m_DeadAnimeFrame)
+		{
+			m_AnimationPtn++;
+			m_WaitFrame = 0;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		if (m_AnimationPtn > m_DeadAnimeNum - 1) {
+			m_IsActive = false;
 		}
 		break;
 	default:
@@ -262,17 +292,23 @@ void Boss_Tengu::ChangeSetUp()
 
 void Boss_Tengu::Jump()
 {
+	D3DXVECTOR2 pPos = GetPlayer()->pos;
 	// ジャンプ
 	m_Vel.x += m_JumpPower.x;
 	// 減衰
 	m_JumpPower.y += m_JumpAttenuation.y;
 	// 移動中にプレイヤーがいた座標まで来たならそこに落下
+	// 移動中にプレイヤーがいたなら落下
 	// 敵の向きによって変える
 	D3DXVECTOR2 enemyPos = m_Pos + m_Vel;
-	if (m_Muki == 0)
+	if (m_Muki == 1)
 	{
 		if (enemyPos.x >= m_DropPosX)
 		{
+			m_State = Boss_Tengu::DROP;
+			m_AnimationPtn += 2;
+		}
+		if (enemyPos.x >= pPos.x) {
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
@@ -281,6 +317,10 @@ void Boss_Tengu::Jump()
 	{
 		if (enemyPos.x <= m_DropPosX)
 		{
+			m_State = Boss_Tengu::DROP;
+			m_AnimationPtn += 2;
+		}
+		if (enemyPos.x <= pPos.x) {
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
@@ -295,6 +335,7 @@ void Boss_Tengu::Jump()
 
 void Boss_Tengu::Glid()
 {
+	D3DXVECTOR2 pPos = GetPlayer()->pos;
 	// ジャンプ
 	m_Vel.x += m_JumpPower.x;
 	// 減衰
@@ -302,12 +343,16 @@ void Boss_Tengu::Glid()
 	// 移動中にプレイヤーがいた座標まで来たならそこに落下
 	// 敵の向きによって変える
 	D3DXVECTOR2 enemyPos = m_Pos + m_Vel;
-	if (m_Muki == 0)
+	if (m_Muki == 1)
 	{
 		if (enemyPos.x >= m_DropPosX)
 		{
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn++;
+		}
+		if (enemyPos.x >= pPos.x) {
+			m_State = Boss_Tengu::DROP;
+			m_AnimationPtn += 2;
 		}
 	}
 	else
@@ -316,6 +361,10 @@ void Boss_Tengu::Glid()
 		{
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn++;
+		}
+		if (enemyPos.x <= pPos.x) {
+			m_State = Boss_Tengu::DROP;
+			m_AnimationPtn += 2;
 		}
 	}
 	// 下に落ち始めたらドロップへ
@@ -384,7 +433,7 @@ void Boss_Tengu::LookPlayer()
 {
 	// 向きを変えてはいけない状態なら変えない
 	if (m_State== Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID || m_State == Boss_Tengu::DROP||
-			m_State==Boss_Tengu::SETUP||m_State==Boss_Tengu::THROW||m_State==Boss_Tengu::AFTERTHROW)
+			m_State==Boss_Tengu::SETUP||m_State==Boss_Tengu::THROW||m_State==Boss_Tengu::AFTERTHROW||m_State==Boss_Tengu::DEAD)
 	{
 		return;
 	}
@@ -392,10 +441,10 @@ void Boss_Tengu::LookPlayer()
 	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 	if (pVec.x > 0)
 	{
-		m_Muki = 1;
+		m_Muki = 0;
 	}
 	else
 	{
-		m_Muki = 0;
+		m_Muki = 1;
 	}
 }

@@ -9,7 +9,7 @@
 
 
 Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 2.0f))
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f))
 {
 	// 敵のサイズを設定
 	m_HP = 1;
@@ -21,6 +21,8 @@ Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID):
 	m_MaxSize = 30.0f;
 	m_ChangeSizeValue = m_MaxSize / m_BombFrame;
 	m_pExplosionFactory = GetExplosionFactory();
+	m_DeadAnimeNum = 3;
+	m_DeadAnimeFrame = 10;
 }
 
 void Enemy_SelfDestruct::Init()
@@ -42,6 +44,15 @@ void Enemy_SelfDestruct::Update()
 	m_OldPos = m_Pos;
 	DWORD result = 0;
 	PLAYER* pPlayer = GetPlayer();
+
+	// 死亡していたなら死亡状態へ
+	if (m_IsDie) {
+		m_IsDie = false;
+		m_AnimationPtn = 0;
+		m_Muki += 2;
+		m_WaitFrame = 0;
+		m_State = DEAD;
+	}
 	switch (m_State)
 	{
 	case Enemy_SelfDestruct::IDLE:
@@ -51,7 +62,6 @@ void Enemy_SelfDestruct::Update()
 		// プレイヤーが範囲内に入ったなら追いかける
 		if (len < m_ActiveRange)
 		{
-			m_AnimationPtn++;
 			m_State = STATE_ENEMY_SELFDESTRUCT::CHASE;
 		}
 		break;
@@ -66,7 +76,6 @@ void Enemy_SelfDestruct::Update()
 		if (len < m_BombRange)
 		{
 			m_State = Enemy_SelfDestruct::SETUP_BOMB;
-			m_AnimationPtn++;
 		}
 		break;
 	}
@@ -77,8 +86,12 @@ void Enemy_SelfDestruct::Update()
 		// 自壊
 		// 爆発を作成
 		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
-		m_IsActive = false;
+		m_IsDead = true;
+		m_IsDie = true;
 		// m_State = Enemy_SelfDestruct::IDLE;
+		break;
+	case Enemy_SelfDestruct::DEAD:
+		m_IsActive = false;
 		break;
 	default:
 		break;
@@ -121,8 +134,19 @@ void Enemy_SelfDestruct::Update()
 	}
 
 	m_Pos += m_Vel;
+	if (m_WaitAnimeFrame >= 10)
+	{
+		m_WaitAnimeFrame = 0;
+		m_AnimationPtn++;
+		if (m_AnimationPtn == 2) {
+			m_AnimationPtn = 0;
+		}
+	}
+	else
+	{
+		m_WaitAnimeFrame++;
+	}
 	LookPlayer();
-
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 }
 
@@ -184,11 +208,27 @@ void  Enemy_SelfDestruct::LookPlayer()
 	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 	if (pVec.x > 0)
 	{
-		m_Muki = 1;
+		if (m_State == IDLE) {
+			m_Muki = 0;
+		}
+		else if (m_State == CHASE) {
+			m_Muki = 1;
+		}
+		else if (m_State == SETUP_BOMB) {
+			m_Muki = 2;
+		}
 	}
 	else
 	{
-		m_Muki = 0;
+		if (m_State == IDLE) {
+			m_Muki = 3;
+		}
+		else if (m_State == CHASE) {
+			m_Muki = 4;
+		}
+		else if (m_State == SETUP_BOMB) {
+			m_Muki = 5;
+		}	
 	}
 }
 

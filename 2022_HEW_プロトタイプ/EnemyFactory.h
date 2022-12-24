@@ -29,10 +29,16 @@ public:
 	// エネミー工場の描画処理
 	void Draw();
 
+	// Create関数
 	void Create_HitDrop(D3DXVECTOR2 pos);
 	void Create_SelfDestruction(D3DXVECTOR2 pos);
 	void Create_ThrowBomb(D3DXVECTOR2 pos);
-	void Create_Boss(D3DXVECTOR2 pos);
+	void Create_GhostFire(D3DXVECTOR2 pos, int muki);
+	void Create_Rush(D3DXVECTOR2 pos);
+	void Create_ExplosionGas(D3DXVECTOR2 pos);
+
+	// BOSS系Create関数
+	void Create_Boss_Tengu(D3DXVECTOR2 pos);
 
 	// マップ情報からエネミーを作成
 	void SetEnemy();

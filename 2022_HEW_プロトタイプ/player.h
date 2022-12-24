@@ -80,3 +80,4 @@ void AdjustPlayer(D3DXVECTOR2 pos);
 void PlayerDamage(int num);
 
 PLAYER* GetPlayer(void);
+D3DXVECTOR2 GetPlayerPos(void);

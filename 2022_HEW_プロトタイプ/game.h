@@ -7,6 +7,7 @@ class EnemyFactory;
 class BombFactory;
 class ExplosionFactory;
 class ShockWaveFactory;
+class FireBallFactory;
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -25,3 +26,4 @@ EnemyFactory* GetEnemyFactory();
 BombFactory* GetBombFactory();
 ExplosionFactory* GetExplosionFactory();
 ShockWaveFactory* GetShockWaveFactory();
+FireBallFactory* GetFireBallFactory();

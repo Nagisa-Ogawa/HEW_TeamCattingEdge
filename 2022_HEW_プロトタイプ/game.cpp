@@ -26,6 +26,7 @@
 #include "BombFactory.h"
 #include "ExplosionFactory.h"
 #include "ShockWaveFactory.h"
+#include "FireBallFactory.h"
 #include "UI.h"
 
 //*****************************************************************************
@@ -47,6 +48,7 @@ static EnemyFactory enemyFactory;
 static BombFactory bombFactory;
 static ExplosionFactory explosionFactory;
 static ShockWaveFactory shockWaveFactory;
+static FireBallFactory fireBallFactory;
 static UI ui(GetPlayer());
 
 //=============================================================================
@@ -81,6 +83,9 @@ void InitGame(void)
 	// 衝撃波工場の初期化
 	shockWaveFactory.Init();
 
+	// 火の玉工場の初期化
+	fireBallFactory.Init();
+
 	//数値表示の初期化
 	InitNumber();
 
@@ -113,6 +118,9 @@ void UninitGame(void)
 
 	//エネミー工場の終了処理
 	enemyFactory.Uninit();
+
+	// 火の玉工場の終了処理
+	fireBallFactory.Uninit();
 
 	// 弾の終了処理
 	UninitBullet();
@@ -147,6 +155,9 @@ void UpdateGame(void)
 
 	// 衝撃波工場の更新処理
 	shockWaveFactory.Update();
+
+	// 火の玉工場の更新処理
+	fireBallFactory.Update();
 
 	// ステージの更新処理
 	UpdateBlock();
@@ -183,6 +194,9 @@ void DrawGame(void)
 
 	// 敵の描画処理
 	enemyFactory.Draw();
+
+	// 火の玉工場の描画処理
+	fireBallFactory.Draw();
 
 	// プレイヤーの描画処理
 	DrawPlayer();
@@ -221,5 +235,10 @@ ExplosionFactory* GetExplosionFactory()
 ShockWaveFactory * GetShockWaveFactory()
 {
 	return  &shockWaveFactory;
+}
+
+FireBallFactory * GetFireBallFactory()
+{
+	return &fireBallFactory;
 }
 

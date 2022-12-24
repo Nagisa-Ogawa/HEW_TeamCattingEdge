@@ -7,14 +7,15 @@
 #include "Block.h"
 
 Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 2.0f))
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 4.0f))
 {
 	m_HP = 1;
 	m_WaitTime = 60;
 	m_Gravity = 4.0f;
 	m_CooldownTime = 60;
 	m_ActiveRange = 400.0f;
-
+	m_DeadAnimeNum = 3;
+	m_DeadAnimeFrame = 10;
 }
 
 void Enemy_ThrowBomb::Init()
@@ -30,6 +31,14 @@ void Enemy_ThrowBomb::Uninit()
 
 void Enemy_ThrowBomb::Update()
 {
+	// €–S‚µ‚Ä‚¢‚½‚È‚ç€–Só‘Ô‚Ö
+	if (m_IsDie) {
+		m_IsDie = false;
+		m_AnimationPtn = 0;
+		m_Muki += 2;
+		m_WaitFrame = 0;
+		m_State = DEAD;
+	}
 	m_OldPos = m_Pos;
 	DWORD result = 0;
 	PLAYER* pPlayer = GetPlayer();
@@ -71,6 +80,20 @@ void Enemy_ThrowBomb::Update()
 		else
 		{
 			m_WaitFrame++;
+		}
+		break;
+	case Enemy_ThrowBomb::DEAD:
+		if (m_WaitFrame >= m_DeadAnimeFrame)
+		{
+			m_AnimationPtn++;
+			m_WaitFrame = 0;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		if (m_AnimationPtn > m_DeadAnimeNum - 1) {
+			m_IsActive = false;
 		}
 		break;
 	default:
@@ -158,14 +181,17 @@ void Enemy_ThrowBomb::Throw()
 
 void  Enemy_ThrowBomb::LookPlayer()
 {
+	if (m_State == DEAD) {
+		return;
+	}
 	PLAYER* pPlayer = GetPlayer();
 	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 	if (pVec.x > 0)
 	{
-		m_Muki = 1;
+		m_Muki = 0;
 	}
 	else
 	{
-		m_Muki = 0;
+		m_Muki = 1;
 	}
 }

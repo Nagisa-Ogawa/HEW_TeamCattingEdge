@@ -4,8 +4,12 @@
 #include "Enemy_HitDrop.h"
 #include "Enemy_SelfDestruct.h"
 #include "Enemy_ThrowBomb.h"
+#include "Enemy_GhostFire.h"
+#include "Enemy_Rush.h"
+#include "Enemy_ExplosionGas.h"
 #include "Boss_Tengu.h"
 #include "Block.h"
+#include "camera.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -36,7 +40,28 @@ void EnemyFactory::Create_ThrowBomb(D3DXVECTOR2 pos)
 	m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(pos, m_nowID));
 }
 
-void EnemyFactory::Create_Boss(D3DXVECTOR2 pos)
+void EnemyFactory::Create_GhostFire(D3DXVECTOR2 pos, int muki)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Enemy_GhostFire(pos,muki, m_nowID));
+}
+
+void EnemyFactory::Create_Rush(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Enemy_Rush(pos, m_nowID));
+}
+
+void EnemyFactory::Create_ExplosionGas(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Enemy_ExplosionGas(pos, m_nowID));
+}
+
+void EnemyFactory::Create_Boss_Tengu(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
@@ -63,9 +88,15 @@ void EnemyFactory::Uninit()
 
 void EnemyFactory::Update()
 {
+	CAMERA_2D* pCamera = GetCamera();
+	D3DXVECTOR2 CameraPos = GetBase();
+
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		pEnemy->Update();
+		if (pEnemy->GetPos().x - pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - pCamera->pos.x <= SCREEN_WIDTH + 120.0f)
+		{
+			pEnemy->Update();
+		}
 	}
 	// プレイヤーとエネミーの当たり判定
 	CollisionPlayerToEnemy();
@@ -91,28 +122,45 @@ void EnemyFactory::SetEnemy()
 	{
 		for (int x = 0; x < pMaps[0].size(); x++)
 		{
-			if (pMaps[y][x] == 0 || pMaps[y][x] == 1)
+			D3DXVECTOR2 pos = D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE / 2, BLOCK_SIZE * y + BLOCK_SIZE / 2);
+			pos.y -= 10.0f;
+
+			switch (pMaps[y][x])
 			{
-				continue;
-			}
-			D3DXVECTOR2 pos = D3DXVECTOR2(BLOCK_SIZE*x + BLOCK_SIZE / 2, BLOCK_SIZE*y + BLOCK_SIZE / 2);
-			pos.y -= 100.0f;
-			if (pMaps[y][x] == 100)
-			{
-				Create_HitDrop(pos);
-			}
-			if (pMaps[y][x] == 101)
-			{
-				Create_SelfDestruction(pos);
-			}
-			if (pMaps[y][x] == 102)
-			{
-				Create_ThrowBomb(pos);
-			}
-			if (pMaps[y][x] == 200)
-			{
+				//天狗エネミー
+			case 30:
 				// ボス作成
-				Create_Boss(pos);
+				Create_Boss_Tengu(pos);
+				break;
+			case 31:
+				Create_ThrowBomb(pos);
+				break;
+			case 32:
+				break;
+			case 33:
+				Create_HitDrop(pos);
+				break;
+			case 34:
+				break;
+			case 35:
+				break;
+			case 36:
+				Create_SelfDestruction(pos);
+				break;
+			case 37:
+				break;
+			case 41:
+				Create_GhostFire(pos, 0);
+			case 42:
+				Create_GhostFire(pos, 1);
+			case 43:
+				Create_Rush(pos);
+			case 44:
+				Create_ExplosionGas(pos);
+				//エネミー以外
+			default:
+				continue;
+				break;
 			}
 		}
 	}

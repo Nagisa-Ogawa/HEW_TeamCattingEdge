@@ -17,6 +17,7 @@ public:
 		THROW,
 		AFTERTHROW,
 		WAIT,
+		DEAD,
 	};
 private:
 	const float m_AnimeTable[6] =
@@ -28,12 +29,14 @@ private:
 		0.666667f,
 		0.833334f
 	};
-	const float M_MukiTable[4] =
+	const float M_MukiTable[6] =
 	{
-		0.0f,	// ‰EŒü‚«‚Ì‚µ‚©‚©‚èUŒ‚
-		0.25f,	// ¶Œü‚«‚Ì‚µ‚©‚©‚èUŒ‚
-		0.50f,	// ‰EŒü‚«”š’e“Š‚°UŒ‚
-		0.75f,	// ¶Œü‚«”š’e‚È‚°UŒ‚
+		0.000000f,	// ‰EŒü‚«‚Ì‚µ‚©‚©‚è
+		0.166667f,	// ¶Œü‚«‚Ì‚µ‚©‚©‚è
+		0.333334f,	// ‰EŒü‚«”š’e“Š‚°
+		0.500000f,	// ¶Œü‚«”š’e“Š‚°
+		0.666667f,	// ‰EŒü‚«€–S
+		0.833334f,	// ¶Œü‚«€–S
 	};
 
 	STATE_BOSS_TENGU m_State = IDLE;

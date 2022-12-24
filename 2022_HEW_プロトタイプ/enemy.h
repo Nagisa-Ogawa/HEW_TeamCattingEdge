@@ -20,7 +20,7 @@ protected:
 	D3DXVECTOR2 m_OldPos = D3DXVECTOR2(0.0f, 0.0);	// 1フレーム前の位置座標
 	D3DXVECTOR2 m_Vel = D3DXVECTOR2(0.0f, 0.0f);	// 速度ベクトル
 	D3DXVECTOR2 m_Dir = D3DXVECTOR2(0.0f, 0.0f);	// 移動方向
-	bool m_Muki = true;			// 敵が向いている方向(右ならtrue,左ならfalse)
+	int m_Muki = -1;			// 敵が向いている方向(右ならtrue,左ならfalse)
 	float m_Speed = 0.0f;		// 移動速度
 	//bool m_IsUse = false;		// 使用しているかのフラグ
 	int m_EnemyTextureNo;		// 敵が使用するテクスチャの番号
@@ -32,7 +32,12 @@ protected:
 	int m_HP;
 	D3DXVECTOR2 m_divid;
 	D3DXVECTOR2 m_pttern;
-	bool m_IsActive = false;
+	bool m_IsActive = false;	// 表示フラグ
+	bool m_IsDie = false;		// 死亡した後1フレームの間だけtrueになるフラグ
+	bool m_IsDead = false;		// 死亡フラグ
+	int m_DeadAnimeNum = 0;		// 死亡時アニメーションの枚数
+	int m_DeadAnimeFrame = 0;	// 死亡時アニメーションの切り替えフレーム数
+
 public:
 	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid) :
 			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) 
@@ -41,6 +46,7 @@ public:
 		m_pttern.y = 1.0f / m_divid.y;
 		m_IsActive = true;
 		m_IsGround = false;
+		m_IsDead = false;
 	};
 	// エネミーの初期化処理
 	virtual void Init() = 0;
@@ -60,6 +66,7 @@ public:
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
 	bool GetIsActive() { return m_IsActive; };
+	bool GetIsDead() { return m_IsDead; };
 	~Enemy() {};
 };
 

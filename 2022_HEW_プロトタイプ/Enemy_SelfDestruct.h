@@ -20,19 +20,23 @@ public:
 		CHASE,		// 追う
 		SETUP_BOMB,	// 爆発準備
 		BOMB,		// 爆発
+		DEAD,		// 死亡
 	};
 private:
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[3] =
+	const float m_AnimeTable[2] =
 	{
 		0.0f,
-		0.333f,
-		0.666f,
+		0.5f,
 	};
-	const float M_MukiTable[2] =
+	const float M_MukiTable[6] =
 	{
-		0.0f,	//右向き
-		0.5f,	//左向き
+		0.00000f,	//左向き待機
+		0.16667f,	//右向き待機
+		0.33334f,	//左向き接近
+		0.50000f,	//右向き待機
+		0.66667f,	//左向き爆発
+		0.83334f,	//右向き爆発
 	};
 
 	// チェイス系変数
@@ -47,6 +51,7 @@ private:
 
 	// 待機フレーム
 	int m_WaitFrame = 0;
+	int m_WaitAnimeFrame = 0;
 	STATE_ENEMY_SELFDESTRUCT m_State = IDLE;
 public:
 	Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID);
