@@ -63,7 +63,7 @@ private:
 	int m_WaitFrame = 0;
 	STATE_ENEMY_HITDROP m_State = IDLE;
 public:
-	Enemy_HitDrop(D3DXVECTOR2 pos,int ID);
+	Enemy_HitDrop(D3DXVECTOR2 pos,int ID, int textureNo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

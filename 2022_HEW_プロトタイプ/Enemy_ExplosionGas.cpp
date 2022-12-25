@@ -7,8 +7,8 @@
 #include "game.h"
 #include "ExplosionFactory.h"
 
-Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 1.0f))
+Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID, int textureNo):
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 1.0f),textureNo)
 {
 	// 敵のサイズを設定
 	m_HP = 1;
@@ -23,8 +23,6 @@ Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID):
 
 void Enemy_ExplosionGas::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/ExplosionGas.png");
 }
 
 void Enemy_ExplosionGas::Uninit()

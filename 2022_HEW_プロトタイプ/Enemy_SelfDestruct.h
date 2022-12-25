@@ -54,7 +54,7 @@ private:
 	int m_WaitAnimeFrame = 0;
 	STATE_ENEMY_SELFDESTRUCT m_State = IDLE;
 public:
-	Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID);
+	Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID, int textureNo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

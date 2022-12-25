@@ -66,7 +66,7 @@ private:
 	// 待機フレーム
 	int m_WaitFrame = 0;
 public:
-	Boss_Tengu(D3DXVECTOR2 pos, int ID);
+	Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

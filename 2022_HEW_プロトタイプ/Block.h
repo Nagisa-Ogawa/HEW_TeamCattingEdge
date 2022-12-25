@@ -30,4 +30,4 @@ DWORD HitChackEnemy_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size, D3DXVECTOR2 moveVec
 void hitChackWarpPlayer_Block(D3DXVECTOR2 move);
 
 float GetBlockHeight(void);
-std::vector<std::vector<int>> GetBlocks();
+std::vector<std::vector<int>>* GetBlocks();

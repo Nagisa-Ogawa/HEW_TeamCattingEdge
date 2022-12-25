@@ -1,7 +1,6 @@
 
 #include "collision.h"
 #include "enemy.h"
-#include "bullet.h"
 
 
 bool HitCheckBox(D3DXVECTOR2 box1pos, float box1width, float box1height,

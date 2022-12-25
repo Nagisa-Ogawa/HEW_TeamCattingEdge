@@ -39,8 +39,8 @@ protected:
 	int m_DeadAnimeFrame = 0;	// 死亡時アニメーションの切り替えフレーム数
 
 public:
-	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid) :
-			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) 
+	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo) :
+			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) ,m_EnemyTextureNo(textureNo)
 	{ 
 		m_pttern.x = 1.0f / m_divid.x;
 		m_pttern.y = 1.0f / m_divid.y;

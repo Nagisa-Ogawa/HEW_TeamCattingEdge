@@ -3,13 +3,11 @@
 #include "sprite.h"
 #include "camera.h"
 
-Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad, float lastRad):
-			m_Pos(pos),m_Size(size),m_CollisionRad(collisionRad),m_LastRad(lastRad)
+Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad, float lastRad,int textureNo):
+			m_Pos(pos),m_Size(size),m_CollisionRad(collisionRad),m_LastRad(lastRad),m_TextureNo(textureNo)
 {
 	m_divid = D3DXVECTOR2(7.0f, 1.0f);
 	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
-	// 敵のテクスチャを読み込み
-	m_TextureNo = LoadTexture((char*)"data/TEXTURE/explosion.png");
 	m_IsActive = true;
 	m_CollisionRad = m_Size.x / 2.0f;
 	// 爆風の有効フレームをセット

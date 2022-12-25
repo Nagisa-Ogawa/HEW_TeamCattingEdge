@@ -8,8 +8,8 @@
 #include "ExplosionFactory.h"
 
 
-Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f))
+Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID, int textureNo):
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f),textureNo)
 {
 	// 敵のサイズを設定
 	m_HP = 1;
@@ -27,8 +27,6 @@ Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID):
 
 void Enemy_SelfDestruct::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/Enemy_SelfDestruct.png");
 }
 
 void Enemy_SelfDestruct::Uninit()

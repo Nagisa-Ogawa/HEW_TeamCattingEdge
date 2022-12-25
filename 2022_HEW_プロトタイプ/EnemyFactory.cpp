@@ -10,6 +10,7 @@
 #include "Boss_Tengu.h"
 #include "Block.h"
 #include "camera.h"
+#include "texture.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -23,53 +24,63 @@ void EnemyFactory::Create_HitDrop(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_HitDrop(pos, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Enemy_HitDrop(pos, m_nowID,m_EnemyHitDropNo));
 }
 
 void EnemyFactory::Create_SelfDestruction(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_SelfDestruct(pos, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Enemy_SelfDestruct(pos, m_nowID,m_EnemySelfDestructNo));
 }
 
 void EnemyFactory::Create_ThrowBomb(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(pos, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(pos, m_nowID,m_EnemyThrowBombNo));
 }
 
 void EnemyFactory::Create_GhostFire(D3DXVECTOR2 pos, int muki)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_GhostFire(pos,muki, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Enemy_GhostFire(pos,muki, m_nowID,m_EnemyGhostFireNo));
 }
 
 void EnemyFactory::Create_Rush(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_Rush(pos, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Enemy_Rush(pos, m_nowID,m_EnemyRushNo));
 }
 
 void EnemyFactory::Create_ExplosionGas(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_ExplosionGas(pos, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Enemy_ExplosionGas(pos, m_nowID,m_EnemyExplosionGasNo));
 }
 
 void EnemyFactory::Create_Boss_Tengu(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Boss_Tengu(pos, m_nowID));
+	m_pEnemyList.insert(enemyIt, new Boss_Tengu(pos, m_nowID,m_EnemyTenguNo));
 }
 
 void EnemyFactory::Init()
 {
+	// 敵のテクスチャをロード
+	m_EnemyHitDropNo = LoadTexture((char*)"data/TEXTURE/Enemy_HitDrop.png");
+	m_EnemySelfDestructNo = LoadTexture((char*)"data/TEXTURE/enemy_selfdestruct.png");
+	m_EnemyThrowBombNo = LoadTexture((char*)"data/TEXTURE/Enemy_ThrowBomb.png");
+	m_EnemyTenguNo = LoadTexture((char*)"data/TEXTURE/Boss_Tengu.png");
+
+	m_EnemyGhostFireNo = LoadTexture((char*)"data/TEXTURE/GhostFire.png");
+	m_EnemyRushNo = LoadTexture((char*)"data/TEXTURE/enemy_selfdestruct.png");
+	m_EnemyExplosionGasNo = LoadTexture((char*)"data/TEXTURE/ExplosionGas.png");
+
 	// マップ情報からエネミーを生成
 	SetEnemy();
 	for (Enemy* pEnemy : m_pEnemyList)
@@ -97,6 +108,7 @@ void EnemyFactory::Update()
 		{
 			pEnemy->Update();
 		}
+
 	}
 	// プレイヤーとエネミーの当たり判定
 	CollisionPlayerToEnemy();
@@ -118,14 +130,13 @@ void EnemyFactory::Draw()
 void EnemyFactory::SetEnemy()
 {
 	auto pMaps = GetBlocks();
-	for (int y = 0; y < pMaps.size(); y++)
+	for (int y = 0; y < pMaps->size(); y++)
 	{
-		for (int x = 0; x < pMaps[0].size(); x++)
+		for (int x = 0; x < (*pMaps)[0].size(); x++)
 		{
-			D3DXVECTOR2 pos = D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE / 2, BLOCK_SIZE * y + BLOCK_SIZE / 2);
-			pos.y -= 10.0f;
+			D3DXVECTOR2 pos = D3DXVECTOR2(BLOCK_SIZE * x + BLOCK_SIZE / 2, BLOCK_SIZE * y);
 
-			switch (pMaps[y][x])
+			switch ((*pMaps)[y][x])
 			{
 				//天狗エネミー
 			case 30:

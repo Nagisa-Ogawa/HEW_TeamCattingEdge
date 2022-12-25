@@ -6,8 +6,8 @@
 #include "player.h"
 #include "Block.h"
 
-Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 4.0f))
+Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID, int textureNo):
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 4.0f),textureNo)
 {
 	m_HP = 1;
 	m_WaitTime = 60;
@@ -20,8 +20,6 @@ Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID):
 
 void Enemy_ThrowBomb::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/Enemy_ThrowBomb.png");
 	m_pBombFactory = GetBombFactory();
 }
 

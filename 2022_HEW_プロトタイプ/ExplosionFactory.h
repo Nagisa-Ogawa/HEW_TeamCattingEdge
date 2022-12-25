@@ -7,6 +7,7 @@ class ExplosionFactory
 {
 private:
 	std::list<Explosion*> m_pExplosion;
+	int m_TextureNo = -1;
 public:
 	ExplosionFactory();
 	// “G‚ğì¬

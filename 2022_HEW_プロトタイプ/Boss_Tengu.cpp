@@ -12,7 +12,8 @@
 #define TENGU_WAITFRAME_WAIT (60)
 #define TENGU_WAITFRAME_AFTERTHROW (60)
 
-Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID):Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,6.0f))
+Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo):
+	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,6.0f),textureNo)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
@@ -39,8 +40,6 @@ Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID):Enemy(pos,ID,D3DXVECTOR2(480.0f,
 
 void Boss_Tengu::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/Boss_Tengu.png");
 }
 
 void Boss_Tengu::Uninit()

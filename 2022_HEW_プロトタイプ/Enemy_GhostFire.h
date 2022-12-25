@@ -40,7 +40,7 @@ private:
 
 
 public:
-	Enemy_GhostFire(D3DXVECTOR2 pos,int muki ,int ID);
+	Enemy_GhostFire(D3DXVECTOR2 pos,int muki ,int ID, int textureNo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

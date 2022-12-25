@@ -11,7 +11,6 @@
 #include "input.h"
 #include "texture.h"
 #include "sprite.h"
-#include "bullet.h"
 #include "number.h"
 #include "camera.h"
 #include "inputx.h"

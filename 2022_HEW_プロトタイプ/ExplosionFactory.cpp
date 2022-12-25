@@ -1,4 +1,5 @@
 #include "ExplosionFactory.h"
+#include "texture.h"
 #include "player.h"
 
 ExplosionFactory::ExplosionFactory()
@@ -7,12 +8,13 @@ ExplosionFactory::ExplosionFactory()
 
 void ExplosionFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 {
-	m_pExplosion.push_back(new Explosion(pos, size, (size.x / 2.0f), (size.x / 2.0f) + 50.0f));
+	m_pExplosion.push_back(new Explosion(pos, size, (size.x / 2.0f), (size.x / 2.0f) + 50.0f, m_TextureNo));
 }
 
 void ExplosionFactory::Init()
 {
 	// Create(D3DXVECTOR2(300.0f, 300.0f), D3DXVECTOR2(120.0f, 120.0f));
+	m_TextureNo = LoadTexture((char*)"data/TEXTURE/explosion.png");
 	for (Explosion* pExplosion : m_pExplosion)
 	{
 		pExplosion->Init();

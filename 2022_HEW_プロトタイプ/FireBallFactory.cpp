@@ -113,11 +113,11 @@ void FireBallFactory::CollisionBlockToFireBall()
 		{
 			continue;
 		}
-		for (int y = 0; y < blocks.size(); y++)
+		for (int y = 0; y < blocks->size(); y++)
 		{
-			for (int x = 0; x < blocks[y].size(); x++)
+			for (int x = 0; x < (*blocks)[y].size(); x++)
 			{
-				if (blocks[y][x] == 1) {
+				if ((*blocks)[y][x] == 1) {
 					// ƒvƒŒƒCƒ„[‚Æ“–‚½‚Á‚½‚È‚ç
 					if (HitCheckBox_Block(D3DXVECTOR2(x*BLOCK_SIZE,y*BLOCK_SIZE),D3DXVECTOR2( BLOCK_SIZE,BLOCK_SIZE),
 						fireBall->GetPos(), fireBall->GetSize()))

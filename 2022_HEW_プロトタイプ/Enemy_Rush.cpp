@@ -6,8 +6,8 @@
 #include "Block.h"
 #include "game.h"
 
-Enemy_Rush::Enemy_Rush(D3DXVECTOR2 pos, int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f))
+Enemy_Rush::Enemy_Rush(D3DXVECTOR2 pos, int ID, int textureNo):
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f),textureNo)
 {
 	m_ChaseSpeed = 4.0f;
 	m_ActiveRange = 300.0f;	// 追いかけ始める範囲
@@ -16,8 +16,6 @@ Enemy_Rush::Enemy_Rush(D3DXVECTOR2 pos, int ID):
 
 void Enemy_Rush::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/Enemy_SelfDestruct.png");
 }
 
 void Enemy_Rush::Uninit()

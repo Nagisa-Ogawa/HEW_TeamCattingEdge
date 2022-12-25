@@ -5,8 +5,8 @@
 #include "player.h"
 #include "Block.h"
 
-Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 2.0f))
+Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo):
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 2.0f),textureNo)
 {
 	m_WaitTime = 30;
 	m_WaitIdleTime = 30;
@@ -16,8 +16,6 @@ Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID):
 
 void Enemy_GhostFire::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/GhostFire.png");
 	m_pFireBallFactory = GetFireBallFactory();
 }
 

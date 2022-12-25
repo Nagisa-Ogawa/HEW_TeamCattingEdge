@@ -43,7 +43,7 @@ private:
 	// 待機フレーム
 	int m_WaitFrame = 0;
 public:
-	Enemy_ThrowBomb(D3DXVECTOR2 pos, int ID);
+	Enemy_ThrowBomb(D3DXVECTOR2 pos, int ID, int textureNo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

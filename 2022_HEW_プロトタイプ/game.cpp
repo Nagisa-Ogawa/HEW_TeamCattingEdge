@@ -11,12 +11,9 @@
 #include "texture.h"
 #include "sprite.h"
 #include "sound.h"
-#include "polygon.h"
 #include "player.h"
-#include "goal.h"
 #include "bg.h"
 #include "Block.h"
-#include "bullet.h"
 #include "enemy.h"
 #include "collision.h"
 #include "number.h"
@@ -59,17 +56,11 @@ void InitGame(void)
 	// プレイヤーの初期化
 	InitPlayer();
 
-	// ゴールの初期化
-	InitGoal();
-
 	// 背景の初期化
 	InitBG();
 
 	// ステージの初期化
 	InitBlock();
-
-	// 弾の初期化
-	InitBullet();
 
 	// エネミー工場の初期化
 	enemyFactory.Init();
@@ -122,17 +113,11 @@ void UninitGame(void)
 	// 火の玉工場の終了処理
 	fireBallFactory.Uninit();
 
-	// 弾の終了処理
-	UninitBullet();
-
 	// ステージの終了処理
 	UninitBlock();
 
 	// 背景の終了処理
 	UninitBG();
-
-	// ゴールの終了処理
-	UninitGoal();
 
 	// プレイヤーの終了処理
 	UninitPlayer();
@@ -201,14 +186,8 @@ void DrawGame(void)
 	// プレイヤーの描画処理
 	DrawPlayer();
 
-	// ゴールの描画処理
-	DrawGoal();
-
 	// カメラの描画処理
 	DrawCamera();
-
-	// 弾の描画処理
-	DrawBullet();
 
 	//ここからUIの描画
 	//ゲーム関係の描画が全て終わってからUIの描画をする

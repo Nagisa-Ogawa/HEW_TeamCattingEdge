@@ -44,7 +44,7 @@ private:
 	float m_ChangeBlastSize = 0.0f;	// 爆風の1フレームでの変化値
 
 public:
-	Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad,float lastRad);
+	Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad,float lastRad,int textureNo);
 	// 爆発の初期化処理
 	void Init();
 	// 爆発の終了処理

@@ -18,6 +18,16 @@ private:
 	std::list<Enemy*> m_pEnemyList;
 	PLAYER* m_pPlayer = nullptr;
 	int m_nowID = -1;
+
+	// 敵のテクスチャ番号
+	int m_EnemyHitDropNo = -1;
+	int m_EnemySelfDestructNo = -1;
+	int m_EnemyThrowBombNo = -1;
+	int m_EnemyTenguNo = -1;
+
+	int m_EnemyGhostFireNo = -1;
+	int m_EnemyRushNo = -1;
+	int m_EnemyExplosionGasNo = -1;
 public:
 	EnemyFactory();
 	// エネミー工場の初期化処理

@@ -5,8 +5,8 @@
 #include "Block.h"
 #include "player.h"
 
-Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID) :
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 4.0f))
+Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 4.0f),textureNo)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
@@ -18,8 +18,6 @@ Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID) :
 
 void Enemy_HitDrop::Init()
 {
-	// 敵のテクスチャを読み込み
-	m_EnemyTextureNo = LoadTexture((char*)"data/TEXTURE/Enemy_HitDrop.png");
 }
 
 void Enemy_HitDrop::Uninit()
