@@ -8,6 +8,7 @@
 #include "Enemy_Rush.h"
 #include "Enemy_ExplosionGas.h"
 #include "Boss_Tengu.h"
+#include "Boss_Kasya.h"
 #include "Block.h"
 #include "camera.h"
 #include "texture.h"
@@ -67,6 +68,13 @@ void EnemyFactory::Create_Boss_Tengu(D3DXVECTOR2 pos)
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
 	m_pEnemyList.insert(enemyIt, new Boss_Tengu(pos, m_nowID,m_EnemyTenguNo));
+}
+
+void EnemyFactory::Create_Boss_Kasya(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Boss_Kasya(pos, m_nowID, m_EnemyTenguNo));
 }
 
 void EnemyFactory::Init()
@@ -160,14 +168,21 @@ void EnemyFactory::SetEnemy()
 				break;
 			case 37:
 				break;
+			case 40:
+				Create_Boss_Kasya(pos);
+				break;
 			case 41:
 				Create_GhostFire(pos, 0);
+				break;
 			case 42:
 				Create_GhostFire(pos, 1);
+				break;
 			case 43:
 				Create_Rush(pos);
+				break;
 			case 44:
 				Create_ExplosionGas(pos);
+				break;
 				//エネミー以外
 			default:
 				continue;

@@ -8,10 +8,10 @@ FireBallFactory::FireBallFactory()
 	
 }
 
-void FireBallFactory::Create(D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power)
+void FireBallFactory::Create(D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,int mode)
 {
 	m_nowID++;
-	m_pFireBallList.push_back(new FireBall(m_nowID,pos, muki, power));
+	m_pFireBallList.push_back(new FireBall(m_nowID,pos, muki, power,(FireBall::MODE)mode));
 }
 
 void FireBallFactory::Init()
@@ -108,6 +108,7 @@ void FireBallFactory::CollisionBlockToFireBall()
 	auto blocks = GetBlocks();
 	for (FireBall* fireBall : m_pFireBallList)
 	{
+		bool isHit = false;
 		// 死亡していたならスキップ
 		if (!fireBall->GetIsActive())
 		{
@@ -122,8 +123,39 @@ void FireBallFactory::CollisionBlockToFireBall()
 					if (HitCheckBox_Block(D3DXVECTOR2(x*BLOCK_SIZE,y*BLOCK_SIZE),D3DXVECTOR2( BLOCK_SIZE,BLOCK_SIZE),
 						fireBall->GetPos(), fireBall->GetSize()))
 					{
-						fireBall->Hit();
+						switch (fireBall->GetMode())
+						{
+						case FireBall::MODE::GHOSTFIRE:
+							fireBall->Hit();
+							break;
+						case FireBall::MODE::KASYA_ONESHOT:
+							if (fireBall->GetHittingFlag()==false) {
+								fireBall->SetHittingFlag(true);
+							}
+							if (fireBall->GetPassThroughFlag() == false) {
+								D3DXVECTOR2 vec = fireBall->GetPower();
+								vec.y *= -1.0f;
+								fireBall->SetThrowPower(vec);
+								fireBall->SetPassThroughFlag(true);
+								fireBall->SetReflect(true);
+							}
+							break;
+						default:
+							break;
+						}
+						isHit = true;
 					}
+				}
+			}
+		}
+		if (isHit == false && fireBall->GetMode() == FireBall::MODE::KASYA_ONESHOT) {
+			if (fireBall->GetHittingFlag() == true) {
+				fireBall->SetHittingFlag(false);
+				if (fireBall->GetIsReflectFlag() == false) {
+					fireBall->SetPassThroughFlag(false);
+				}
+				else {
+					fireBall->SetReflect(false);
 				}
 			}
 		}

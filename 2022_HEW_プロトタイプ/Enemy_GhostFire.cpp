@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "player.h"
 #include "Block.h"
+#include "FireBall.h"
 
 Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 2.0f),textureNo)
@@ -142,7 +143,7 @@ Enemy_GhostFire::~Enemy_GhostFire()
 void Enemy_GhostFire::Throw()
 {
 	if (m_IsThrow) {
-		m_pFireBallFactory->Create(m_Pos, m_Muki, D3DXVECTOR2(10.0f, 0.0f));
+		m_pFireBallFactory->Create(m_Pos, m_Muki, D3DXVECTOR2(10.0f, 0.0f),FireBall::MODE::GHOSTFIRE);
 		m_ThrowNum++;
 		m_IsThrow = false;
 	}

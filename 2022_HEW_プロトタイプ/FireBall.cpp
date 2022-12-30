@@ -3,8 +3,8 @@
 #include "sprite.h"
 #include "camera.h"
 
-FireBall::FireBall(int ID,D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power):
-	m_ID(ID), m_Pos(pos),m_Muki(muki),m_ThrowPower(power)
+FireBall::FireBall(int ID,D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,FireBall::MODE mode):
+	m_ID(ID), m_Pos(pos),m_Muki(muki),m_ThrowPower(power),m_Mode(mode)
 {
 	m_DistanceMax = 600.0f;
 	m_StartPos = m_Pos;
@@ -35,7 +35,20 @@ void FireBall::Update()
 	switch (m_State)
 	{
 	case FireBall::MOVE:
-		Move();
+		switch (m_Mode)
+		{
+		case FireBall::GHOSTFIRE:
+			Move();
+			break;
+		case FireBall::KASYA_ONESHOT:
+			m_Vel += m_ThrowPower;
+			break;
+		case FireBall::KASYA_THREESHOT:
+			m_Vel += m_ThrowPower;
+			break;
+		default:
+			break;
+		}
 		break;
 	case FireBall::BURNSOUT:
 		m_IsActive = false;
@@ -81,5 +94,5 @@ void FireBall::Move() {
 
 void FireBall::Hit()
 {
-	m_IsActive = false;
+	m_State = FIRE::BURNSOUT;
 }

@@ -95,7 +95,7 @@ void UninitBG(void)
 //=============================================================================
 void UpdateBG(void)
 {
-	g_StartU = GetPlayerPos().x / (float)SCREEN_WIDTH;
+	//g_StartU = GetPlayerPos().x / (float)SCREEN_WIDTH;
 }
 
 

@@ -238,7 +238,7 @@ void UpdatePlayer(void)
 
 	if (g_Player.pos.y > 1200.0f)
 	{
-		SceneTransition(SCENE_OVER_GAME);
+		SetGameScene(GAMESCENE_PICTURE_OVERGAME);
 	}
 
 	//攻撃リキャスト処理
@@ -254,8 +254,8 @@ void UpdatePlayer(void)
 	}
 
 	//カメラ座標の更新
-	CAMERA_2D* pCamera = GetCamera();
-	pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH  / 2;
+	//CAMERA_2D* pCamera = GetCamera();
+	//pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH  / 2;
 	//pCamera->pos.y = g_Player.pos.y - SCREEN_HEIGHT / 2 - 60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
@@ -344,7 +344,6 @@ void DrawPlayer(void)
 	//ベース座標を受け取る
 	D3DXVECTOR2 BasePos = GetBase();
 
-
 	if (g_Player.attackflag != 0)
 	{
 		if (g_Player.attackflag == 2)
@@ -379,6 +378,49 @@ void PlayerDamage(int num)
 
 void PlayerStatusNormal(void)
 {
+	//メンバーデバック用キーボート操作
+	{
+		if (GetKeyboardPress(DIK_A))
+		{
+			g_Player.vel.x -= PLAYER_SPEED;
+		}
+
+		if (GetKeyboardPress(DIK_D))
+		{
+			g_Player.vel.x += PLAYER_SPEED;
+		}
+
+		if (GetKeyboardRelease(DIK_W) && g_Player.warpFlag != 0)
+		{
+			g_Player.status = warpwait;
+
+			g_Player.warpframe = 60;
+
+			D3DXVECTOR2 Direction(0.0f, -1.0f);
+
+			D3DXVec2Normalize(&Direction, &Direction);
+
+			g_Player.warppos.x = g_Player.pos.x + (Direction.x * -1) * (g_Player.warppower * ((float)g_Player.warpframe / 60.0f));
+			g_Player.warppos.y = g_Player.pos.y + (Direction.y) * (g_Player.warppower * ((float)g_Player.warpframe / 60.0f));
+		}
+
+		if (GetKeyboardPress(DIK_SPACE) && g_Player.attackflag == 0)
+		{
+			if (GetKeyboardPress(DIK_A))
+			{
+				g_Player.enemyfactory->CollisoinAttacktoEnemy(D3DXVECTOR2(g_Player.pos.x - 120.0f, g_Player.pos.y));
+
+				g_Player.attackflag = 1;
+			}
+			else
+			{
+				g_Player.enemyfactory->CollisoinAttacktoEnemy(D3DXVECTOR2(g_Player.pos.x + 120.0f, g_Player.pos.y));
+
+				g_Player.attackflag = 2;
+			}
+		}
+	}
+
 	//左右移動
 	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
 

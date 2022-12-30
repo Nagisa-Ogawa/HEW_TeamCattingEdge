@@ -14,7 +14,7 @@ private:
 public:
 	FireBallFactory();
 	// ‰Î‚Ì‹Ê‚ğì¬
-	void Create(D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power);
+	void Create(D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,int mode);
 	void Init();
 	// ‰Î‚Ì‹ÊHê‚ÌI—¹ˆ—
 	void Uninit();

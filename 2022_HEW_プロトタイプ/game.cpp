@@ -8,9 +8,6 @@
 
 ==============================================================================*/
 #include "game.h"
-#include "texture.h"
-#include "sprite.h"
-#include "sound.h"
 #include "player.h"
 #include "bg.h"
 #include "Block.h"
@@ -25,22 +22,26 @@
 #include "ShockWaveFactory.h"
 #include "FireBallFactory.h"
 #include "UI.h"
+#include "gameover.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-
+static GAMESCENE g_Scene;
+static GAMESCENE g_SceneNext;
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
+void InitGameStage(void);
+void UninitGameStage(void);
+void UpdateGameStage(void);
+void DrawGameStage(void);
+void ChangeGameScene(void);
 
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int g_BGMNo;
-static int g_TextureCloud = 0;
-
 static EnemyFactory enemyFactory;
 static BombFactory bombFactory;
 static ExplosionFactory explosionFactory;
@@ -52,6 +53,104 @@ static UI ui(GetPlayer());
 // 初期化処理
 //=============================================================================
 void InitGame(void)
+{
+	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
+
+	InitGameStage();
+}
+
+void UninitGame(void)
+{
+	switch (g_Scene)
+	{
+	case GAMESCENE_NONE:
+		break;
+	case GAMESCENE_STAGE_TENGU:
+		UninitGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		UninitGameStage();
+		break;
+	case GAMESCENE_STAGE_NUM:
+		UninitGameStage();
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		UninitGameOver();
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		break;
+	case GAMESCENE_NUM:
+		break;
+	default:
+		break;
+	}
+}
+
+void UpdateGame(void)
+{
+	switch (g_Scene)
+	{
+	case GAMESCENE_NONE:
+		break;
+	case GAMESCENE_STAGE_TENGU:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_STAGE_NUM:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		UpdateGameOver();
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		break;
+	case GAMESCENE_NUM:
+		break;
+	default:
+		break;
+	}
+
+	//遷移先シーンが設定されていたら
+	if (g_Scene != g_SceneNext)
+	{
+		//シーンの切り替えを行う
+		ChangeGameScene();
+	}
+}
+
+void DrawGame(void)
+{
+	switch (g_Scene)
+	{
+	case GAMESCENE_NONE:
+		break;
+	case GAMESCENE_STAGE_TENGU:
+		DrawGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		DrawGameStage();
+		break;
+	case GAMESCENE_STAGE_NUM:
+		DrawGameStage();
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		DrawGameOver();
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		break;
+	case GAMESCENE_NUM:
+		break;
+	default:
+		break;
+	}
+}
+
+//=============================================================================
+// ゲーム本編
+//=============================================================================
+void InitGameStage(void)
 {
 	// プレイヤーの初期化
 	InitPlayer();
@@ -82,21 +181,18 @@ void InitGame(void)
 
 	//カメラの初期化
 	InitCamera();
-
-	//ゲーム用BGMの読み込み
-	g_BGMNo = LoadSound((char*)"data/BGM/sample001.wav");
-
-	//BGM再生(二つ目の引数はループ回数 負の値を指定すると無限ループ)
-	//PlaySound(g_BGMNo, -1);
 }
 
-void UninitGame(void)
+void UninitGameStage(void)
 {
 	//カメラの終了処理
 	UninitCamera();
 
 	//数値表示の終了処理
 	UninitNumber();
+
+	// 火の玉工場の終了処理
+	fireBallFactory.Uninit();
 
 	// 衝撃波工場の終了処理
 	shockWaveFactory.Uninit();
@@ -110,9 +206,6 @@ void UninitGame(void)
 	//エネミー工場の終了処理
 	enemyFactory.Uninit();
 
-	// 火の玉工場の終了処理
-	fireBallFactory.Uninit();
-
 	// ステージの終了処理
 	UninitBlock();
 
@@ -123,11 +216,22 @@ void UninitGame(void)
 	UninitPlayer();
 }
 
-void UpdateGame(void)
+void UpdateGameStage(void)
 {
-
 	// プレイヤーの更新処理
 	UpdatePlayer();
+
+	// ステージの更新処理
+	UpdateBlock();
+
+	// 背景の更新
+	UpdateBG();
+
+	//カメラの更新処理
+	UpdateCamera();
+
+	//数値表示の更新処理
+	UpdateNumber();
 
 	// 敵の更新処理
 	enemyFactory.Update();
@@ -144,23 +248,11 @@ void UpdateGame(void)
 	// 火の玉工場の更新処理
 	fireBallFactory.Update();
 
-	// ステージの更新処理
-	UpdateBlock();
-
-	// 背景の更新
-	UpdateBG();
-
-	//カメラの更新処理
-	UpdateCamera();
-
-	//数値表示の更新処理
-	UpdateNumber();
-
+	//UIのアップデート
 	ui.UpdateUI();
-
 }
 
-void DrawGame(void)
+void DrawGameStage(void)
 {
 	// 背景の描画
 	DrawBG();
@@ -191,9 +283,65 @@ void DrawGame(void)
 
 	//ここからUIの描画
 	//ゲーム関係の描画が全て終わってからUIの描画をする
+	ui.DrawUI();
 
 	//数値表示の描画処理
 	//DrawNumber();
+}
+
+void ChangeGameScene(void)
+{
+	//現在動作しているシーンを終了させる
+	switch (g_Scene)
+	{
+	case GAMESCENE_STAGE_TENGU:
+		UninitGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		UninitGameStage();
+		break;
+	case GAMESCENE_STAGE_NUM:
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		UninitGameOver();
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		break;
+	case GAMESCENE_NUM:
+		break;
+	default:
+		break;
+	}
+
+	//現在のシーンを更新する
+	g_Scene = g_SceneNext;
+
+	//更新されたシーンを初期化する
+	switch (g_SceneNext)
+	{
+	case GAMESCENE_STAGE_TENGU:
+		InitGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		InitGameStage();
+		break;
+	case GAMESCENE_STAGE_NUM:
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		InitGameOver();
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		break;
+	case GAMESCENE_NUM:
+		break;
+	default:
+		break;
+	}
+}
+
+void SetGameScene(GAMESCENE scene)
+{
+	g_SceneNext = scene;
 }
 
 EnemyFactory* GetEnemyFactory()
@@ -220,4 +368,3 @@ FireBallFactory * GetFireBallFactory()
 {
 	return &fireBallFactory;
 }
-
