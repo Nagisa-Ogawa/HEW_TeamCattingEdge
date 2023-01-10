@@ -27,6 +27,7 @@ float GetBlockHeight(void);
 
 DWORD hitChackNormalPlayer_Block(D3DXVECTOR2 move);
 DWORD HitChackEnemy_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size, D3DXVECTOR2 moveVec);
+DWORD HitCheckFireBall_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size);
 void hitChackWarpPlayer_Block(D3DXVECTOR2 move);
 
 float GetBlockHeight(void);

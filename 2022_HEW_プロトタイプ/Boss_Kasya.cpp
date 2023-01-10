@@ -26,10 +26,19 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 	// 移動攻撃用変数初期化
 	m_MoveWaitFrame = 60;
 	m_MoveFrame = 30;
-	m_MoveSpeed = D3DXVECTOR2(5.0f, 8.0f);
+	m_MoveSpeed = D3DXVECTOR2(10.0f, 8.0f);
 	// 火の玉攻撃用変数初期化
 	m_pFireBallFactory = GetFireBallFactory();
 	m_SetThrowWaitFrame = 30;
+
+	m_LanePosXList[0] = 0.0f + BLOCK_SIZE         + (m_Size.x / 2.0f);
+	m_LanePosXList[1] = 0.0f + BLOCK_SIZE * 14.0f - (m_Size.x / 2.0f);
+	m_LanePosXList[2] = 0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f);
+
+	m_LanePosYList[0] = 0.0f + BLOCK_SIZE * 2.0f  + (m_Size.y / 2.0f);
+	m_LanePosYList[1] = 0.0f + BLOCK_SIZE * 8.0f  + (m_Size.y / 2.0f);
+	m_LanePosYList[2] = 0.0f + BLOCK_SIZE * 14.0f +  (m_Size.y / 2.0f);
+
 }
 
 void Boss_Kasya::Init()
@@ -71,7 +80,27 @@ void Boss_Kasya::Update()
 			m_AnimationPtn++;
 			m_WaitFrame = 0;
 			m_MoveCount = 0;
-			m_State = Boss_Kasya::SETUP_THROW;
+			switch (m_StateCount)
+			{
+			case 0:
+				m_State = SETUP_THROW;
+				break;
+			case 1:
+				m_State = SETUP_THROW;
+				break;
+			case 2:
+				m_State = SETUP_MOVE;
+				break;
+			case 3:
+				m_State = SETUP_MOVE;
+				break;
+			default:
+				break;
+			}
+			m_StateCount++;
+			if (m_StateCount >= 5) {
+				m_StateCount = 0;
+			}
 		}
 		else
 		{
@@ -103,6 +132,7 @@ void Boss_Kasya::Update()
 		OneShot();
 		break;
 	case Boss_Kasya::THROW_THREESHOT:
+		ThreeShot();
 		break;
 	case Boss_Kasya::WAIT:
 		// 一定時間待機
@@ -250,8 +280,13 @@ void Boss_Kasya::SetUp_Move()
 	{
 	case 0:
 		// 上下、左右どっちの動きか決める
+		if (m_StateCount % 2 == 0) {
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[0]));
+		}
+		else {
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[2]));
+		}
 		m_BeforeState = Boss_Kasya::SETUP_MOVE;
-		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 17.0f - (m_Size.y / 2.0f)));
 		break;
 	case 1:
 	// 規定フレーム待機
@@ -261,7 +296,12 @@ void Boss_Kasya::SetUp_Move()
 		m_WaitFrame = 0;
 		m_IsAttack = 0;
 		m_MoveCount = 0;
-		m_State = Boss_Kasya::MOVE_UP_DOWN;
+		if (m_StateCount % 2 == 0) {
+			m_State = Boss_Kasya::MOVE_LEFT_RIGHT;
+		}
+		else {
+			m_State = Boss_Kasya::MOVE_UP_DOWN;
+		}
 	}
 	else
 	{
@@ -277,7 +317,7 @@ void Boss_Kasya::Move_Left_Right()
 	{
 	case 0:
 		m_BeforeState = Boss_Kasya::MOVE_LEFT_RIGHT;
-		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE + (m_Size.x / 2.0f), m_Pos.y), D3DXVECTOR2(-m_MoveSpeed.x, 0.0f));
+		SetMove(m_Pos, D3DXVECTOR2(m_LanePosXList[0], m_Pos.y), D3DXVECTOR2(-m_MoveSpeed.x, 0.0f));
 		break;
 	case 1:
 		m_BeforeState = Boss_Kasya::MOVE_LEFT_RIGHT;
@@ -285,7 +325,7 @@ void Boss_Kasya::Move_Left_Right()
 		break;
 	case 2:
 		m_BeforeState = Boss_Kasya::MOVE_LEFT_RIGHT;
-		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE*31.0f - (m_Size.x / 2.0f), m_Pos.y), D3DXVECTOR2(m_MoveSpeed.x, 0.0f));
+		SetMove(m_Pos, D3DXVECTOR2(m_LanePosXList[2], m_Pos.y), D3DXVECTOR2(m_MoveSpeed.x, 0.0f));
 		break;
 	case 3:
 		m_BeforeState = Boss_Kasya::MOVE_LEFT_RIGHT;
@@ -293,11 +333,10 @@ void Boss_Kasya::Move_Left_Right()
 		break;
 	case 4:
 		m_BeforeState = Boss_Kasya::MOVE_LEFT_RIGHT;
-		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE + (m_Size.x / 2.0f), m_Pos.y), D3DXVECTOR2(-m_MoveSpeed.x, 0.0f));
+		SetMove(m_Pos, D3DXVECTOR2(m_LanePosXList[0], m_Pos.y), D3DXVECTOR2(-m_MoveSpeed.x, 0.0f));
 		break;
 	case 5:
-		m_AnimationPtn = 0;
-		m_State = Boss_Kasya::IDLE;
+		m_State = Boss_Kasya::WAIT;
 		break;
 	default:
 		break;
@@ -310,14 +349,14 @@ void Boss_Kasya::Move_Up_Down()
 	{
 	case 0:
 		m_BeforeState = Boss_Kasya::MOVE_UP_DOWN;
-		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 28.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 5.0f - (m_Size.y / 2)));
+		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 28.0f - (m_Size.x / 2.0f), m_LanePosYList[0]));
 		break;
 	case 1:
 		if (m_WaitFrame >= m_MoveFrame)
 		{
 			m_WaitFrame = 0;
 			m_BeforeState = Boss_Kasya::MOVE_UP_DOWN;
-			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 22.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 17.0f - (m_Size.y / 2)));
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 22.0f - (m_Size.x / 2.0f), m_LanePosYList[2]));
 		}
 		else
 		{
@@ -329,7 +368,7 @@ void Boss_Kasya::Move_Up_Down()
 		{
 			m_WaitFrame = 0;
 			m_BeforeState = Boss_Kasya::MOVE_UP_DOWN;
-			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 15.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 5.0f - (m_Size.y / 2)));
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 15.0f - (m_Size.x / 2.0f), m_LanePosYList[0]));
 		}
 		else
 		{
@@ -341,7 +380,7 @@ void Boss_Kasya::Move_Up_Down()
 		{
 			m_WaitFrame = 0;
 			m_BeforeState = Boss_Kasya::MOVE_UP_DOWN;
-			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 10.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 17.0f - (m_Size.y / 2)));
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 10.0f - (m_Size.x / 2.0f), m_LanePosYList[2]));
 		}
 		else
 		{
@@ -353,7 +392,7 @@ void Boss_Kasya::Move_Up_Down()
 		{
 			m_WaitFrame = 0;
 			m_BeforeState = Boss_Kasya::MOVE_UP_DOWN;
-			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE + (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 11.0f - (m_Size.y / 2)));
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE + (m_Size.x / 2.0f), m_LanePosYList[1]));
 		}
 		else
 		{
@@ -361,8 +400,7 @@ void Boss_Kasya::Move_Up_Down()
 		}
 		break;
 	case 5:
-		m_AnimationPtn = 0;
-		m_State = Boss_Kasya::THROW_ONESHOT;
+		m_State = Boss_Kasya::WAIT;
 		break;
 	default:
 		break;
@@ -388,8 +426,8 @@ void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos)
 	m_NowDistance = 0.0f;
 	D3DXVECTOR2 vec = endPos - startPos;
 	D3DXVec2Normalize(&m_MoveVec,&vec);
-	m_MoveVec.x *= 6.0f;
-	m_MoveVec.y *= 6.0f;
+	m_MoveVec.x *= 12.0f;
+	m_MoveVec.y *= 12.0f;
 	m_MoveDistance = D3DXVec2Length(&vec);
 }
 
@@ -413,6 +451,12 @@ void Boss_Kasya::SetUp_Throw()
 		// 上下、左右どっちの動きか決める
 		m_BeforeState = Boss_Kasya::SETUP_THROW;
 		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 11.0f - (m_Size.y / 2.0f)));
+		if (m_StateCount % 2 == 0) {
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[1]));
+		}
+		else {
+			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[1]));
+		}
 		break;
 	case 1:
 		m_AnimationPtn = 0;
@@ -422,7 +466,13 @@ void Boss_Kasya::SetUp_Throw()
 			m_WaitFrame = 0;
 			m_Muki = 2;
 			m_AnimationPtn = 1;
-			m_State = Boss_Kasya::THROW_ONESHOT;
+			if (m_StateCount % 2 == 0) {
+				m_State = Boss_Kasya::THROW_ONESHOT;
+			}
+			else {
+				m_State = Boss_Kasya::THROW_THREESHOT;
+			}
+			
 		}
 		else
 		{
@@ -435,6 +485,27 @@ void Boss_Kasya::SetUp_Throw()
 void Boss_Kasya::OneShot()
 {
 	// 火の玉を生成
-	m_pFireBallFactory->Create(m_Pos, 0, D3DXVECTOR2(-6.0f, 6.0f), FireBall::MODE::KASYA_ONESHOT);
+	m_pFireBallFactory->Create(m_Pos, 1, D3DXVECTOR2(-3.0f, 6.0f), FireBall::MODE::KASYA_ONESHOT);
 	m_State = WAIT;
+}
+
+void Boss_Kasya::ThreeShot()
+{
+	// 火の玉を三つ生成
+	// 規定フレーム待機
+	if (m_WaitFrame >= 20)
+	{
+		m_WaitFrame = 0;
+		// 火の玉を生成
+		m_pFireBallFactory->Create(m_Pos, 1, D3DXVECTOR2(-10.0f - ((float)m_NowShotFireBall*2.0f), -6.0f), FireBall::MODE::KASYA_THREESHOT);
+		m_NowShotFireBall++;
+		if (m_NowShotFireBall >= 3) {
+			m_State = WAIT;
+			m_NowShotFireBall = 0;
+		}
+	}
+	else
+	{
+		m_WaitFrame++;
+	}
 }

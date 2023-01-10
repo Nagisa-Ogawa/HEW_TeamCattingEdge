@@ -2,6 +2,7 @@
 #include "FireBallFactory.h"
 #include "FireBall.h"
 #include "Block.h"
+#include "texture.h"
 
 FireBallFactory::FireBallFactory()
 {
@@ -11,11 +12,13 @@ FireBallFactory::FireBallFactory()
 void FireBallFactory::Create(D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,int mode)
 {
 	m_nowID++;
-	m_pFireBallList.push_back(new FireBall(m_nowID,pos, muki, power,(FireBall::MODE)mode));
+	m_pFireBallList.push_back(new FireBall(m_nowID, pos, muki, power, (FireBall::MODE)mode, m_FireBallTextureNo));
 }
 
 void FireBallFactory::Init()
 {
+	m_FireBallTextureNo = LoadTexture((char*)"data/TEXTURE/FireBall.png");
+
 	m_pPlayer = GetPlayer();
 	for (FireBall* fireBall : m_pFireBallList)
 	{
@@ -114,47 +117,126 @@ void FireBallFactory::CollisionBlockToFireBall()
 		{
 			continue;
 		}
-		for (int y = 0; y < blocks->size(); y++)
-		{
-			for (int x = 0; x < (*blocks)[y].size(); x++)
-			{
-				if ((*blocks)[y][x] == 1) {
-					// プレイヤーと当たったなら
-					if (HitCheckBox_Block(D3DXVECTOR2(x*BLOCK_SIZE,y*BLOCK_SIZE),D3DXVECTOR2( BLOCK_SIZE,BLOCK_SIZE),
-						fireBall->GetPos(), fireBall->GetSize()))
-					{
-						switch (fireBall->GetMode())
-						{
-						case FireBall::MODE::GHOSTFIRE:
-							fireBall->Hit();
-							break;
-						case FireBall::MODE::KASYA_ONESHOT:
-							if (fireBall->GetHittingFlag()==false) {
-								fireBall->SetHittingFlag(true);
-							}
-							if (fireBall->GetPassThroughFlag() == false) {
-								D3DXVECTOR2 vec = fireBall->GetPower();
-								vec.y *= -1.0f;
-								fireBall->SetThrowPower(vec);
-								fireBall->SetPassThroughFlag(true);
-								fireBall->SetReflect(true);
-							}
-							break;
-						default:
-							break;
-						}
-						isHit = true;
-					}
-				}
+		if (fireBall->GetState() == FireBall::FIRE::BURNSOUT) {
+			continue;
+		}
+		DWORD result = 0;
+		result = HitCheckFireBall_Block(fireBall->GetPos(), fireBall->GetSize());
+		if (result != 0) {
+			D3DXVECTOR2 vec = fireBall->GetPower();
+			if (fireBall->GetHittingFlag() == false) {
+				fireBall->SetHittingFlag(true);
 			}
+			switch (fireBall->GetMode())
+			{
+			case FireBall::MODE::GHOSTFIRE:
+				fireBall->Hit();
+				break;
+			case FireBall::MODE::KASYA_ONESHOT:
+				if (fireBall->GetIsReflectFlag() == true) {
+					continue;
+				}
+				// 反射する壁なら
+				if (fireBall->GetPassThroughFlag() == false) {
+					// 反射処理
+					//if (result == HIT_LEFT)
+					//{
+					//	vec.x *= -1.0f;
+					//	fireBall->SetThrowPower(vec);
+					//}
+					//if (result == HIT_RIGHT)
+					//{
+					//	vec.x *= -1.0f;
+					//	fireBall->SetThrowPower(vec);
+					//}
+					if (result & HIT_DOWN)
+					{
+						vec.y *= -1.0f;
+						fireBall->SetThrowPower(vec);
+					}
+					if (result & HIT_UP)
+					{
+						vec.y *= -1.0f;
+						fireBall->SetThrowPower(vec);
+					}
+					fireBall->RotToVecotr(fireBall->GetPower());
+					// 壁で反射したかどうかのフラグを更新
+					fireBall->SetReflect(true);
+				}
+				break;
+			case FireBall::MODE::KASYA_THREESHOT:
+				if (fireBall->GetIsReflectFlag() == true) {
+					continue;
+				}
+				// 規定回数反射していたら燃え尽きる
+				if (fireBall->GetNowReflectAllCount() >= fireBall->GetBurnsOutCount()) {
+					fireBall->Hit();
+				}
+				// 反射処理
+				//if (result == HIT_LEFT)
+				//{
+				//	vec.x *= -1.0f;
+				//	fireBall->SetThrowPower(vec);
+				//}
+				//if (result == HIT_RIGHT)
+				//{
+				//	vec.x *= -1.0f;
+				//	fireBall->SetThrowPower(vec);
+				//}
+				if (result & HIT_DOWN)
+				{
+					vec.y *= -1.0f;
+					fireBall->SetThrowPower(vec);
+				}
+				if (result & HIT_UP)
+				{
+					vec.y *= -1.0f;
+					fireBall->SetThrowPower(vec);
+				}
+				fireBall->RotToVecotr(fireBall->GetPower());
+				// 壁で反射したかどうかのフラグを更新
+				fireBall->SetReflect(true);
+				break;
+			default:
+				break;
+			}
+			isHit = true;
 		}
 		if (isHit == false && fireBall->GetMode() == FireBall::MODE::KASYA_ONESHOT) {
+			// 壁から抜けた時
 			if (fireBall->GetHittingFlag() == true) {
 				fireBall->SetHittingFlag(false);
+				// その壁をすり抜けていたなら
 				if (fireBall->GetIsReflectFlag() == false) {
 					fireBall->SetPassThroughFlag(false);
 				}
 				else {
+					// 反射回数を更新
+					fireBall->SetNowReflectCount(fireBall->GetNowReflectCount() + 1);
+					fireBall->SetNowReflectAllCount(fireBall->GetNowReflectAllCount() + 1);
+					// 規定回数反射していたら燃え尽きる
+					if (fireBall->GetNowReflectAllCount() >= fireBall->GetBurnsOutCount()) {
+						fireBall->Hit();
+					}
+					// 規定回数反射したかチェック
+					if (fireBall->GetNowReflectCount() >= fireBall->GetReflectWallCounts()) {
+						// 規定回数反射したら次の壁を反射せずに通り過ぎる
+						fireBall->SetNowReflectCount(0);
+						fireBall->SetPassThroughFlag(true);
+						fireBall->SetNowReflectWallCount(fireBall->GetNowReflectWallCount() + 1);
+					}
+					fireBall->SetReflect(false);
+				}
+			}
+		}
+		if (isHit == false && fireBall->GetMode() == FireBall::MODE::KASYA_THREESHOT) {
+			// 壁から抜けた時
+			if (fireBall->GetHittingFlag() == true) {
+				fireBall->SetHittingFlag(false);
+				// その壁をすり抜けていたなら
+				if (fireBall->GetIsReflectFlag() == true) {
+					// 反射回数を更新
+					fireBall->SetNowReflectAllCount(fireBall->GetNowReflectAllCount() + 1);
 					fireBall->SetReflect(false);
 				}
 			}

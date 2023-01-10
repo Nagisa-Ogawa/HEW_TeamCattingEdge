@@ -74,7 +74,7 @@ void EnemyFactory::Create_Boss_Kasya(D3DXVECTOR2 pos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Boss_Kasya(pos, m_nowID, m_EnemyTenguNo));
+	m_pEnemyList.insert(enemyIt, new Boss_Kasya(pos, m_nowID, m_EnemyKasyaNo));
 }
 
 void EnemyFactory::Init()
@@ -85,9 +85,10 @@ void EnemyFactory::Init()
 	m_EnemyThrowBombNo = LoadTexture((char*)"data/TEXTURE/Enemy_ThrowBomb.png");
 	m_EnemyTenguNo = LoadTexture((char*)"data/TEXTURE/Boss_Tengu.png");
 
-	m_EnemyGhostFireNo = LoadTexture((char*)"data/TEXTURE/GhostFire.png");
+	m_EnemyGhostFireNo = LoadTexture((char*)"data/TEXTURE/Enemy_GhostFire.png");
 	m_EnemyRushNo = LoadTexture((char*)"data/TEXTURE/enemy_selfdestruct.png");
-	m_EnemyExplosionGasNo = LoadTexture((char*)"data/TEXTURE/ExplosionGas.png");
+	m_EnemyExplosionGasNo = LoadTexture((char*)"data/TEXTURE/Enemy_ExplosionGas.png");
+	m_EnemyKasyaNo = LoadTexture((char*)"data/TEXTURE/Boss_Kasya.png");
 
 	// マップ情報からエネミーを生成
 	SetEnemy();

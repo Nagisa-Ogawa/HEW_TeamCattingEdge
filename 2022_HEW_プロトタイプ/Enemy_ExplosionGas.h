@@ -23,13 +23,20 @@ public:
 	};
 private:
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[1] =
+	const float m_AnimeTable[7] =
 	{
 		0.0f,
+		0.142857f,
+		0.285714f,
+		0.428571f,
+		0.571428f,
+		0.714285f,
+		0.857142f
 	};
-	const float M_MukiTable[1] =
+	const float M_MukiTable[2] =
 	{
-		0.00000f,	//左向き待機
+		0.0f,
+		0.5f,	//左向き待機
 	};
 
 	// チェイス系変数

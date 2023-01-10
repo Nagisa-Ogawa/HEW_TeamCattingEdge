@@ -8,7 +8,7 @@
 #include "ExplosionFactory.h"
 
 Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID, int textureNo):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 1.0f),textureNo)
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(7.0f, 2.0f),textureNo)
 {
 	// “G‚ÌƒTƒCƒY‚ðÝ’è
 	m_HP = 1;
@@ -19,6 +19,7 @@ Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID, int textureNo):
 	m_pExplosionFactory = GetExplosionFactory();
 	m_DeadAnimeNum = 3;
 	m_DeadAnimeFrame = 10;
+	m_Muki = 0;
 }
 
 void Enemy_ExplosionGas::Init()
@@ -43,7 +44,7 @@ void Enemy_ExplosionGas::Update()
 	if (m_IsDie) {
 		m_IsDie = false;
 		m_AnimationPtn = 0;
-		m_Muki += 2;
+		m_Muki ++;
 		m_WaitFrame = 0;
 		m_State = DEAD;
 	}
@@ -59,6 +60,18 @@ void Enemy_ExplosionGas::Update()
 		{
 			m_State = Enemy_ExplosionGas::SETUP_BOMB;
 		}
+		if (m_WaitAnimeFrame >= 10)
+		{
+			m_WaitAnimeFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 5) {
+				m_AnimationPtn = 0;
+			}
+		}
+		else
+		{
+			m_WaitAnimeFrame++;
+		}
 		break;
 	}
 	case Enemy_ExplosionGas::SETUP_BOMB:
@@ -67,13 +80,24 @@ void Enemy_ExplosionGas::Update()
 	case Enemy_ExplosionGas::BOMB:
 		// Ž©‰ó
 		// ”š”­‚ðì¬
-		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
 		m_IsDead = true;
 		m_IsDie = true;
 		// m_State = Enemy_SelfDestruct::IDLE;
 		break;
 	case Enemy_ExplosionGas::DEAD:
-		m_IsActive = false;
+		if (m_WaitAnimeFrame >= 3)
+		{
+			m_WaitAnimeFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 7) {
+				m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
+				m_IsActive = false;
+			}
+		}
+		else
+		{
+			m_WaitAnimeFrame++;
+		}
 		break;
 	default:
 		break;
@@ -116,18 +140,6 @@ void Enemy_ExplosionGas::Update()
 	}
 
 	m_Pos += m_Vel;
-	if (m_WaitAnimeFrame >= 10)
-	{
-		m_WaitAnimeFrame = 0;
-		m_AnimationPtn++;
-		if (m_AnimationPtn == 2) {
-			m_AnimationPtn = 0;
-		}
-	}
-	else
-	{
-		m_WaitAnimeFrame++;
-	}
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 
 }
@@ -164,4 +176,17 @@ void Enemy_ExplosionGas::SetUp()
 		m_Size.y += m_ChangeSizeValue;
 		m_WaitFrame++;
 	}
+	if (m_WaitAnimeFrame >= 10)
+	{
+		m_WaitAnimeFrame = 0;
+		m_AnimationPtn++;
+		if (m_AnimationPtn >= 5) {
+			m_AnimationPtn = 0;
+		}
+	}
+	else
+	{
+		m_WaitAnimeFrame++;
+	}
+
 }

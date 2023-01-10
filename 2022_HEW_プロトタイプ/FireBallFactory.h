@@ -11,6 +11,7 @@ private:
 	std::list<FireBall*> m_pFireBallList;
 	PLAYER* m_pPlayer = nullptr;
 	int m_nowID = -1;
+	int m_FireBallTextureNo = -1;
 public:
 	FireBallFactory();
 	// ‰Î‚Ì‹Ê‚ğì¬

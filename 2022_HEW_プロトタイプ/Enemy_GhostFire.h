@@ -16,14 +16,30 @@ public:
 		DEAD,
 	};
 private:
-	const float m_AnimeTable[1] =
+	const float m_AnimeTable[13] =
 	{
-		0.0f,
+		0.00000f,
+		0.07692f,
+		0.15384f,
+		0.23076f,
+		0.30768f,
+		0.38460f,
+		0.46152f,
+		0.53844f,
+		0.61536f,
+		0.69228f,
+		0.76920f,
+		0.84612f,
+		0.92304f,
 	};
-	const float M_MukiTable[2] =
+	const float M_MukiTable[6] =
 	{
-		0.0f,	//¶Œü‚«
-		0.5f,
+		0.000000f,
+		0.166667f,
+		0.333334f,
+		0.500000f,
+		0.666667f,
+		0.833334f
 	};
 
 	STATE_ENEMY_GHOSTFIRE m_State = IDLE;
@@ -37,6 +53,7 @@ private:
 	int m_ThrowNum = 0;
 	// ‘Ò‹@ƒtƒŒ[ƒ€
 	int m_WaitFrame = 0;
+	int m_AnimeFrame = 0;
 
 
 public:

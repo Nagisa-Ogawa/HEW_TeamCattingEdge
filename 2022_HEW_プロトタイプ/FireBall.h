@@ -15,22 +15,29 @@ public:
 	};
 	enum FIRE
 	{
+		START,
 		MOVE,
 		BURNSOUT,
 	};
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[1] =
+	const float m_AnimeTable[3] =
 	{
-		0.0f,
+		0.000f,
+		0.333f,
+		0.666f,
 	};
-	const float M_MukiTable[1] =
+	const float M_MukiTable[4] =
 	{
-		0.0f,	//右向き
+		0.00f,
+		0.25f,
+		0.50f,
+		0.75f,
 	};
+
 
 private:
 	int m_ID = -1;
-	FIRE m_State = MOVE;
+	FIRE m_State = START;
 	MODE m_Mode = GHOSTFIRE;
 
 	D3DXVECTOR2 m_Pos;
@@ -49,15 +56,31 @@ private:
 	D3DXVECTOR2 m_pttern;
 	int m_Muki = 0;
 	bool m_IsActive = false;
+	float m_Rot = 0;
+
+	//サイズ変更系変数
+	int m_StartChangeSizeFrame = 0;
 
 	//OneShotモード用変数
 	bool m_isHittingWall = false;
 	bool m_isPassThrough = false;
 	bool m_isReflect = false;
-	int m_BurnsOutCount = 5;
+	int m_BurnsOutCount = 0;
+	const int m_ReflectWallCounts[4]
+	{
+		1,
+		3,
+		2,
+		3
+	};
+	int m_NowReflectWallCount = 0;
+	int m_NowReflectCount = 0;
+	int m_NowReflectAllCount = 0;
+
+	//ThreeShotモード用変数
 
 public:
-	FireBall(int ID,D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,MODE mode);
+	FireBall(int ID,D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,MODE mode,int textureNo);
 	// 火の玉の初期化処理
 	void Init();
 	// 火の玉の終了処理
@@ -78,15 +101,23 @@ public:
 	int GetBurnsOutCount() { return m_BurnsOutCount; };
 	bool GetIsReflectFlag() { return m_isReflect; };
 	MODE GetMode() { return m_Mode; };
+	FIRE GetState() { return m_State; };
+	int GetReflectWallCounts() { return m_ReflectWallCounts[m_NowReflectWallCount]; };
+	int GetNowReflectCount() { return m_NowReflectCount; };
+	int GetNowReflectAllCount() { return m_NowReflectAllCount; };
+	int GetNowReflectWallCount() { return m_NowReflectWallCount; };
 
 	// Set系関数
 	void SetThrowPower(D3DXVECTOR2 throwPower) { m_ThrowPower = throwPower; };
 	void SetHittingFlag(bool flag) { m_isHittingWall = flag; };
 	void SetPassThroughFlag(bool flag) { m_isPassThrough = flag; };
 	void SetReflect(bool flag) { m_isReflect = flag; };
-
+	void SetNowReflectCount(int num) { m_NowReflectCount = num; };
+	void SetNowReflectAllCount(int num) { m_NowReflectAllCount = num; };
+	void SetNowReflectWallCount(int num) { m_NowReflectWallCount = num; };
 
 	void Move();
 	void Hit();
+	void RotToVecotr(D3DXVECTOR2 vector);
 };
 

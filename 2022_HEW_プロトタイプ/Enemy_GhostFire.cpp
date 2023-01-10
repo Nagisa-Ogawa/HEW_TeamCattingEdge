@@ -7,8 +7,9 @@
 #include "FireBall.h"
 
 Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(1.0f, 2.0f),textureNo)
+	Enemy(pos, ID, D3DXVECTOR2(240.0f, 240.0f), D3DXVECTOR2(13.0f, 6.0f),textureNo)
 {
+	m_Muki = muki;
 	m_WaitTime = 30;
 	m_WaitIdleTime = 30;
 	m_WaitNextThrowTime = 10;
@@ -41,15 +42,27 @@ void Enemy_GhostFire::Update()
 	{
 	case Enemy_GhostFire::IDLE:
 	{
-		// 規定時間経過していたなら火の玉を投げる
-		if (m_WaitFrame >= m_WaitIdleTime)
-		{
+		if (m_WaitFrame >= 120) {
 			m_State = Enemy_GhostFire::THROW;
+			m_Muki += 4;
 			m_WaitFrame = 0;
 		}
 		else
 		{
 			m_WaitFrame++;
+		}
+		// 規定時間経過していたなら火の玉を投げる
+		if (m_AnimeFrame >= 6)
+		{
+			m_AnimeFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 5) {
+				m_AnimationPtn = 0;
+			}
+		}
+		else
+		{
+			m_AnimeFrame++;
 		}
 		break;
 	}
@@ -132,7 +145,7 @@ void Enemy_GhostFire::Draw()
 	{
 		D3DXVECTOR2 basePos = GetBase();
 		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-			0.0f, 0.0f, 1.0f, 1.0f);// m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
 	}
 }
 
@@ -142,22 +155,26 @@ Enemy_GhostFire::~Enemy_GhostFire()
 
 void Enemy_GhostFire::Throw()
 {
-	if (m_IsThrow) {
-		m_pFireBallFactory->Create(m_Pos, m_Muki, D3DXVECTOR2(10.0f, 0.0f),FireBall::MODE::GHOSTFIRE);
-		m_ThrowNum++;
-		m_IsThrow = false;
+	// アニメーション
+	if (m_WaitFrame >= 6)
+	{
+		m_AnimationPtn++;
+		m_WaitFrame = 0;
+		if (m_AnimationPtn == 6 || m_AnimationPtn == 9) {
+			D3DXVECTOR2 pos = m_Pos;
+			pos.y += m_Size.y / 7.5f;
+			m_pFireBallFactory->Create(pos, m_Muki, D3DXVECTOR2(10.0f, 0.0f), FireBall::MODE::GHOSTFIRE);
+		}
+		if (m_AnimationPtn >= 13) {
+			m_WaitFrame = 0;
+			m_AnimationPtn = 0;
+			m_Muki -= 4;
+			m_State = Enemy_GhostFire::IDLE;
+		}
 	}
 	else
 	{
 		m_WaitFrame++;
-		if (m_WaitFrame >= m_WaitNextThrowTime) {
-			m_IsThrow = true;
-			m_WaitFrame = 0;
-		}
 	}
-	if (m_ThrowNum >= 2) {
-		m_State = Enemy_GhostFire::WAIT;
-		m_IsThrow = true;
-		m_ThrowNum = 0;
-	}
+
 }

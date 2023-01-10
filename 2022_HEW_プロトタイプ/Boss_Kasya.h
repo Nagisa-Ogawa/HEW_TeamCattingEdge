@@ -47,6 +47,11 @@ private:
 	int m_WaitFrame = 0;
 	int m_IdleWaitFrame = 0;
 
+	float m_LanePosXList[3]{ 0.0f,0.0f,0.0f };
+	float m_LanePosYList[3]{ 0.0f,0.0f,0.0f };
+
+	int m_StateCount = 0;
+
 	// UŒ‚—p•Ï”éŒ¾
 	int m_AttackWaitFrame = 0;
 	int m_AttackFrame = 0;
@@ -70,6 +75,7 @@ private:
 	// ‰Î‚Ì‹ÊUŒ‚—p•Ï”éŒ¾
 	FireBallFactory* m_pFireBallFactory = nullptr;
 	int m_SetThrowWaitFrame = 0;
+	int m_NowShotFireBall = 0;
 
 public:
 	Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo);
@@ -93,5 +99,6 @@ public:
 	void Move();
 	void SetUp_Throw();
 	void OneShot();
+	void ThreeShot();
 };
 
