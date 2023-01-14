@@ -9,8 +9,6 @@ public:
 	enum STATE_BOSS_KASYA
 	{
 		IDLE,
-		SETUP_ATTACK,
-		ATTACK,
 		SETUP_MOVE,
 		MOVE_LEFT_RIGHT,
 		MOVE_UP_DOWN,
@@ -22,42 +20,40 @@ public:
 		DEAD,
 	};
 private:
-	const float m_AnimeTable[6] =
+	const float m_AnimeTable[8] =
 	{
-		0.000000f,
-		0.166667f,
-		0.333334f,
-		0.500000f,
-		0.666667f,
-		0.833334f
+		0.000f,
+		0.125f,
+		0.250f,
+		0.375f,
+		0.500f,
+		0.625f,
+		0.750f,
+		0.875f,
 	};
-	const float M_MukiTable[6] =
+	const float M_MukiTable[8] =
 	{
-		0.000000f,	// 右向きのしかかり
-		0.166667f,	// 左向きのしかかり
-		0.333334f,	// 右向き爆弾投げ
-		0.500000f,	// 左向き爆弾投げ
-		0.666667f,	// 右向き死亡
-		0.833334f,	// 左向き死亡
+		0.000f,	// 待機（左）
+		0.125f,	// 待機（右）
+		0.250f,	// やられ（左）
+		0.375f,	// やられ（右）
+		0.500f,	// ブレス（左）
+		0.625f,	// ブレス（右）
+		0.750f,	// 移動（左）
+		0.875f,	// 移動（右）
 	};
 
 	STATE_BOSS_KASYA m_State = IDLE;
 	STATE_BOSS_KASYA m_BeforeState = IDLE;
 	// 待機フレーム
 	int m_WaitFrame = 0;
+	int m_AnimeFrame = 0;
 	int m_IdleWaitFrame = 0;
 
 	float m_LanePosXList[3]{ 0.0f,0.0f,0.0f };
 	float m_LanePosYList[3]{ 0.0f,0.0f,0.0f };
 
 	int m_StateCount = 0;
-
-	// 攻撃用変数宣言
-	int m_AttackWaitFrame = 0;
-	int m_AttackFrame = 0;
-	int m_IsAttack = 0;
-	int m_AttackTextureNo = -1;
-	D3DXVECTOR2 m_CollisionSize = D3DXVECTOR2(0.0f, 0.0f);
 
 	// 移動攻撃用変数宣言
 	int m_MoveWaitFrame = 0;
@@ -89,8 +85,6 @@ public:
 	void Draw() override;
 	~Boss_Kasya();
 
-	void SetUp_Attack();
-	void Attack();
 	void SetUp_Move();
 	void Move_Up_Down();
 	void Move_Left_Right();

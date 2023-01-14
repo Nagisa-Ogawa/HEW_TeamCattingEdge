@@ -9,20 +9,14 @@
 #include "FireBall.h"
 
 Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) : 
-	Enemy(pos, ID, D3DXVECTOR2(240.0f, 240.0f), D3DXVECTOR2(6.0f, 6.0f), textureNo)
+	Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(8.0f, 8.0f), textureNo)
 
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_HP = 1;
 	m_Muki = 0;
-	m_IdleWaitFrame = 60;
-	// 攻撃用変数初期化
-	m_AttackWaitFrame = 60;
-	m_AttackFrame = 60;
-	m_AttackTextureNo = LoadTexture((char*)"data/TEXTURE/fade_white.png");
-	m_CollisionSize = D3DXVECTOR2(120.0f, 120.0f);
-	m_IsAttack = 0;
+	m_IdleWaitFrame = 120;
 	// 移動攻撃用変数初期化
 	m_MoveWaitFrame = 60;
 	m_MoveFrame = 30;
@@ -35,9 +29,9 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 	m_LanePosXList[1] = 0.0f + BLOCK_SIZE * 14.0f - (m_Size.x / 2.0f);
 	m_LanePosXList[2] = 0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f);
 
-	m_LanePosYList[0] = 0.0f + BLOCK_SIZE * 2.0f  + (m_Size.y / 2.0f);
-	m_LanePosYList[1] = 0.0f + BLOCK_SIZE * 8.0f  + (m_Size.y / 2.0f);
-	m_LanePosYList[2] = 0.0f + BLOCK_SIZE * 14.0f +  (m_Size.y / 2.0f);
+	m_LanePosYList[0] = 0.0f + BLOCK_SIZE * 6.0f  - (m_Size.y / 2.0f);
+	m_LanePosYList[1] = 0.0f + BLOCK_SIZE * 12.0f -  (m_Size.y / 2.0f);
+	m_LanePosYList[2] = 0.0f + BLOCK_SIZE * 18.0f -  (m_Size.y / 2.0f);
 
 }
 
@@ -106,12 +100,19 @@ void Boss_Kasya::Update()
 		{
 			m_WaitFrame++;
 		}
-		break;
-	case Boss_Kasya::SETUP_ATTACK:
-		SetUp_Attack();
-		break;
-	case Boss_Kasya::ATTACK:
-		Attack();
+		if (m_AnimeFrame >= 10)
+		{
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 2)
+			{
+				m_AnimationPtn = 0;
+			}
+			m_AnimeFrame = 0;
+		}
+		else
+		{
+			m_AnimeFrame++;
+		}
 		break;
 	case Boss_Kasya::SETUP_MOVE:
 		SetUp_Move();
@@ -216,19 +217,6 @@ void Boss_Kasya::Draw()
 		return;
 	}
 	D3DXVECTOR2 basePos = GetBase();
-	switch (m_IsAttack)
-	{
-	case 1:
-		DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x - 120.0f, basePos.y + m_Pos.y, m_CollisionSize.x, m_CollisionSize.y,
-			0.0f, 0.0f, 1.0f, 1.0f);
-		break;
-	case 2:
-		DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x + 120.0f, basePos.y + m_Pos.y, m_CollisionSize.x, m_CollisionSize.y,
-			0.0f, 0.0f, 1.0f, 1.0f);
-		break;
-	default:
-		break;
-	}
 	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
 		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
 }
@@ -237,42 +225,6 @@ Boss_Kasya::~Boss_Kasya()
 {
 }
 
-void Boss_Kasya::SetUp_Attack()
-{
-	if (m_WaitFrame >= m_AttackWaitFrame)
-	{
-		m_AnimationPtn = 0;
-		m_WaitFrame = 0;
-		PLAYER* pPlayer = GetPlayer();
-		D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
-		if (pVec.x > 0) {
-			m_IsAttack = 1;
-		}
-		else {
-			m_IsAttack = 2;
-		}
-		m_State = Boss_Kasya::ATTACK;
-	}
-	else
-	{
-		m_WaitFrame++;
-	}
-}
-
-void Boss_Kasya::Attack()
-{
-	if (m_WaitFrame >= m_AttackFrame)
-	{
-		m_AnimationPtn = 0;
-		m_WaitFrame = 0;
-		m_IsAttack = 0;
-		m_State = Boss_Kasya::IDLE;
-	}
-	else
-	{
-		m_WaitFrame++;
-	}
-}
 
 void Boss_Kasya::SetUp_Move()
 {
@@ -294,7 +246,6 @@ void Boss_Kasya::SetUp_Move()
 	{
 		m_AnimationPtn++;
 		m_WaitFrame = 0;
-		m_IsAttack = 0;
 		m_MoveCount = 0;
 		if (m_StateCount % 2 == 0) {
 			m_State = Boss_Kasya::MOVE_LEFT_RIGHT;
@@ -416,6 +367,15 @@ void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, D3DXVECTOR2 m
 	m_NowDistance = 0.0f;
 	D3DXVECTOR2 vec = endPos - startPos;
 	m_MoveDistance = D3DXVec2Length(&vec);
+	// 移動方向からアニメーションの向きを決定
+	if (vec.x > 0)
+	{
+		m_Muki = 7;
+	}
+	else
+	{
+		m_Muki = 6;
+	}
 }
 
 void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos)
@@ -429,6 +389,15 @@ void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos)
 	m_MoveVec.x *= 12.0f;
 	m_MoveVec.y *= 12.0f;
 	m_MoveDistance = D3DXVec2Length(&vec);
+	// 移動方向からアニメーションの向きを決定
+	if (vec.x > 0)
+	{
+		m_Muki = 7;
+	}
+	else
+	{
+		m_Muki = 6;
+	}
 }
 
 void Boss_Kasya::Move()
@@ -441,6 +410,11 @@ void Boss_Kasya::Move()
 		m_Pos = m_EndPos;
 		m_MoveCount++;
 	}
+	if (m_AnimeFrame >= 10)
+	{
+		m_AnimationPtn++;
+		if(m_AnimationPtn>=)
+	}
 }
 
 void Boss_Kasya::SetUp_Throw()
@@ -450,7 +424,7 @@ void Boss_Kasya::SetUp_Throw()
 	case 0:
 		// 上下、左右どっちの動きか決める
 		m_BeforeState = Boss_Kasya::SETUP_THROW;
-		SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 11.0f - (m_Size.y / 2.0f)));
+		// SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), 0.0f + BLOCK_SIZE * 11.0f - (m_Size.y / 2.0f)));
 		if (m_StateCount % 2 == 0) {
 			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[1]));
 		}
