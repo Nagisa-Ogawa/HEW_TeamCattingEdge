@@ -66,6 +66,10 @@ public:
 	void Update() override;
 	// エネミーの描画処理
 	void Draw() override;
+
+	void AfterHitCheckBlockX(DWORD result) override;
+	void AfterHitCheckBlockY(DWORD result) override;
+
 	~Enemy_GhostFire();
 	// 火の玉を投げる
 	void Throw();

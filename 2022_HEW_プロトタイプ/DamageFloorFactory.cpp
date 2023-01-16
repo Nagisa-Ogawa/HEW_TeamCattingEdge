@@ -10,7 +10,7 @@ DamageFloorFactory::DamageFloorFactory()
 void DamageFloorFactory::Init()
 {
 	m_DamageFloorTextureNo = LoadTexture((char*)"data/TEXTURE/DamageFloor.png");
-	Create(D3DXVECTOR2(960.0f, 300.0f));
+	// Create(D3DXVECTOR2(960.0f, 300.0f));
 }
 
 void DamageFloorFactory::Uninit()

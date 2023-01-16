@@ -3,6 +3,7 @@
 #include <list>
 #include "enemy.h"
 #include "player.h"
+#include "camera.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -17,7 +18,9 @@ class EnemyFactory
 private:
 	std::list<Enemy*> m_pEnemyList;
 	PLAYER* m_pPlayer = nullptr;
+	CAMERA_2D* m_pCamera = nullptr;
 	int m_nowID = -1;
+	DWORD m_Result = 0;
 
 	// 敵のテクスチャ番号
 	int m_EnemyHitDropNo = -1;
@@ -58,6 +61,7 @@ public:
 	// 当たり判定系関数
 	// プレイヤーとブロックの当たり判定
 	void CollisionWallToEnemy();
+	void HitCheckWallToEnemy(std::vector<std::vector<int>>* g_Stage);
 	// プレイヤーとエネミーの当たり判定(プレイヤーへのダメージ)
 	void CollisionPlayerToEnemy();
 	// プレイヤーとボスの当たり判定(プレイヤーへのダメージ)

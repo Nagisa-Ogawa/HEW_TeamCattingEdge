@@ -8,7 +8,7 @@
 #include "FireBall.h"
 
 Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) : 
-	Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo)
+	Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo,ENEMY_TYPE::BOSS_KASYA)
 
 {
 	// 敵のサイズを設定
@@ -174,9 +174,75 @@ void Boss_Kasya::Update()
 		break;
 	}
 
-	// 移動攻撃以外は地面との当たり判定をする
+	//// 移動攻撃以外は地面との当たり判定をする
+	//if (m_State != Boss_Kasya::MOVE&&m_State != Boss_Kasya::MOVE_LEFT_RIGHT&&m_State != Boss_Kasya::MOVE_UP_DOWN) {
+	//	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	//	//当たり判定処理
+	//	if (result & HIT_LEFT)
+	//	{
+	//		if (m_Vel.x > 0.0)
+	//			m_Vel.x = 0.0f;
+	//	}
+	//	if (result & HIT_RIGHT)
+	//	{
+	//		if (m_Vel.x < 0.0)
+	//			m_Vel.x = 0.0f;
+	//	}
+
+	//	m_Pos.x += m_Vel.x;
+
+	//	result = 0;
+	//	m_Vel.y += m_Gravity;
+	//	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	//	//落下させるか？処理
+	//	if ((result & HIT_UP) == 0 && m_IsGround == true)
+	//	{
+	//		m_IsGround = false;
+	//	}
+
+	//	//落下処理
+	//	if (m_IsGround == false)
+	//	{
+	//		if (result & HIT_UP)
+	//		{
+	//			m_IsGround = true;
+	//			m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+	//			m_Vel.y = 0.0f;
+	//		}
+	//	}
+	//	else // 最終的に地面に触れている
+	//	{
+	//		m_Vel.y = 0.0f;
+	//	}
+
+	//	m_Pos.y += m_Vel.y;
+	//}
+	//else {
+	//	m_Pos += m_Vel;
+	//}
+
+	//// プレイヤーの方を向く関数
+	//// LookPlayer();
+
+	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+
+
+}
+
+void Boss_Kasya::Draw()
+{
+	if (!m_IsActive)
+	{
+		return;
+	}
+	D3DXVECTOR2 basePos = GetBase();
+	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+}
+
+void Boss_Kasya::AfterHitCheckBlockX(DWORD result)
+{
 	if (m_State != Boss_Kasya::MOVE&&m_State != Boss_Kasya::MOVE_LEFT_RIGHT&&m_State != Boss_Kasya::MOVE_UP_DOWN) {
-		result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
 		//当たり判定処理
 		if (result & HIT_LEFT)
 		{
@@ -193,7 +259,12 @@ void Boss_Kasya::Update()
 
 		result = 0;
 		m_Vel.y += m_Gravity;
-		result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	}
+}
+
+void Boss_Kasya::AfterHitCheckBlockY(DWORD result)
+{
+	if (m_State != Boss_Kasya::MOVE&&m_State != Boss_Kasya::MOVE_LEFT_RIGHT&&m_State != Boss_Kasya::MOVE_UP_DOWN) {
 		//落下させるか？処理
 		if ((result & HIT_UP) == 0 && m_IsGround == true)
 		{
@@ -220,24 +291,7 @@ void Boss_Kasya::Update()
 	else {
 		m_Pos += m_Vel;
 	}
-
-	// プレイヤーの方を向く関数
-	// LookPlayer();
-
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
-
-
-}
-
-void Boss_Kasya::Draw()
-{
-	if (!m_IsActive)
-	{
-		return;
-	}
-	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
 }
 
 Boss_Kasya::~Boss_Kasya()

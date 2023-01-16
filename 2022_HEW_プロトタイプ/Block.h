@@ -29,6 +29,8 @@ DWORD hitChackNormalPlayer_Block(D3DXVECTOR2 move);
 DWORD HitChackEnemy_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size, D3DXVECTOR2 moveVec);
 DWORD HitCheckFireBall_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size);
 void hitChackWarpPlayer_Block(D3DXVECTOR2 move);
+bool HitCheckBox_Block(D3DXVECTOR2 box1pos, float box1width, float box1height,
+	D3DXVECTOR2 box2pos, float box2width, float box2height);
 
 float GetBlockHeight(void);
 std::vector<std::vector<int>>* GetBlocks();

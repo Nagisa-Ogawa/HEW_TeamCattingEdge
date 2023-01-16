@@ -7,7 +7,7 @@
 #include "FireBall.h"
 
 Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo):
-	Enemy(pos, ID, D3DXVECTOR2(240.0f, 240.0f), D3DXVECTOR2(13.0f, 6.0f),textureNo)
+	Enemy(pos, ID, D3DXVECTOR2(240.0f, 240.0f), D3DXVECTOR2(13.0f, 6.0f),textureNo,ENEMY_TYPE::GHOSTFIRE)
 {
 	m_Muki = muki;
 	m_WaitTime = 30;
@@ -97,7 +97,60 @@ void Enemy_GhostFire::Update()
 	default:
 		break;
 	}
-	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	////当たり判定処理
+	//if (result & HIT_LEFT)
+	//{
+	//	if (m_Vel.x > 0.0)
+	//		m_Vel.x = 0.0f;
+	//}
+	//if (result & HIT_RIGHT)
+	//{
+	//	if (m_Vel.x < 0.0)
+	//		m_Vel.x = 0.0f;
+	//}
+	//m_Vel.y += m_Gravity;
+
+	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+
+	////落下させるか？処理
+	//if ((result & HIT_UP) == 0 && m_IsGround == true)
+	//{
+	//	m_IsGround = false;
+	//}
+
+	////落下処理
+	//if (m_IsGround == false)
+	//{
+	//	if (result & HIT_UP)
+	//	{
+	//		m_IsGround = true;
+	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+	//		m_Vel.y = 0.0f;
+	//	}
+	//}
+	//else // 最終的に地面に触れている
+	//{
+	//	m_Vel.y = 0.0f;
+	//}
+
+	//m_Pos += m_Vel;
+
+	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+}
+
+void Enemy_GhostFire::Draw()
+{
+	if (m_IsActive)
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+	}
+}
+
+void Enemy_GhostFire::AfterHitCheckBlockX(DWORD result)
+{
 	//当たり判定処理
 	if (result & HIT_LEFT)
 	{
@@ -111,8 +164,10 @@ void Enemy_GhostFire::Update()
 	}
 	m_Vel.y += m_Gravity;
 
-	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+}
 
+void Enemy_GhostFire::AfterHitCheckBlockY(DWORD result)
+{
 	//落下させるか？処理
 	if ((result & HIT_UP) == 0 && m_IsGround == true)
 	{
@@ -137,16 +192,6 @@ void Enemy_GhostFire::Update()
 	m_Pos += m_Vel;
 
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
-}
-
-void Enemy_GhostFire::Draw()
-{
-	if (m_IsActive)
-	{
-		D3DXVECTOR2 basePos = GetBase();
-		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
-	}
 }
 
 Enemy_GhostFire::~Enemy_GhostFire()

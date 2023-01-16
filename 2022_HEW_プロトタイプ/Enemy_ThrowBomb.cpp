@@ -7,7 +7,7 @@
 #include "Block.h"
 
 Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID, int textureNo):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 4.0f),textureNo)
+	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 4.0f),textureNo,ENEMY_TYPE::THROWBOMB)
 {
 	m_HP = 1;
 	m_WaitTime = 60;
@@ -97,7 +97,61 @@ void Enemy_ThrowBomb::Update()
 	default:
 		break;
 	}
-	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	////当たり判定処理
+	//if (result & HIT_LEFT)
+	//{
+	//	if (m_Vel.x > 0.0)
+	//		m_Vel.x = 0.0f;
+	//}
+	//if (result & HIT_RIGHT)
+	//{
+	//	if (m_Vel.x < 0.0)
+	//		m_Vel.x = 0.0f;
+	//}
+	//m_Vel.y += m_Gravity;
+
+	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+
+	////落下させるか？処理
+	//if ((result & HIT_UP) == 0 && m_IsGround == true)
+	//{
+	//	m_IsGround = false;
+	//}
+
+	////落下処理
+	//if (m_IsGround == false)
+	//{
+	//	if (result & HIT_UP)
+	//	{
+	//		m_IsGround = true;
+	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+	//		m_Vel.y = 0.0f;
+	//	}
+	//}
+	//else // 最終的に地面に触れている
+	//{
+	//	m_Vel.y = 0.0f;
+	//}
+
+	//m_Pos += m_Vel;
+	//LookPlayer();
+
+	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+}
+
+void Enemy_ThrowBomb::Draw()
+{
+	if (m_IsActive)
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+	}
+}
+
+void Enemy_ThrowBomb::AfterHitCheckBlockX(DWORD result)
+{
 	//当たり判定処理
 	if (result & HIT_LEFT)
 	{
@@ -110,9 +164,10 @@ void Enemy_ThrowBomb::Update()
 			m_Vel.x = 0.0f;
 	}
 	m_Vel.y += m_Gravity;
+}
 
-	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-
+void Enemy_ThrowBomb::AfterHitCheckBlockY(DWORD result)
+{
 	//落下させるか？処理
 	if ((result & HIT_UP) == 0 && m_IsGround == true)
 	{
@@ -138,16 +193,6 @@ void Enemy_ThrowBomb::Update()
 	LookPlayer();
 
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
-}
-
-void Enemy_ThrowBomb::Draw()
-{
-	if (m_IsActive)
-	{
-		D3DXVECTOR2 basePos = GetBase();
-		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
-	}
 }
 
 Enemy_ThrowBomb::~Enemy_ThrowBomb()

@@ -75,6 +75,10 @@ public:
 	void Update() override;
 	// エネミーの描画処理
 	void Draw() override;
+
+	void AfterHitCheckBlockX(DWORD result) override;
+	void AfterHitCheckBlockY(DWORD result) override;
+
 	~Boss_Tengu();
 
 	// ジャンプの準備をする関数

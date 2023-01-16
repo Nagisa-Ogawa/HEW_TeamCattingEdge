@@ -13,9 +13,22 @@
 //*****************************************************************************
 class Enemy 
 {
+public:
+	enum ENEMY_TYPE
+	{
+		HITDROP,
+		SELFDESTRUCT,
+		THROWBOMB,
+		GHOSTFIRE,
+		RUSH,
+		EXPLOSIONGAS,
+		BOSS_TENGU,
+		BOSS_KASYA,
+	};
 private:
 	int m_ID = -99999;	// 敵を識別するためのID
 protected:
+	ENEMY_TYPE m_EnemyType;
 	D3DXVECTOR2 m_Pos = D3DXVECTOR2(0.0f, 0.0f);	// 位置座標
 	D3DXVECTOR2 m_OldPos = D3DXVECTOR2(0.0f, 0.0);	// 1フレーム前の位置座標
 	D3DXVECTOR2 m_Vel = D3DXVECTOR2(0.0f, 0.0f);	// 速度ベクトル
@@ -38,9 +51,13 @@ protected:
 	int m_DeadAnimeNum = 0;		// 死亡時アニメーションの枚数
 	int m_DeadAnimeFrame = 0;	// 死亡時アニメーションの切り替えフレーム数
 
+	float m_BlockLength = 99999;//一番近いブロックの距離
+	int m_BlockIndex[2]{ -99999,-99999 };//1一番近いブロックの添え字
+	float m_BlockHeight = 0.0f;
+
 public:
-	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo) :
-			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) ,m_EnemyTextureNo(textureNo)
+	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo,ENEMY_TYPE enemyType) :
+			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) ,m_EnemyTextureNo(textureNo),m_EnemyType(enemyType)
 	{ 
 		m_pttern.x = 1.0f / m_divid.x;
 		m_pttern.y = 1.0f / m_divid.y;
@@ -57,16 +74,31 @@ public:
 	// エネミーの描画処理
 	virtual void Draw() = 0;
 
+	// エネミーの当たり判定をした後の処理
+	virtual void AfterHitCheckBlockX(DWORD result) = 0;
+	virtual void AfterHitCheckBlockY(DWORD result) = 0;
+
 	// エネミーの戦闘系関数
 	// プレイヤーの攻撃との当たり判定関数
 	void HitCheckPlayerAttack(D3DXVECTOR2 AttackPos);
 	// ダメージ関数
 	void Damege(int damage);
 	// Get系関数
+	ENEMY_TYPE GetEnemyType() { return m_EnemyType; };
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
+	D3DXVECTOR2 GetVel() { return m_Vel; };
 	bool GetIsActive() { return m_IsActive; };
 	bool GetIsDead() { return m_IsDead; };
+	int GetBlockIndexX() { return m_BlockIndex[0]; };
+	int GetBlockIndexY() { return m_BlockIndex[1]; };
+	float GetBlockLength() { return m_BlockLength; };
+	float GetBlockHeight() { return m_BlockHeight; };
+	// Set系関数
+	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };
+	void SetBlockIndexY(int num) { m_BlockIndex[1] = num; };
+	void SetBlockLength(float num) { m_BlockLength = num; };
+	void SetBlockHeight(float num) { m_BlockHeight = num; };
 	~Enemy() {};
 };
 

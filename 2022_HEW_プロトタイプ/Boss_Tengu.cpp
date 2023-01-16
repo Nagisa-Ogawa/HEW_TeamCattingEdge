@@ -13,7 +13,7 @@
 #define TENGU_WAITFRAME_AFTERTHROW (60)
 
 Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo):
-	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(8.0f,8.0f),textureNo)
+	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(8.0f,8.0f),textureNo,ENEMY_TYPE::BOSS_TENGU)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
@@ -181,61 +181,61 @@ void Boss_Tengu::Update()
 		break;
 	}
 
-	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	//当たり判定処理
-	if (result & HIT_LEFT)
-	{
-		if (m_Vel.x > 0.0)
-			m_Vel.x = 0.0f;
-	}
-	if (result & HIT_RIGHT)
-	{
-		if (m_Vel.x < 0.0)
-			m_Vel.x = 0.0f;
-	}
+	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	////当たり判定処理
+	//if (result & HIT_LEFT)
+	//{
+	//	if (m_Vel.x > 0.0)
+	//		m_Vel.x = 0.0f;
+	//}
+	//if (result & HIT_RIGHT)
+	//{
+	//	if (m_Vel.x < 0.0)
+	//		m_Vel.x = 0.0f;
+	//}
 
-	m_Pos.x += m_Vel.x;
+	//m_Pos.x += m_Vel.x;
 
-	if (m_State == Boss_Tengu::JUMP||m_State==Boss_Tengu::GLID)
-	{
-		m_Vel.y += m_JumpPower.y;
-	}
-	else if (m_State == Boss_Tengu::DROP)
-	{
-		m_Vel.y += m_DropPower;
-	}
-	else
-	{
-		m_Vel.y += m_Gravity;
-	}
+	//if (m_State == Boss_Tengu::JUMP||m_State==Boss_Tengu::GLID)
+	//{
+	//	m_Vel.y += m_JumpPower.y;
+	//}
+	//else if (m_State == Boss_Tengu::DROP)
+	//{
+	//	m_Vel.y += m_DropPower;
+	//}
+	//else
+	//{
+	//	m_Vel.y += m_Gravity;
+	//}
 
-	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	//落下させるか？処理
-	if ((result & HIT_UP) == 0 && m_IsGround == true)
-	{
-		m_IsGround = false;
-	}
+	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
+	////落下させるか？処理
+	//if ((result & HIT_UP) == 0 && m_IsGround == true)
+	//{
+	//	m_IsGround = false;
+	//}
 
-	//落下処理
-	if (m_IsGround == false)
-	{
-		if (result & HIT_UP)
-		{
-			m_IsGround = true;
-			m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-			m_Vel.y = 0.0f;
-		}
-	}
-	else // 最終的に地面に触れている
-	{
-		m_Vel.y = 0.0f;
-	}
+	////落下処理
+	//if (m_IsGround == false)
+	//{
+	//	if (result & HIT_UP)
+	//	{
+	//		m_IsGround = true;
+	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+	//		m_Vel.y = 0.0f;
+	//	}
+	//}
+	//else // 最終的に地面に触れている
+	//{
+	//	m_Vel.y = 0.0f;
+	//}
 
-	m_Pos.y += m_Vel.y;
-	// プレイヤーの方を向く関数
-	LookPlayer();
+	//m_Pos.y += m_Vel.y;
+	//// プレイヤーの方を向く関数
+	//LookPlayer();
 
-	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 
 	////アニメーションカウンターをカウントアップして、ウエイト値を超えたら
 	//if (m_AnimationCounter > 20)
@@ -262,6 +262,66 @@ void Boss_Tengu::Draw()
 	D3DXVECTOR2 basePos = GetBase();
 	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
 		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+}
+
+void Boss_Tengu::AfterHitCheckBlockX(DWORD result)
+{
+	//当たり判定処理
+	if (result & HIT_LEFT)
+	{
+		if (m_Vel.x > 0.0)
+			m_Vel.x = 0.0f;
+	}
+	if (result & HIT_RIGHT)
+	{
+		if (m_Vel.x < 0.0)
+			m_Vel.x = 0.0f;
+	}
+
+	m_Pos.x += m_Vel.x;
+
+	if (m_State == Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID)
+	{
+		m_Vel.y += m_JumpPower.y;
+	}
+	else if (m_State == Boss_Tengu::DROP)
+	{
+		m_Vel.y += m_DropPower;
+	}
+	else
+	{
+		m_Vel.y += m_Gravity;
+	}
+}
+
+void Boss_Tengu::AfterHitCheckBlockY(DWORD result)
+{
+	//落下させるか？処理
+	if ((result & HIT_UP) == 0 && m_IsGround == true)
+	{
+		m_IsGround = false;
+	}
+
+	//落下処理
+	if (m_IsGround == false)
+	{
+		if (result & HIT_UP)
+		{
+			m_IsGround = true;
+			m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+			m_Vel.y = 0.0f;
+		}
+	}
+	else // 最終的に地面に触れている
+	{
+		m_Vel.y = 0.0f;
+	}
+
+	m_Pos.y += m_Vel.y;
+	// プレイヤーの方を向く関数
+	LookPlayer();
+
+	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 }
 
 Boss_Tengu::~Boss_Tengu()
