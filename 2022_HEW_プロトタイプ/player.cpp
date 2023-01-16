@@ -23,8 +23,8 @@
 //*****************************************************************************
 #define NUM_VERTEX 4	//必要な頂点の数
 
-#define DIVIDE_X 3	//横の分割数
-#define DIVIDE_Y 4	//縦の分割数
+#define DIVIDE_X 8	//横の分割数
+#define DIVIDE_Y 7	//縦の分割数
 
 #define PATTERN_WIDTH (1.0f / DIVIDE_X)
 #define PATTERN_HEIGHT (1.0f / DIVIDE_Y)
@@ -53,31 +53,41 @@ D3DXVECTOR2 GetRightStick(int padNo);
 //*****************************************************************************
 static PLAYER g_Player;
 
-static int g_TextureNo = 0;//プレイヤー用テクスチャの識別子
+static int g_TextureLeft = 0;//プレイヤー用テクスチャの識別子
+static int g_TextureRight = 0;//プレイヤー用テクスチャの識別子
 static int g_TextureAttack = 0;
 
-static float g_AnimeTable[4] =
+static float g_AnimeTable[8] =
 {
 	0.0f,
-	0.33333f,
-	0.66667f,
-	0.33333f,
+	0.125f,
+	0.25f,
+	0.375f,
+	0.5f,
+	0.625f,
+	0.75f,
+	0.875f,
 };
 
-static float g_MukiTable[4] =
+static float g_AnimeTableTate[7]=
 {
-	0.0f,	//下向き
-	0.25f,	//左向き
-	0.5f,	//右向き
-	0.75f,	//上向き
+	PATTERN_HEIGHT * 0.0f,	//待機
+	PATTERN_HEIGHT * 1.0f,	//歩き
+	PATTERN_HEIGHT * 2.0f,	//走り
+	PATTERN_HEIGHT * 3.0f,	//攻撃
+	PATTERN_HEIGHT * 4.0f,	//ワープ
+	PATTERN_HEIGHT * 5.0f,	//飛び
+	PATTERN_HEIGHT * 6.0f,	//死亡
 };
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
 HRESULT InitPlayer(void)
 {
 	//テクスチャの読み込み
-	g_TextureNo = LoadTexture((char*)"data/TEXTURE/pipo-xmaschara03.png");
+	g_TextureLeft  = LoadTexture((char*)"data/TEXTURE/hituzi_L.png");
+	g_TextureRight = LoadTexture((char*)"data/TEXTURE/hituzi_R.png");
 
 	//データの初期化
 
@@ -104,8 +114,12 @@ HRESULT InitPlayer(void)
 
 	//アニメーション関連の初期化
 	g_Player.muki = 0;
-	g_Player.animePtn = 0;
-	g_Player.animeCounter = 0;
+	g_Player.animeWalk  = 0;
+	g_Player.animeAttack = 0;
+	g_Player.animeDeath = 0;
+	g_Player.animeCounterRun = 0;
+	g_Player.animeCounterWalk = 0;
+
 	g_Player.move = false;
 
 	//戦闘関連情報の初期化
@@ -210,19 +224,33 @@ void UpdatePlayer(void)
 
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 
-	////アニメーションカウンターをカウントアップして、ウエイト値を超えたら
-	//if (g_Player.animeCounter > 10)
-	//{
-	//	//アニメーションパターンを切り替える
-	//	g_Player.animePtn++;
-	//	//最後のアニメーションパターンを表示したらリセットする
-	//	if (g_Player.animePtn >= 4)
-	//		g_Player.animePtn = 0;
+	//アニメーションカウンターをカウントアップして、ウエイト値を超えたら
+	if (g_Player.animeCounterWalk > 10)
+	{
+		//アニメーションパターンを切り替える
+		g_Player.animeWalk++;
+		//最後のアニメーションパターンを表示したらリセットする
+		if (g_Player.animeWalk >= 8)
+			g_Player.animeWalk = 0;
 
-	//	//アニメーションカウンターのリセット
-	//	g_Player.animeCounter = 0;
-	//}
-	//g_Player.animeCounter++;
+		//アニメーションカウンターのリセット
+		g_Player.animeCounterWalk = 0;
+	}
+	g_Player.animeCounterWalk++;
+
+	//走る
+	if (g_Player.animeCounterRun > 5)
+	{
+		//アニメーションパターンを切り替える
+		g_Player.animeRun++;
+		//最後のアニメーションパターンを表示したらリセットする
+		if (g_Player.animeRun >= 8)
+			g_Player.animeRun = 0;
+
+		//アニメーションカウンターのリセット
+		g_Player.animeCounterRun = 0;
+	}
+	g_Player.animeCounterRun++;
 
 	//無敵判定の処理
 	if (g_Player.mutekiflag == true)
@@ -254,8 +282,8 @@ void UpdatePlayer(void)
 	}
 
 	//カメラ座標の更新
-	//CAMERA_2D* pCamera = GetCamera();
-	//pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH  / 2;
+	CAMERA_2D* pCamera = GetCamera();
+	pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH  / 2;
 	//pCamera->pos.y = g_Player.pos.y - SCREEN_HEIGHT / 2 - 60.0f;
 	/*if (pCamera->pos.x < 0)
 		pCamera->pos.x = 0;
@@ -273,71 +301,208 @@ void DrawPlayer(void)
 	//ベース座標を受け取る
 	D3DXVECTOR2 basePos = GetBase();
 
-	//キャラクターの描画
 	switch (g_Player.status)
 	{
 		//徒歩状態
 	case normal:
-		if (g_Player.mutekiflag == true)
+		if (g_Player.waitafterwarp > 0)
 		{
-			float color = (float)(g_Player.mutekitime % 30);
-
-			DrawSpriteColor(g_TextureNo,
+			DrawSpriteColor(g_TextureRight,
 				basePos.x + g_Player.pos.x,
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
-				g_AnimeTable[g_Player.animePtn],
-				g_MukiTable[g_Player.muki],
-				PATTERN_WIDTH,
-				PATTERN_HEIGHT,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
-		}
-		else
-		{
-			DrawSpriteColor(g_TextureNo,
-				basePos.x + g_Player.pos.x,
-				basePos.y + (g_Player.pos.y),
-				g_Player.size, g_Player.size,
-				g_AnimeTable[g_Player.animePtn],
-				g_MukiTable[g_Player.muki],
+				g_AnimeTable[1],
+				g_AnimeTableTate[4],
 				PATTERN_WIDTH,
 				PATTERN_HEIGHT,
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		}
+		else
+		{
+			switch (g_Player.muki)
+			{
+			case 0:
+				if (g_Player.mutekiflag == true)
+				{
+					float color = (float)(g_Player.mutekitime % 30);
+
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[0],
+						g_AnimeTableTate[0],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				}
+				else
+				{
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[0],
+						g_AnimeTableTate[0],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+				break;
+			case 1:
+				if (g_Player.mutekiflag == true)
+				{
+					float color = (float)(g_Player.mutekitime % 30);
+
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				}
+				else
+				{
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+				break;
+			case 2:
+				if (g_Player.mutekiflag == true)
+				{
+					float color = (float)(g_Player.mutekitime % 30);
+
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeRun],
+						g_AnimeTableTate[2],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				}
+				else
+				{
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeRun],
+						g_AnimeTableTate[2],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+				break;
+			case 3:
+				if (g_Player.mutekiflag == true)
+				{
+					float color = (float)(g_Player.mutekitime % 30);
+
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				}
+				else
+				{
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+				break;
+			case 4:
+				if (g_Player.mutekiflag == true)
+				{
+					float color = (float)(g_Player.mutekitime % 30);
+
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeRun],
+						g_AnimeTableTate[2],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				}
+				else
+				{
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeRun],
+						g_AnimeTableTate[2],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				}
+				break;
+			default:
+				break;
+			}
+		}
 		break;
 		//ワープ待機状態
 	case warpwait:
-		DrawSpriteColor(g_TextureNo,
+		//本体の描画
+		DrawSpriteColor(g_TextureRight,
 			basePos.x + g_Player.pos.x,
 			basePos.y + (g_Player.pos.y),
 			g_Player.size, g_Player.size,
-			g_AnimeTable[g_Player.animePtn],
-			g_MukiTable[g_Player.muki],
+			g_AnimeTable[0],
+			g_AnimeTableTate[4],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
 			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 
-		DrawSpriteColor(g_TextureNo,
+		//ワープ先の描画
+		DrawSpriteColor(g_TextureRight,
 			basePos.x + g_Player.warppos.x,
 			basePos.y + (g_Player.warppos.y),
 			g_Player.size, g_Player.size,
-			g_AnimeTable[g_Player.animePtn],
-			g_MukiTable[g_Player.muki],
+			g_AnimeTable[1],
+			g_AnimeTableTate[4],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
 			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
 		break;
 		//ワ－プ状態
 	case warp:
-		DrawSpriteColor(g_TextureNo,
+		break;
+	case death:
+		DrawSpriteColor(g_TextureRight,
 			basePos.x + g_Player.pos.x,
-			basePos.y + g_Player.pos.y,
+			basePos.y + (g_Player.pos.y),
 			g_Player.size, g_Player.size,
-			g_AnimeTable[g_Player.animePtn],
-			g_MukiTable[g_Player.muki],
+			g_AnimeTable[g_Player.animeWalk],
+			g_AnimeTableTate[6],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f));
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 	}
 
@@ -379,7 +544,7 @@ void PlayerDamage(int num)
 void PlayerStatusNormal(void)
 {
 	//メンバーデバック用キーボート操作
-	{
+	/*{
 		if (GetKeyboardPress(DIK_A))
 		{
 			g_Player.vel.x -= PLAYER_SPEED;
@@ -419,12 +584,33 @@ void PlayerStatusNormal(void)
 				g_Player.attackflag = 2;
 			}
 		}
-	}
+	}*/
 
 	//左右移動
 	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
 
-	//ワープ処理(ワープ中ではない状態でスペースキーが押されたとき)
+	if (GetThumbLeftX(TEST_CON) > 0.8f)
+	{
+		g_Player.muki = 2;
+	}
+	else if (GetThumbLeftX(TEST_CON) > 0.1f)
+	{
+		g_Player.muki = 1;
+	}
+	else if (GetThumbLeftX(TEST_CON) < -0.8f)
+	{
+		g_Player.muki = 4;
+	}
+	else if (GetThumbLeftX(TEST_CON) < -0.1f)
+	{
+		g_Player.muki = 3;
+	}
+	else
+	{
+		g_Player.muki = 0;
+	}
+
+	//ワープ処理
 	if (0.0 != GetThumbRightX(TEST_CON) || 0.0 != GetThumbRightY(TEST_CON))
 	{
 		if (g_Player.warpFlag != 0)
@@ -498,11 +684,12 @@ void PlayerStatusWarpwait(void)
 
 void PlayerStatusWarp(void)
 {
+	//ワープ処理
 	g_Player.pos.x = g_Player.warppos.x;
 	g_Player.pos.y = g_Player.warppos.y;
 
 	g_Player.warpframe = 0;
-	g_Player.waitafterwarp = 9;
+	g_Player.waitafterwarp = 15;
 	g_Player.warpFlag--;
 
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);

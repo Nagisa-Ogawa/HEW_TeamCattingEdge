@@ -14,6 +14,7 @@ enum STATUS
 	normal,
 	warpwait,
 	warp,
+	death,
 	
 	STATUS_NUM,
 };
@@ -50,9 +51,15 @@ struct PLAYER
 	bool        LandingFlag;	//着地フラグ
 
 	//アニメーション関連
-	int			muki;
-	int			animePtn;
-	int			animeCounter;
+	int			muki;	// 0:停止 1:右歩き 2:右走り 3:左歩き 4:左走り
+	int			animeWalk;
+	int			animeRun;
+	int			animeAttack;
+	int			animeDeath;
+	int			animeCounterWalk;
+	int			animeCounterRun;
+	int			animeCounterAttack;
+	int			animeCounterDeath;
 	bool		move;
 
 	//戦闘関連

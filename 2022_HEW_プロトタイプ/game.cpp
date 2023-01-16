@@ -21,6 +21,7 @@
 #include "ExplosionFactory.h"
 #include "ShockWaveFactory.h"
 #include "FireBallFactory.h"
+#include "DamageFloorFactory.h"
 #include "UI.h"
 #include "gameover.h"
 
@@ -47,6 +48,7 @@ static BombFactory bombFactory;
 static ExplosionFactory explosionFactory;
 static ShockWaveFactory shockWaveFactory;
 static FireBallFactory fireBallFactory;
+static DamageFloorFactory damageFloorFactory;
 static UI ui(GetPlayer());
 
 //=============================================================================
@@ -164,6 +166,8 @@ void InitGameStage(void)
 	// エネミー工場の初期化
 	enemyFactory.Init();
 
+	damageFloorFactory.Init();
+
 	// 爆弾工場の初期化
 	bombFactory.Init();
 
@@ -203,8 +207,11 @@ void UninitGameStage(void)
 	// 爆発工場の終了処理
 	bombFactory.Uninit();
 
+	damageFloorFactory.Uninit();
+
 	//エネミー工場の終了処理
 	enemyFactory.Uninit();
+
 
 	// ステージの終了処理
 	UninitBlock();
@@ -224,6 +231,7 @@ void UpdateGameStage(void)
 	// ステージの更新処理
 	UpdateBlock();
 
+
 	// 背景の更新
 	UpdateBG();
 
@@ -235,6 +243,8 @@ void UpdateGameStage(void)
 
 	// 敵の更新処理
 	enemyFactory.Update();
+
+	damageFloorFactory.Update();
 
 	// 爆弾工場の更新処理
 	bombFactory.Update();
@@ -259,6 +269,8 @@ void DrawGameStage(void)
 
 	// ステージの描画処理
 	DrawBlock();
+
+	damageFloorFactory.Draw();
 
 	// 衝撃波工場の描画処理
 	shockWaveFactory.Draw();

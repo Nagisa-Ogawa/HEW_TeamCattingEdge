@@ -56,6 +56,8 @@ public:
 	void SetEnemy();
 
 	// 当たり判定系関数
+	// プレイヤーとブロックの当たり判定
+	void CollisionWallToEnemy();
 	// プレイヤーとエネミーの当たり判定(プレイヤーへのダメージ)
 	void CollisionPlayerToEnemy();
 	// プレイヤーとボスの当たり判定(プレイヤーへのダメージ)
