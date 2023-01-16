@@ -72,7 +72,7 @@ static std::vector<std::vector<int>> g_Blocks =
 		{  1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
 		{  1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
 		{  1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1},
-		{  1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0, 0, 0, 1, 1},
+		{  1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,36, 0, 0, 0, 0, 0, 0, 0, 1, 1},
 		{  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 		{  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
 };
@@ -100,7 +100,7 @@ std::vector<std::vector<int>> g_a =
 	{  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,},
 };
 
-static std::vector<std::vector<int>>* g_NowStage = &g_a;
+static std::vector<std::vector<int>>* g_NowStage = &g_Blocks;
 
 //=============================================================================
 // 初期化処理
@@ -202,13 +202,15 @@ void DrawBlock(void)
 	}
 }
 
-DWORD hitChackNormalPlayer_Block( D3DXVECTOR2 move)
+DWORD hitChackNormalPlayer_Block(D3DXVECTOR2 move)
 {
 	PLAYER* pPlayer = GetPlayer();
 
 	DWORD result = 0;
 	//プレイヤーの移動先座標を作成する
 	D3DXVECTOR2 vPlayerPos = pPlayer->pos + move;
+
+	CAMERA_2D* pCamera = GetCamera();
 
 	float block_length = 99999;//一番近いブロックの距離
 	int block_index[2]{ -99999,-99999 };//1一番近いブロックの添え字
@@ -219,24 +221,31 @@ DWORD hitChackNormalPlayer_Block( D3DXVECTOR2 move)
 		for (int x = 0; x < (*g_NowStage)[y].size(); x++)
 		{
 			//敵の可視フラグがオフの場合はスキップする
-			if ((*g_NowStage)[y][x] != 1) {
+			if ((*g_NowStage)[y][x] != 1)
+			{
 				continue;
 			}
 
 			//ヒットしているかを判定する
 			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
-			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vPlayerPos, pPlayer->size, pPlayer->size))
+			if (pCamera->pos.x <= BlockPos.x)
 			{
-				//自分に当たっている中で一番近いブロックを探す
-				D3DXVECTOR2 vLength = BlockPos - vPlayerPos;
-				float length = D3DXVec2Length(&(vLength));
-				if (block_length > length)
+				if (pCamera->pos.x + SCREEN_WIDTH >= BlockPos.x)
 				{
-					//より近いブロックの情報に更新する
-					block_length = length;
-					block_index[0] = x;
-					block_index[1] = y;
+					if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vPlayerPos, pPlayer->size, pPlayer->size))
+					{
+						//自分に当たっている中で一番近いブロックを探す
+						D3DXVECTOR2 vLength = BlockPos - vPlayerPos;
+						float length = D3DXVec2Length(&(vLength));
+						if (block_length > length)
+						{
+							//より近いブロックの情報に更新する
+							block_length = length;
+							block_index[0] = x;
+							block_index[1] = y;
+						}
+					}
 				}
 			}
 		}
@@ -256,19 +265,23 @@ DWORD hitChackNormalPlayer_Block( D3DXVECTOR2 move)
 		//ヒット方向の判定
 		float hit_vartical = D3DXVec2Dot(&vY, &vDist);
 
-		if (hit_vartical < 0) {
+		if (hit_vartical < 0)
+		{
 			result |= HIT_DOWN;
 		}
-		else if (hit_vartical > 0) {
+		else if (hit_vartical > 0)
+		{
 			result |= HIT_UP;
 		}
 
 		D3DXVECTOR2 vX(-1.0f, 0.0f);
 		float hit_horizontal = D3DXVec2Dot(&vX, &vDist);
-		if (hit_horizontal < 0) {
+		if (hit_horizontal < 0)
+		{
 			result |= HIT_RIGHT;
 		}
-		else if (hit_horizontal > 0) {
+		else if (hit_horizontal > 0)
+		{
 			result |= HIT_LEFT;
 		}
 
@@ -284,6 +297,8 @@ DWORD HitChackEnemy_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size, D3DXVECTOR2 moveVec
 	DWORD result = 0;
 	//プレイヤーの移動先座標を作成する
 	D3DXVECTOR2 vEnemyPos = pos + moveVec;
+
+	CAMERA_2D* pCamera = GetCamera();
 
 	float block_length = 99999;//一番近いブロックの距離
 	int block_index[2]{ -99999,-99999 };//1一番近いブロックの添え字
@@ -302,7 +317,27 @@ DWORD HitChackEnemy_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size, D3DXVECTOR2 moveVec
 			//ヒットしているかを判定する
 			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
-			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vEnemyPos, size.x,size.y))
+			if (pCamera->pos.x <= BlockPos.x)
+			{
+				if (pCamera->pos.x + SCREEN_WIDTH >= BlockPos.x)
+				{
+					if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vEnemyPos, size.x, size.y))
+					{
+						//自分に当たっている中で一番近いブロックを探す
+						D3DXVECTOR2 vLength = BlockPos - vEnemyPos;
+						float length = D3DXVec2Length(&(vLength));
+						if (block_length > length)
+						{
+							//より近いブロックの情報に更新する
+							block_length = length;
+							block_index[0] = x;
+							block_index[1] = y;
+						}
+					}
+				}
+			}
+
+			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vEnemyPos, size.x, size.y))
 			{
 				//自分に当たっている中で一番近いブロックを探す
 				D3DXVECTOR2 vLength = BlockPos - vEnemyPos;
@@ -365,6 +400,8 @@ DWORD HitCheckFireBall_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	//プレイヤーの移動先座標を作成する
 	D3DXVECTOR2 vEnemyPos = pos;
 
+	CAMERA_2D* pCamera = GetCamera();
+
 	float block_length = 99999;//一番近いブロックの距離
 	int block_index[2]{ -99999,-99999 };//1一番近いブロックの添え字
 
@@ -382,19 +419,23 @@ DWORD HitCheckFireBall_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 			//ヒットしているかを判定する
 			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
-			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vEnemyPos, size.x, size.y))
+			if (pCamera->pos.x <= BlockPos.x)
 			{
-				//自分に当たっている中で一番近いブロックを探す
-				D3DXVECTOR2 vLength = BlockPos - vEnemyPos;
-				float length = D3DXVec2Length(&(vLength));
-				if (block_length > length)
+				if (pCamera->pos.x + SCREEN_WIDTH >= BlockPos.x)
 				{
-					//より近いブロックの情報に更新する
-					block_length = length;
-					block_index[0] = x;
-					block_index[1] = y;
+					if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, vEnemyPos, size.x, size.y))
+					{
+						//自分に当たっている中で一番近いブロックを探す
+						D3DXVECTOR2 vLength = BlockPos - vEnemyPos;
+						float length = D3DXVec2Length(&(vLength));
+						//より近いブロックの情報に更新する
+						block_length = length;
+						block_index[0] = x;
+						block_index[1] = y;
+					}
 				}
 			}
+
 		}
 	}
 
@@ -437,9 +478,7 @@ DWORD HitCheckFireBall_Block(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	}
 
 	return result;
-
 }
-
 
 float GetBlockHeight(void)
 {
