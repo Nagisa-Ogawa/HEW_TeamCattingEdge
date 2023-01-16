@@ -185,7 +185,7 @@ void FireBall::RotToVecotr(D3DXVECTOR2 vector)
 		rot = atan2(vector.y, vector.x);
 	}
 	else {
-		rot = atan2(vector.y, vector.x) + M_PI;
+		rot = atan2(vector.y, vector.x); //+ M_PI;
 	}
 	m_Rot = rot;
 }

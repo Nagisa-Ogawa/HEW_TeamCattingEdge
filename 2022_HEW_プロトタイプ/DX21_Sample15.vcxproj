@@ -138,6 +138,8 @@
     <ClInclude Include="Boss_Tengu.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
+    <ClInclude Include="DamageFloor.h" />
+    <ClInclude Include="DamageFloorFactory.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="EnemyFactory.h" />
     <ClInclude Include="Enemy_ExplosionGas.h" />
@@ -181,6 +183,8 @@
     <ClCompile Include="Boss_Tengu.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
+    <ClCompile Include="DamageFloor.cpp" />
+    <ClCompile Include="DamageFloorFactory.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="Enemy_ExplosionGas.cpp" />
