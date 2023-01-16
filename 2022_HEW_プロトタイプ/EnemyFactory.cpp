@@ -88,7 +88,7 @@ void EnemyFactory::Init()
 	m_EnemyGhostFireNo = LoadTexture((char*)"data/TEXTURE/Enemy_GhostFire.png");
 	m_EnemyRushNo = LoadTexture((char*)"data/TEXTURE/enemy_selfdestruct.png");
 	m_EnemyExplosionGasNo = LoadTexture((char*)"data/TEXTURE/Enemy_ExplosionGas.png");
-	m_EnemyKasyaNo = LoadTexture((char*)"data/TEXTURE/Boss_Kasya.png");
+	m_EnemyKasyaNo = LoadTexture((char*)"data/TEXTURE/Boss_Kasya01.png");
 
 	// マップ情報からエネミーを生成
 	SetEnemy();

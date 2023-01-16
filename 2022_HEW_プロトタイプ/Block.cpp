@@ -100,7 +100,7 @@ std::vector<std::vector<int>> g_a =
 	{  1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,},
 };
 
-static std::vector<std::vector<int>>* g_NowStage = &g_Blocks;
+static std::vector<std::vector<int>>* g_NowStage = &g_a;
 
 //=============================================================================
 // ‰Šú‰»ˆ—
