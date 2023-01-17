@@ -77,6 +77,10 @@ private:
 	int m_NowReflectCount = 0;
 	int m_NowReflectAllCount = 0;
 
+	float m_BlockLength = 99999;//一番近いブロックの距離
+	int m_BlockIndex[2]{ -99999,-99999 };//1一番近いブロックの添え字
+	float m_BlockHeight = 0.0f;
+
 	//ThreeShotモード用変数
 
 public:
@@ -107,6 +111,11 @@ public:
 	int GetNowReflectAllCount() { return m_NowReflectAllCount; };
 	int GetNowReflectWallCount() { return m_NowReflectWallCount; };
 
+	int GetBlockIndexX() { return m_BlockIndex[0]; };
+	int GetBlockIndexY() { return m_BlockIndex[1]; };
+	float GetBlockLength() { return m_BlockLength; };
+	float GetBlockHeight() { return m_BlockHeight; };
+
 	// Set系関数
 	void SetThrowPower(D3DXVECTOR2 throwPower) { m_ThrowPower = throwPower; };
 	void SetHittingFlag(bool flag) { m_isHittingWall = flag; };
@@ -115,6 +124,10 @@ public:
 	void SetNowReflectCount(int num) { m_NowReflectCount = num; };
 	void SetNowReflectAllCount(int num) { m_NowReflectAllCount = num; };
 	void SetNowReflectWallCount(int num) { m_NowReflectWallCount = num; };
+	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };
+	void SetBlockIndexY(int num) { m_BlockIndex[1] = num; };
+	void SetBlockLength(float num) { m_BlockLength = num; };
+	void SetBlockHeight(float num) { m_BlockHeight = num; };
 
 	void Move();
 	void Hit();
