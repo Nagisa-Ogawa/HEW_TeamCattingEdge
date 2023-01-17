@@ -13,7 +13,7 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 {
 	// “G‚ÌƒTƒCƒY‚ðÝ’è
 	m_Gravity = 4.0f;
-	m_HP = 10;
+	m_HP = 1;
 	m_Muki = 0;
 	m_IdleWaitFrame = 120;
 	// ˆÚ“®UŒ‚—p•Ï”‰Šú‰»
@@ -59,10 +59,10 @@ void Boss_Kasya::Update()
 		m_IsDie = false;
 		m_AnimationPtn = 0;
 		if (m_Muki % 2 == 0) {
-			m_Muki = 4;
+			m_Muki = 2;
 		}
 		else {
-			m_Muki = 5;
+			m_Muki = 3;
 		}
 		m_WaitFrame = 0;
 		m_State = DEAD;
@@ -169,7 +169,19 @@ void Boss_Kasya::Update()
 
 		break;
 	case Boss_Kasya::DEAD:
-		m_IsActive = false;
+		if (m_WaitFrame >= 10)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 6) {
+				m_AnimationPtn = 0;
+				m_IsActive = false;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	default:
 		break;
