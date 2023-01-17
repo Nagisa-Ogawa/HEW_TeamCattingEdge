@@ -14,7 +14,9 @@ class FireBallFactory;
 enum GAMESCENE {
 	GAMESCENE_NONE,				//
 	GAMESCENE_STAGE_TENGU,		//天狗ステージ
+	GAMESCENE_BASS_TENGU,		//天狗ボスステージ
 	GAMESCENE_STAGE_KASYA,		//火車ステージ
+	GAMESCENE_BASS_KASYA,		//火車ボスステージ
 	GAMESCENE_STAGE_NUM,		//火車ステージ
 
 	GAMESCENE_PICTURE_OVERGAME, //ゲームオーバー

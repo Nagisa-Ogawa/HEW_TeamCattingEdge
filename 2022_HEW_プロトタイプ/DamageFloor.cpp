@@ -5,7 +5,7 @@
 
 DamageFloor::DamageFloor(D3DXVECTOR2 pos, int textureNo):m_Pos(pos),m_TextureNo(textureNo)
 {
-	m_Size = D3DXVECTOR2(1920.0f, 60.0f);
+	m_Size = D3DXVECTOR2(1860.0f, 60.0f);
 	m_IsActive = true;
 	m_divid = D3DXVECTOR2(1.0f, 1.0f);
 	m_pttern.x = 1.0f / m_divid.x;

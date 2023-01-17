@@ -13,7 +13,7 @@
 #define TENGU_WAITFRAME_AFTERTHROW (60)
 
 Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo):
-	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(8.0f,8.0f),textureNo,ENEMY_TYPE::BOSS_TENGU)
+	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,6.0f),textureNo,ENEMY_TYPE::BOSS_TENGU)
 {
 	// ìGÇÃÉTÉCÉYÇê›íË
 	m_Gravity = 4.0f;

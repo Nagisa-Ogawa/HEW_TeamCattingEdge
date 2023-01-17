@@ -24,6 +24,10 @@ public:
 	void Update();
 	// エネミーの描画処理
 	void Draw();
+
+	bool GetIsActive() { return m_IsActive; };
+	D3DXVECTOR2 GetPos() { return m_Pos; };
+	D3DXVECTOR2 GetSize() { return m_Size; };
 	~DamageFloor();
 
 };

@@ -83,7 +83,7 @@ static float g_AnimeTableTate[7]=
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT InitPlayer(void)
+HRESULT InitPlayer(GAMESCENE gamescene)
 {
 	//テクスチャの読み込み
 	g_TextureLeft  = LoadTexture((char*)"data/TEXTURE/hituzi_L.png");
@@ -131,6 +131,7 @@ HRESULT InitPlayer(void)
 
 	//その他の初期化
 	g_Player.enemyfactory = GetEnemyFactory();
+	g_Player.gamescene = gamescene;
 
 	SetNumber(32768); //スコアの描画
 
@@ -283,13 +284,24 @@ void UpdatePlayer(void)
 
 	//カメラ座標の更新
 	CAMERA_2D* pCamera = GetCamera();
-	pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH  / 2;
-	//pCamera->pos.y = g_Player.pos.y - SCREEN_HEIGHT / 2 - 60.0f;
-	/*if (pCamera->pos.x < 0)
-		pCamera->pos.x = 0;
-	if (pCamera->pos.y < 0)
-		pCamera->pos.y = 0;*/
 
+	switch (g_Player.gamescene)
+	{
+	case GAMESCENE_STAGE_TENGU:
+		pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH / 2;
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		pCamera->pos.x += 2.0f;
+		break;
+	default:
+		//pCamera->pos.x = SCREEN_WIDTH / 2;
+		break;
+	}
+	
+	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_A))
+	{
+		SetGameScene(GAMESCENE_STAGE_KASYA);
+	}
 }
 
 
@@ -477,7 +489,7 @@ void DrawPlayer(void)
 			g_AnimeTableTate[4],
 			PATTERN_WIDTH,
 			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 		//ワープ先の描画
 		DrawSpriteColor(g_TextureRight,

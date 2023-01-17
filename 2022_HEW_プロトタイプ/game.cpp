@@ -56,7 +56,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
+	g_Scene = g_SceneNext = GAMESCENE_STAGE_KASYA;
 
 	InitGameStage();
 }
@@ -70,7 +70,13 @@ void UninitGame(void)
 	case GAMESCENE_STAGE_TENGU:
 		UninitGameStage();
 		break;
+	case GAMESCENE_BASS_TENGU:
+		UninitGameStage();
+		break;
 	case GAMESCENE_STAGE_KASYA:
+		UninitGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
 	case GAMESCENE_STAGE_NUM:
@@ -97,7 +103,13 @@ void UpdateGame(void)
 	case GAMESCENE_STAGE_TENGU:
 		UpdateGameStage();
 		break;
+	case GAMESCENE_BASS_TENGU:
+		UpdateGameStage();
+		break;
 	case GAMESCENE_STAGE_KASYA:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
 		UpdateGameStage();
 		break;
 	case GAMESCENE_STAGE_NUM:
@@ -131,7 +143,13 @@ void DrawGame(void)
 	case GAMESCENE_STAGE_TENGU:
 		DrawGameStage();
 		break;
+	case GAMESCENE_BASS_TENGU:
+		DrawGameStage();
+		break;
 	case GAMESCENE_STAGE_KASYA:
+		DrawGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
 		DrawGameStage();
 		break;
 	case GAMESCENE_STAGE_NUM:
@@ -155,13 +173,13 @@ void DrawGame(void)
 void InitGameStage(void)
 {
 	// プレイヤーの初期化
-	InitPlayer();
+	InitPlayer(g_Scene);
 
 	// 背景の初期化
 	InitBG();
 
 	// ステージの初期化
-	InitBlock();
+	InitBlock(g_Scene);
 
 	// エネミー工場の初期化
 	enemyFactory.Init();

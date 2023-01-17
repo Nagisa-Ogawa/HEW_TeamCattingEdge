@@ -1,7 +1,7 @@
 #pragma once
 
 #include "main.h"
-#include "renderer.h"
+#include "game.h"
 
 class EnemyFactory;
 
@@ -70,13 +70,14 @@ struct PLAYER
 	int			hp;				//HP
 
 	//その他
+	GAMESCENE	gamescene;
 	EnemyFactory* enemyfactory = nullptr;
 };
 
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitPlayer(void);
+HRESULT InitPlayer(GAMESCENE gamescene);
 void UninitPlayer(void);
 void UpdatePlayer(void);
 void DrawPlayer(void);

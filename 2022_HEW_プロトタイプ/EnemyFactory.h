@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <vector>
 #include "enemy.h"
 #include "player.h"
 #include "camera.h"
@@ -55,6 +56,7 @@ public:
 	void Create_Boss_Tengu(D3DXVECTOR2 pos);
 	void Create_Boss_Kasya(D3DXVECTOR2 pos);
 
+	std::list<Enemy*>* GetEnemyList() { return &m_pEnemyList; };
 	// マップ情報からエネミーを作成
 	void SetEnemy();
 

@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "main.h"
-#include "renderer.h"
+#include "game.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -18,7 +18,7 @@
 //*****************************************************************************
 // プロトタイプ宣言
 //*****************************************************************************
-HRESULT InitBlock(void);
+HRESULT InitBlock(GAMESCENE gamescene);
 void UninitBlock(void);
 void UpdateBlock(void);
 void DrawBlock(void);

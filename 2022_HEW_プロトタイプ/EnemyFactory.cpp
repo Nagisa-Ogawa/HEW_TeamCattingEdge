@@ -105,6 +105,11 @@ void EnemyFactory::Uninit()
 	{
 		pEnemy->Uninit();
 	}
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		delete pEnemy;
+	}
+	m_pEnemyList.clear();
 }
 
 void EnemyFactory::Update()
@@ -382,6 +387,9 @@ void EnemyFactory::CollisionPlayerToEnemy()
 		// 画面外ならスキップ
 		if (!pEnemy->GetIsActive())
 		{
+			continue;
+		}
+		if (pEnemy->GetIsDead()) {
 			continue;
 		}
 		// 敵と当たったなら
