@@ -211,49 +211,52 @@ void EnemyFactory::CollisionWallToEnemy()
 	// すべての敵をチェック
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		m_Result = 0;
-		if (!pEnemy->GetIsActive()) {
-			continue;
+		if (pEnemy->GetPos().x - m_pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 120.0f) {
+
+			m_Result = 0;
+			if (!pEnemy->GetIsActive()) {
+				continue;
+			}
+			//ブロックのヒットした向きを調べる
+			if (pEnemy->GetBlockLength() != 99999)
+			{
+				D3DXVECTOR2 vY(0.0f, -1.0f);
+
+				//ブロックの座標(中心)
+				D3DXVECTOR2 BlockPos = D3DXVECTOR2((pEnemy->GetBlockIndexX() * BLOCK_SIZE) + 30.0f, (pEnemy->GetBlockIndexY() * BLOCK_SIZE) + 30.0f);
+
+				D3DXVECTOR2 vDist = -BlockPos;
+				D3DXVec2Normalize(&vDist, &vDist);
+
+				//ヒット方向の判定
+				float hit_vartical = D3DXVec2Dot(&vY, &vDist);
+
+				if (hit_vartical < 0)
+				{
+					m_Result |= HIT_DOWN;
+				}
+				else if (hit_vartical > 0)
+				{
+					m_Result |= HIT_UP;
+				}
+
+				D3DXVECTOR2 vX(-1.0f, 0.0f);
+				float hit_horizontal = D3DXVec2Dot(&vX, &vDist);
+				if (hit_horizontal <= 0)
+				{
+					m_Result |= HIT_RIGHT;
+				}
+				else if (hit_horizontal > 0)
+				{
+					m_Result |= HIT_LEFT;
+				}
+
+				//ブロックの上座標を更新する
+				pEnemy->SetBlockHeight(BlockPos.y - 30.0f);
+			}
+			// 当たり判定後のエネミーの処理
+			pEnemy->AfterHitCheckBlockX(m_Result);
 		}
-		//ブロックのヒットした向きを調べる
-		if (pEnemy->GetBlockLength() != 99999)
-		{
-			D3DXVECTOR2 vY(0.0f, -1.0f);
-
-			//ブロックの座標(中心)
-			D3DXVECTOR2 BlockPos = D3DXVECTOR2((pEnemy->GetBlockIndexX() * BLOCK_SIZE) + 30.0f, (pEnemy->GetBlockIndexY() * BLOCK_SIZE) + 30.0f);
-
-			D3DXVECTOR2 vDist = -BlockPos;
-			D3DXVec2Normalize(&vDist, &vDist);
-
-			//ヒット方向の判定
-			float hit_vartical = D3DXVec2Dot(&vY, &vDist);
-
-			if (hit_vartical < 0)
-			{
-				m_Result |= HIT_DOWN;
-			}
-			else if (hit_vartical > 0)
-			{
-				m_Result |= HIT_UP;
-			}
-
-			D3DXVECTOR2 vX(-1.0f, 0.0f);
-			float hit_horizontal = D3DXVec2Dot(&vX, &vDist);
-			if (hit_horizontal <= 0)
-			{
-				m_Result |= HIT_RIGHT;
-			}
-			else if (hit_horizontal > 0)
-			{
-				m_Result |= HIT_LEFT;
-			}
-
-			//ブロックの上座標を更新する
-			pEnemy->SetBlockHeight(BlockPos.y - 30.0f);
-		}
-		// 当たり判定後のエネミーの処理
-		pEnemy->AfterHitCheckBlockX(m_Result);
 	}
 
 	HitCheckWallToEnemy(g_Stage);
@@ -261,49 +264,51 @@ void EnemyFactory::CollisionWallToEnemy()
 	// すべての敵をチェック
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		m_Result = 0;
-		if (!pEnemy->GetIsActive()) {
-			continue;
+		if (pEnemy->GetPos().x - m_pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 120.0f) {
+			m_Result = 0;
+			if (!pEnemy->GetIsActive()) {
+				continue;
+			}
+			//ブロックのヒットした向きを調べる
+			if (pEnemy->GetBlockLength() != 99999)
+			{
+				D3DXVECTOR2 vY(0.0f, -1.0f);
+
+				//ブロックの座標(中心)
+				D3DXVECTOR2 BlockPos = D3DXVECTOR2((pEnemy->GetBlockIndexX() * BLOCK_SIZE) + 30.0f, (pEnemy->GetBlockIndexY() * BLOCK_SIZE) + 30.0f);
+
+				D3DXVECTOR2 vDist = -BlockPos;
+				D3DXVec2Normalize(&vDist, &vDist);
+
+				//ヒット方向の判定
+				float hit_vartical = D3DXVec2Dot(&vY, &vDist);
+
+				if (hit_vartical < 0)
+				{
+					m_Result |= HIT_DOWN;
+				}
+				else if (hit_vartical > 0)
+				{
+					m_Result |= HIT_UP;
+				}
+
+				D3DXVECTOR2 vX(-1.0f, 0.0f);
+				float hit_horizontal = D3DXVec2Dot(&vX, &vDist);
+				if (hit_horizontal <= 0)
+				{
+					m_Result |= HIT_RIGHT;
+				}
+				else if (hit_horizontal > 0)
+				{
+					m_Result |= HIT_LEFT;
+				}
+
+				//ブロックの上座標を更新する
+				pEnemy->SetBlockHeight(BlockPos.y - 30.0f);
+			}
+			// 当たり判定後のエネミーの処理
+			pEnemy->AfterHitCheckBlockY(m_Result);
 		}
-		//ブロックのヒットした向きを調べる
-		if (pEnemy->GetBlockLength() != 99999)
-		{
-			D3DXVECTOR2 vY(0.0f, -1.0f);
-
-			//ブロックの座標(中心)
-			D3DXVECTOR2 BlockPos = D3DXVECTOR2((pEnemy->GetBlockIndexX() * BLOCK_SIZE) + 30.0f, (pEnemy->GetBlockIndexY() * BLOCK_SIZE) + 30.0f);
-
-			D3DXVECTOR2 vDist = -BlockPos;
-			D3DXVec2Normalize(&vDist, &vDist);
-
-			//ヒット方向の判定
-			float hit_vartical = D3DXVec2Dot(&vY, &vDist);
-
-			if (hit_vartical < 0)
-			{
-				m_Result |= HIT_DOWN;
-			}
-			else if (hit_vartical > 0)
-			{
-				m_Result |= HIT_UP;
-			}
-
-			D3DXVECTOR2 vX(-1.0f, 0.0f);
-			float hit_horizontal = D3DXVec2Dot(&vX, &vDist);
-			if (hit_horizontal <= 0)
-			{
-				m_Result |= HIT_RIGHT;
-			}
-			else if (hit_horizontal > 0)
-			{
-				m_Result |= HIT_LEFT;
-			}
-
-			//ブロックの上座標を更新する
-			pEnemy->SetBlockHeight(BlockPos.y - 30.0f);
-		}
-		// 当たり判定後のエネミーの処理
-		pEnemy->AfterHitCheckBlockY(m_Result);
 	}
 }
 
@@ -326,39 +331,39 @@ void EnemyFactory::HitCheckWallToEnemy(std::vector<std::vector<int>>* g_Stage)
 				continue;
 			}
 
-			// すべての敵をチェック
-			for (Enemy* pEnemy : m_pEnemyList)
+			//ヒットしているかを判定する
+			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
+
+			if (m_pCamera->pos.x <= BlockPos.x)
 			{
-				if (!pEnemy->GetIsActive()) {
-					continue;
-				}
-
-				//ヒットしているかを判定する
-				D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
-
-				if (m_pCamera->pos.x <= BlockPos.x)
+				if (m_pCamera->pos.x + SCREEN_WIDTH >= BlockPos.x)
 				{
-					if (m_pCamera->pos.x + SCREEN_WIDTH >= BlockPos.x)
+					// すべての敵をチェック
+					for (Enemy* pEnemy : m_pEnemyList)
 					{
-						D3DXVECTOR2 enemyPos = pEnemy->GetPos() + pEnemy->GetVel();
+						if (!pEnemy->GetIsActive()) {
+							continue;
+						}
+						if (pEnemy->GetPos().x - m_pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 120.0f) {
+							D3DXVECTOR2 enemyPos = pEnemy->GetPos() + pEnemy->GetVel();
 
-						if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE,
-							enemyPos, pEnemy->GetSize().x, pEnemy->GetSize().y))
-						{
-							//自分に当たっている中で一番近いブロックを探す
-							D3DXVECTOR2 vLength = BlockPos - enemyPos;
-							float length = D3DXVec2Length(&(vLength));
-							if (pEnemy->GetBlockLength() > length)
+							if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE,
+								enemyPos, pEnemy->GetSize().x, pEnemy->GetSize().y))
 							{
-								//より近いブロックの情報に更新する
-								pEnemy->SetBlockLength(length);
-								pEnemy->SetBlockIndexX(x);
-								pEnemy->SetBlockIndexY(y);
+								//自分に当たっている中で一番近いブロックを探す
+								D3DXVECTOR2 vLength = BlockPos - enemyPos;
+								float length = D3DXVec2Length(&(vLength));
+								if (pEnemy->GetBlockLength() > length)
+								{
+									//より近いブロックの情報に更新する
+									pEnemy->SetBlockLength(length);
+									pEnemy->SetBlockIndexX(x);
+									pEnemy->SetBlockIndexY(y);
+								}
 							}
 						}
 					}
 				}
-
 			}
 		}
 	}

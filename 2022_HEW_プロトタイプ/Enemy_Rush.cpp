@@ -9,9 +9,11 @@
 Enemy_Rush::Enemy_Rush(D3DXVECTOR2 pos, int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f),textureNo,ENEMY_TYPE::RUSH)
 {
-	m_ChaseSpeed = 4.0f;
-	m_ActiveRange = 300.0f;	// 追いかけ始める範囲
-	m_DistanceMax = 500.0f;	// 追いかける距離の最大値
+	m_HP = 1;
+	m_Muki = 0;
+	m_ChaseSpeed = 10.0f;
+	m_ActiveRange = 500.0f;	// 追いかけ始める範囲
+	m_DistanceMax = 700.0f;	// 追いかける距離の最大値
 }
 
 void Enemy_Rush::Init()
@@ -49,13 +51,24 @@ void Enemy_Rush::Update()
 		// プレイヤーが範囲内に入ったなら追いかける
 		if (len < m_ActiveRange)
 		{
-			if (pVec.x > 0) {
-				m_ChaseDirection = D3DXVECTOR2(-1.0f, 0.0f);
-			}
-			else {
-				m_ChaseDirection = D3DXVECTOR2(1.0f, 0.0f);
-			}
+			//if (pVec.x > 0) {
+			m_ChaseDirection = D3DXVECTOR2(-1.0f, 0.0f);
+			//}
+			//else {
+			//	m_ChaseDirection = D3DXVECTOR2(1.0f, 0.0f);
+			//}
+			m_Muki++;
 			m_State = Enemy_Rush::CHASE;
+		}
+		if (m_WaitFrame >= 20) {
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 2) {
+				m_AnimationPtn = 0;
+			}
+		}
+		else {
+			m_WaitFrame++;
 		}
 		break;
 	}
@@ -164,7 +177,7 @@ void Enemy_Rush::AfterHitCheckBlockY(DWORD result)
 	}
 
 	m_Pos += m_Vel;
-	LookPlayer();
+	// LookPlayer();
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 }
 
@@ -202,6 +215,17 @@ void Enemy_Rush::Chase()
 	m_Vel.y += m_ChaseDirection.y*m_ChaseSpeed;
 	m_NowDistance += abs(m_ChaseDirection.x*m_ChaseSpeed);
 	if (m_NowDistance >= m_DistanceMax) {
+		m_Muki = 0;
 		m_State = Enemy_Rush::WAIT;
+	}
+	if (m_WaitFrame >= 20) {
+		m_WaitFrame = 0;
+		m_AnimationPtn++;
+		if (m_AnimationPtn >= 2) {
+			m_AnimationPtn = 0;
+		}
+	}
+	else {
+		m_WaitFrame++;
 	}
 }
