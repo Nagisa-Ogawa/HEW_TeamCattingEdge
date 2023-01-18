@@ -6,8 +6,8 @@
 //*****************************************************************************
 
 // 敵のジャンプパワー
-#define ENEMY_JUMPPOWER_X (4.0f)	
-#define ENEMY_JUMPPOWER_Y (-6.0f)
+#define ENEMY_JUMPPOWER_X (8.0f)	
+#define ENEMY_JUMPPOWER_Y (-12.0f)
 // 敵のジャンプ中の減衰力
 #define ENEMY_JUMPATTENUATION_X (0.2f)
 #define ENEMY_JUMPATTENUATION_Y (0.2f)

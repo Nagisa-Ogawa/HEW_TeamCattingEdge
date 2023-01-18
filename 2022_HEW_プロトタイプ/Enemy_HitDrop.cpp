@@ -61,20 +61,6 @@ void Enemy_HitDrop::Update()
 		{
 			m_State = Enemy_HitDrop::JUMP;
 			m_WaitFrame = 0;
-			if (m_Muki == 0)
-			{
-				if (m_Pos.x <= pPlayer->pos.x)
-				{
-					m_DropPosX -= 500.0f;;
-				}
-			 }
-			else if (m_Muki == 1)
-			{
-				if (m_Pos.x >= pPlayer->pos.x)
-				{
-					m_DropPosX += 500.0f;;
-				}
-			}
 			// ジャンプアニメーションにする
 			m_AnimationPtn++;
 		}
@@ -297,7 +283,6 @@ void Enemy_HitDrop::ChangeSetUp()
 
 void Enemy_HitDrop::Jump()
 {
-	D3DXVECTOR2 pPos = GetPlayer()->pos;
 	// ジャンプ
 	m_Vel.x += m_JumpPower.x;
 	// 減衰
@@ -313,19 +298,11 @@ void Enemy_HitDrop::Jump()
 			m_State = Enemy_HitDrop::DROP;
 			m_AnimationPtn++;
 		}
-		if (enemyPos.x >= pPos.x) {
-			m_State = Enemy_HitDrop::DROP;
-			m_AnimationPtn++;
-		}
 	}
 	else
 	{
 		if (enemyPos.x <= m_DropPosX)
 		{
-			m_State = Enemy_HitDrop::DROP;
-			m_AnimationPtn++;
-		}
-		if (enemyPos.x <= pPos.x) {
 			m_State = Enemy_HitDrop::DROP;
 			m_AnimationPtn++;
 		}
