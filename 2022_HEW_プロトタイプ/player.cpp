@@ -556,7 +556,7 @@ void PlayerDamage(int num)
 void PlayerStatusNormal(void)
 {
 	//メンバーデバック用キーボート操作
-	/*{
+	{
 		if (GetKeyboardPress(DIK_A))
 		{
 			g_Player.vel.x -= PLAYER_SPEED;
@@ -596,7 +596,7 @@ void PlayerStatusNormal(void)
 				g_Player.attackflag = 2;
 			}
 		}
-	}*/
+	}
 
 	//左右移動
 	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;

@@ -327,7 +327,13 @@ void ChangeGameScene(void)
 	case GAMESCENE_STAGE_TENGU:
 		UninitGameStage();
 		break;
+	case GAMESCENE_BASS_TENGU:
+		UninitGameStage();
+		break;
 	case GAMESCENE_STAGE_KASYA:
+		UninitGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
 	case GAMESCENE_STAGE_NUM:
@@ -352,7 +358,13 @@ void ChangeGameScene(void)
 	case GAMESCENE_STAGE_TENGU:
 		InitGameStage();
 		break;
+	case GAMESCENE_BASS_TENGU:
+		InitGameStage();
+		break;
 	case GAMESCENE_STAGE_KASYA:
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
 		InitGameStage();
 		break;
 	case GAMESCENE_STAGE_NUM:

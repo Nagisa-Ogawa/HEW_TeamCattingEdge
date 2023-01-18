@@ -195,6 +195,11 @@ void FireBallFactory::CollisionBlockToFireBall()
 				//ブロックの上座標を更新する
 				pFireBall->SetBlockHeight(BlockPos.y - 30.0f);
 			}
+			// 画面外でも反射
+			if (pFireBall->GetPos().y - (pFireBall->GetSize().y / 2.0f) < 0.0f)
+			{
+				m_Result |= HIT_DOWN;
+			}
 
 			// 当たり判定後のエネミーの処理
 			if (m_Result != 0) {

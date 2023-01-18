@@ -13,7 +13,7 @@ Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
 	m_DropPower = ENEMY_DROPPOWER;
 	m_HP = 1;
 	m_DeadAnimeNum = 3;
-	m_DeadAnimeFrame = 100;
+	m_DeadAnimeFrame = 10;
 }
 
 void Enemy_HitDrop::Init()

@@ -16,7 +16,7 @@ public:
 		COOLDOWN,
 		DEAD,
 	};
-private:
+protected:
 	const float m_AnimeTable[3] =
 	{
 		0.0f,
@@ -47,9 +47,9 @@ public:
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理
-	void Uninit() override;
+	virtual void Uninit() override;
 	// エネミーの更新処理
-	void Update() override;
+	virtual void Update() override;
 	// エネミーの描画処理
 	void Draw() override;
 

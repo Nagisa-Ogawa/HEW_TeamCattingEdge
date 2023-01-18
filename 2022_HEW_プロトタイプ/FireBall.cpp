@@ -15,7 +15,7 @@ FireBall::FireBall(int ID,D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,FireBall:
 	m_pttern.x = 1.0f / m_divid.x;
 	m_pttern.y = 1.0f / m_divid.y;
 	m_IsActive = true;
-	m_Size = D3DXVECTOR2(160.0f, 160.0f);
+	m_Size = D3DXVECTOR2(120.0f, 120.0f);
 	m_StartChangeSizeFrame = 3;
 	m_TextureNo = textureNo;
 	switch (m_Mode)

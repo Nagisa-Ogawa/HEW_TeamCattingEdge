@@ -12,6 +12,7 @@
 #include "Boss_Kasya.h"
 #include "Block.h"
 #include "texture.h"
+#include "Enemy_Sub_ThrowBomb.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -41,6 +42,13 @@ void EnemyFactory::Create_ThrowBomb(D3DXVECTOR2 pos)
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
 	m_pEnemyList.insert(enemyIt, new Enemy_ThrowBomb(pos, m_nowID,m_EnemyThrowBombNo));
+}
+
+void EnemyFactory::Create_SubThrowBomb(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Enemy_Sub_ThrowBomb(pos, m_nowID, m_EnemyThrowBombNo));
 }
 
 void EnemyFactory::Create_GhostFire(D3DXVECTOR2 pos, int muki)
@@ -169,6 +177,7 @@ void EnemyFactory::SetEnemy()
 				Create_ThrowBomb(pos);
 				break;
 			case 32:
+				Create_SubThrowBomb(pos);
 				break;
 			case 33:
 				Create_HitDrop(pos);
@@ -422,6 +431,7 @@ void EnemyFactory::DeleteEnemy()
 		{
 			break;
 		}
+		(*deleteIt)->Uninit();
 		// ”š”­Ï‚İ‚Ì”š’e‚Ííœ
 		delete (*deleteIt);
 		m_pEnemyList.erase(deleteIt);

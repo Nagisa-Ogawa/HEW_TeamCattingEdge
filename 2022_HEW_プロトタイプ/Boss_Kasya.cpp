@@ -79,17 +79,17 @@ void Boss_Kasya::Update()
 			switch (m_StateCount)
 			{
 			case 0:
-				m_State = SETUP_MOVE;
+				m_State = SETUP_THROW;
 				break;
 			case 1:
-				m_State = SETUP_MOVE;
+				m_State = SETUP_THROW;
 
 				break;
 			case 2:
-				m_State = SETUP_THROW;
+				m_State = SETUP_MOVE;
 				break;
 			case 3:
-				m_State = SETUP_THROW;
+				m_State = SETUP_MOVE;
 				break;
 			default:
 				break;

@@ -147,6 +147,7 @@
     <ClInclude Include="Enemy_HitDrop.h" />
     <ClInclude Include="Enemy_Rush.h" />
     <ClInclude Include="Enemy_SelfDestruct.h" />
+    <ClInclude Include="Enemy_Sub_ThrowBomb.h" />
     <ClInclude Include="Enemy_ThrowBomb.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="ExplosionFactory.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="Enemy_HitDrop.cpp" />
     <ClCompile Include="Enemy_Rush.cpp" />
     <ClCompile Include="Enemy_SelfDestruct.cpp" />
+    <ClCompile Include="Enemy_Sub_ThrowBomb.cpp" />
     <ClCompile Include="Enemy_ThrowBomb.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="ExplosionFactory.cpp" />

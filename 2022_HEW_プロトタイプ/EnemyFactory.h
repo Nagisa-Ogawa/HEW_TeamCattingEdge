@@ -48,6 +48,7 @@ public:
 	void Create_HitDrop(D3DXVECTOR2 pos);
 	void Create_SelfDestruction(D3DXVECTOR2 pos);
 	void Create_ThrowBomb(D3DXVECTOR2 pos);
+	void Create_SubThrowBomb(D3DXVECTOR2 pos);
 	void Create_GhostFire(D3DXVECTOR2 pos, int muki);
 	void Create_Rush(D3DXVECTOR2 pos);
 	void Create_ExplosionGas(D3DXVECTOR2 pos);
