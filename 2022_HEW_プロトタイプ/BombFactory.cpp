@@ -37,6 +37,11 @@ void BombFactory::Uninit()
 	{
 		bomb->Uninit();
 	}
+	for (Bomb* bomb : m_pBombList)
+	{
+		delete bomb;
+	}
+	m_pBombList.clear();
 }
 
 void BombFactory::Update()

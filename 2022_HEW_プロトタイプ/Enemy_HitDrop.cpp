@@ -14,6 +14,7 @@ Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
 	m_HP = 1;
 	m_DeadAnimeNum = 3;
 	m_DeadAnimeFrame = 10;
+	m_Muki = 0;
 }
 
 void Enemy_HitDrop::Init()
@@ -60,6 +61,20 @@ void Enemy_HitDrop::Update()
 		{
 			m_State = Enemy_HitDrop::JUMP;
 			m_WaitFrame = 0;
+			if (m_Muki == 0)
+			{
+				if (m_Pos.x <= pPlayer->pos.x)
+				{
+					m_DropPosX -= 500.0f;;
+				}
+			 }
+			else if (m_Muki == 1)
+			{
+				if (m_Pos.x >= pPlayer->pos.x)
+				{
+					m_DropPosX += 500.0f;;
+				}
+			}
 			// ジャンプアニメーションにする
 			m_AnimationPtn++;
 		}
@@ -67,7 +82,7 @@ void Enemy_HitDrop::Update()
 		{
 			m_WaitFrame++;
 		}
-		LookPlayer();
+		// LookPlayer();
 		break;
 	case Enemy_HitDrop::JUMP:
 		// ジャンプ処理
@@ -106,7 +121,6 @@ void Enemy_HitDrop::Update()
 		{
 			m_WaitFrame++;
 		}
-		LookPlayer();
 		break;
 	case Enemy_HitDrop::DEAD:
 		if (m_WaitFrame >= m_DeadAnimeFrame)
@@ -248,7 +262,10 @@ void Enemy_HitDrop::AfterHitCheckBlockY(DWORD result)
 	}
 
 	m_Pos.y += m_Vel.y;
-	LookPlayer();
+	if (m_State != SETUP && m_State != JUMP && m_State != DROP)
+	{
+		LookPlayer();
+	}
 
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 }

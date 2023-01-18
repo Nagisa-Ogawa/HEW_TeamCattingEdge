@@ -56,7 +56,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_BASS_KASYA;
+	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
 
 	InitGameStage();
 }

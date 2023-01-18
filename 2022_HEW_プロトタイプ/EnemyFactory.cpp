@@ -111,10 +111,6 @@ void EnemyFactory::Uninit()
 {
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		pEnemy->Uninit();
-	}
-	for (Enemy* pEnemy : m_pEnemyList)
-	{
 		delete pEnemy;
 	}
 	m_pEnemyList.clear();
