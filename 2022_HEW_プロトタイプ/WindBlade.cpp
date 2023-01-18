@@ -1,0 +1,74 @@
+#include "WindBlade.h"
+#include "sprite.h"
+#include "camera.h"
+
+WindBlade::WindBlade(D3DXVECTOR2 pos, int muki, int textureNo):m_Pos(pos),m_Muki(muki),m_TextureNo(textureNo)
+{
+	m_pCamera = GetCamera();
+	m_Power = D3DXVECTOR2(10.0f, 0.0f);
+	m_divid = D3DXVECTOR2(2.0f, 2.0f);
+	m_pttern.x = 1.0f / m_divid.x;
+	m_pttern.y = 1.0f / m_divid.y;
+	m_IsActive = true;
+	m_Size = D3DXVECTOR2(60.0f, 120.0f);
+	if (m_Muki == 0)
+	{
+		m_Power.x *= -1.0f;
+	}
+}
+
+void WindBlade::Init()
+{
+}
+
+void WindBlade::Uninit()
+{
+}
+
+void WindBlade::Update()
+{
+	if (!m_IsActive)
+	{
+		return;
+	}
+	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+	switch (m_State)
+	{
+	case WindBlade::IDLE:
+		m_State = MOVE;
+		break;
+	case WindBlade::MOVE:
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		m_Vel.x += m_Power.x;
+		m_Vel.y += m_Power.y;
+		m_Pos += m_Vel;
+		// ‰æ–ÊŠO‚È‚ç
+		if ((m_Pos.x - m_Size.x / 2.0f) + basePos.x <= 0 && (m_Pos.x + m_Size.x / 2.0f) + basePos.x >= SCREEN_WIDTH)
+		{
+			m_State = DEAD;
+		}
+		break;
+	}
+	case WindBlade::DEAD:
+		m_IsActive = false;
+		break;
+	default:
+		break;
+	}
+}
+
+void WindBlade::Draw()
+{
+	if (!m_IsActive)
+	{
+		return;
+	}
+	D3DXVECTOR2 basePos = GetBase();
+	DrawSprite(m_TextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+}
+
+WindBlade::~WindBlade()
+{
+}

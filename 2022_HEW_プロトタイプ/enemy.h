@@ -24,6 +24,7 @@ public:
 		EXPLOSIONGAS,
 		BOSS_TENGU,
 		BOSS_KASYA,
+		BOSS_FUJIN,
 	};
 private:
 	int m_ID = -99999;	// “G‚ðŽ¯•Ê‚·‚é‚½‚ß‚ÌID

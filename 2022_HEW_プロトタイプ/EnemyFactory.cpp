@@ -13,6 +13,7 @@
 #include "Block.h"
 #include "texture.h"
 #include "Enemy_Sub_ThrowBomb.h"
+#include "Boss_Fujin.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -84,6 +85,13 @@ void EnemyFactory::Create_Boss_Kasya(D3DXVECTOR2 pos)
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
 	m_pEnemyList.insert(enemyIt, new Boss_Kasya(pos, m_nowID, m_EnemyKasyaNo));
+}
+
+void EnemyFactory::Create_Boss_Fujin(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Boss_Fujin(pos, m_nowID, m_EnemyKasyaNo));
 }
 
 void EnemyFactory::Init()
@@ -201,6 +209,9 @@ void EnemyFactory::SetEnemy()
 				break;
 			case 44:
 				Create_ExplosionGas(pos);
+				break;
+			case 50:
+				Create_Boss_Fujin(pos);
 				break;
 				//エネミー以外
 			default:

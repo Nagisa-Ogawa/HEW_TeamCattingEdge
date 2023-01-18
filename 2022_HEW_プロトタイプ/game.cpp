@@ -56,7 +56,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
+	g_Scene = g_SceneNext = GAMESCENE_BASS_KASYA;
 
 	InitGameStage();
 }
@@ -197,6 +197,10 @@ void InitGameStage(void)
 
 	// ‰Î‚Ì‹ÊHê‚Ì‰Šú‰»
 	fireBallFactory.Init();
+
+
+	//UI
+	ui.InitUI();
 
 	//”’l•\¦‚Ì‰Šú‰»
 	InitNumber();

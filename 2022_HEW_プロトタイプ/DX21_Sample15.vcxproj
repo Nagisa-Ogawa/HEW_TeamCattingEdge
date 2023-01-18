@@ -132,6 +132,7 @@
     <ClInclude Include="bg.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Boss_Fujin.h" />
     <ClInclude Include="Boss_Kasya.h" />
     <ClInclude Include="ContactBomb.h" />
     <ClInclude Include="BombFactory.h" />
@@ -156,7 +157,6 @@
     <ClInclude Include="FireBallFactory.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameover.h" />
-    <ClInclude Include="ground.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputx.h" />
     <ClInclude Include="InstallationBomb.h" />
@@ -173,11 +173,14 @@
     <ClInclude Include="texture.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="UI.h" />
+    <ClInclude Include="WindBlade.h" />
+    <ClInclude Include="WindBladeFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Boss_Fujin.cpp" />
     <ClCompile Include="Boss_Kasya.cpp" />
     <ClCompile Include="ContactBomb.cpp" />
     <ClCompile Include="BombFactory.cpp" />
@@ -202,7 +205,6 @@
     <ClCompile Include="FireBallFactory.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameover.cpp" />
-    <ClCompile Include="ground.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputx.cpp" />
     <ClCompile Include="InstallationBomb.cpp" />
@@ -218,6 +220,8 @@
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="UI.cpp" />
+    <ClCompile Include="WindBlade.cpp" />
+    <ClCompile Include="WindBladeFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DX21_Sample15.rc" />
