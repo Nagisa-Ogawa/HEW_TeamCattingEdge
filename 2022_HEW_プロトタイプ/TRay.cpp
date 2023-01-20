@@ -1,0 +1,181 @@
+#include "TRay.h"
+#include "texture.h"
+#include "sprite.h"
+#include "player.h"
+#include "Block.h"
+
+bool HitCheckBlockToTRay(D3DXVECTOR2 raypos, float size);
+bool HitCheckPlayerToTRay(D3DXVECTOR2 raypos, float raysize, D3DXVECTOR2 playerpos);
+bool HitCheckTRayLine(D3DXVECTOR2 startA, D3DXVECTOR2 endA, D3DXVECTOR2 startB, D3DXVECTOR2 endB);
+float crossT(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
+
+void TRay::Init(void)
+{
+	m_texture = LoadTexture((char*)"");
+
+	m_pPlayer = GetPlayer();
+	m_state = Normal;
+
+	m_vec = m_goalpos - m_pos;
+	D3DXVec2Normalize(&m_vec, &m_vec);
+}
+
+void TRay::Update(void)
+{
+	switch (m_state)
+	{
+	case Normal:
+		m_pos += m_vec * RAYSPEED;
+
+		if (HitCheckBlockToTRay(m_pos, m_size))
+			m_state = Expo;
+		break;
+	case Expo:
+		if (m_size <= MAXSIZE)
+		{
+			m_size += 0.1f;
+		}
+		break;
+	}
+
+	if (HitCheckPlayerToTRay(m_pos, m_size, m_pPlayer->pos))
+	{
+		PlayerDamage(1);
+	}
+}
+
+void TRay::Draw(void)
+{
+	DrawSpriteColor(m_texture, m_pos.x, m_pos.y, m_size, m_size, 0.0f, 0.0f, 1.0f, 1.0f, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+}
+
+void TRay::Uninit(void)
+{
+
+}
+
+bool HitCheckBlockToTRay(D3DXVECTOR2 raypos, float size)
+{
+	std::vector<std::vector<int>>* g_Stage = GetBlocks();
+
+	for (int x = 0; x < (*g_Stage)[0].size(); x++)
+	{
+		for (int y = 0; y < g_Stage->size(); y++)
+		{
+			//敵の可視フラグがオフの場合はスキップする
+			if ((*g_Stage)[y][x] != 1)
+			{
+				continue;
+			}
+
+			//ヒットしているかを判定する
+			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
+
+			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, raypos, size, size))
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool HitCheckPlayerToTRay(D3DXVECTOR2 raypos, float raysize, D3DXVECTOR2 playerpos)
+{
+	float size = 5.0f;
+	//頂点の作成
+	//外側４点
+	D3DXVECTOR2 out[4] = {
+		D3DXVECTOR2(raypos.x - (raysize* size), raypos.y - (raysize* size)),//outLT
+		D3DXVECTOR2(raypos.x + (raysize* size), raypos.y - (raysize* size)),//outRT
+		D3DXVECTOR2(raypos.x + (raysize* size), raypos.y + (raysize* size)),//outRB
+		D3DXVECTOR2(raypos.x - (raysize* size), raypos.y + (raysize* size)),//outLB
+	};
+	//内側４点
+	D3DXVECTOR2 in[4] = {
+		D3DXVECTOR2(0.0f, raypos.y - (raysize* size)), //inT
+		D3DXVECTOR2(raypos.x + (raysize* size), 0.0f), //inR
+		D3DXVECTOR2(0.0f, raypos.y + (raysize* size)), //inB
+		D3DXVECTOR2(raypos.x - (raysize* size), 0.0f), //inL
+	};
+
+	//プレイヤー４点
+	D3DXVECTOR2 Player[4] = {
+		D3DXVECTOR2(playerpos.x - 60.0f, playerpos.y - 60.0f), // PlayerLT
+		D3DXVECTOR2(playerpos.x + 60.0f, playerpos.y - 60.0f), // PlayerRT
+		D3DXVECTOR2(playerpos.x + 60.0f, playerpos.y + 60.0f), // PlayerRB
+		D3DXVECTOR2(playerpos.x - 60.0f, playerpos.y + 60.0f), // PlayerLB
+	};
+
+
+	for (int player = 0; player < 4; player++)
+	{
+		if (HitCheckTRayLine(out[0], in[0], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[1], in[0], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[1], in[1], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[2], in[1], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[2], in[2], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[3], in[2], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[3], in[3], Player[player], Player[player + 1]))
+			return true;
+
+		if (HitCheckTRayLine(out[0], in[3], Player[player], Player[player + 1]))
+			return true;
+	}
+
+	return false;
+}
+
+// 線と線の当たり判定
+bool HitCheckTRayLine(D3DXVECTOR2 startA, D3DXVECTOR2 endA, D3DXVECTOR2 startB, D3DXVECTOR2 endB)
+{
+	// ２つの線分のベクトルをABとCDとする
+	// ３つのベクトルからなる二つのグループを作成
+
+	// グループ１
+	D3DXVECTOR2 AB = endA - startA;
+	D3DXVECTOR2 AC = startB - startA;
+	D3DXVECTOR2 AD = endB - startA;
+
+	// グループ２
+	D3DXVECTOR2 CD = endB - startB;
+	D3DXVECTOR2 CA = startA - startB;
+	D3DXVECTOR2 CB = endA - startB;
+
+	// 正負、負正の組み合わせなら当たっている
+	float cross_AB_AC = crossT(AB, AC);
+	float cross_AB_AD = crossT(AB, AD);
+	if (cross_AB_AC*cross_AB_AD > 0.0f)
+	{
+		return false;
+	}
+
+	// 正負、負正の組み合わせなら当たっている
+	float cross_CD_CA = crossT(CD, CA);
+	float cross_CD_CB = crossT(CD, CB);
+	if (cross_CD_CA*cross_CD_CB > 0.0f)
+	{
+		return false;
+
+	}
+	return true;
+}
+
+// 外積
+float crossT(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2)
+{
+	return (vec1.x*vec2.y) - (vec2.x*vec1.y);
+}

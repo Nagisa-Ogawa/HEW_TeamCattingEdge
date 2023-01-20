@@ -5,13 +5,13 @@
 WindBlade::WindBlade(D3DXVECTOR2 pos, int muki, int textureNo):m_Pos(pos),m_Muki(muki),m_TextureNo(textureNo)
 {
 	m_pCamera = GetCamera();
-	m_Power = D3DXVECTOR2(10.0f, 0.0f);
+	m_Power = D3DXVECTOR2(20.0f, 0.0f);
 	m_divid = D3DXVECTOR2(2.0f, 2.0f);
 	m_pttern.x = 1.0f / m_divid.x;
 	m_pttern.y = 1.0f / m_divid.y;
 	m_IsActive = true;
 	m_Size = D3DXVECTOR2(60.0f, 120.0f);
-	if (m_Muki == 0)
+	if (m_Muki == 1)
 	{
 		m_Power.x *= -1.0f;
 	}

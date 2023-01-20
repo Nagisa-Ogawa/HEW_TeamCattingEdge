@@ -226,6 +226,11 @@ void Enemy_HitDrop::AfterHitCheckBlockX(DWORD result)
 
 void Enemy_HitDrop::AfterHitCheckBlockY(DWORD result)
 {
+	if (result&HIT_DOWN)
+	{
+		m_State = DROP;
+		m_AnimationPtn++;
+	}
 	//óéâ∫Ç≥ÇπÇÈÇ©ÅHèàóù
 	if ((result & HIT_UP) == 0 && m_IsGround == true)
 	{

@@ -54,6 +54,7 @@ public:
 	void Create_GhostFire(D3DXVECTOR2 pos, int muki);
 	void Create_Rush(D3DXVECTOR2 pos);
 	void Create_ExplosionGas(D3DXVECTOR2 pos);
+	void Create_FujinAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos);
 
 	// BOSS系Create関数
 	void Create_Boss_Tengu(D3DXVECTOR2 pos);
@@ -74,6 +75,8 @@ public:
 	// void CollisionPlayerToBoss();
 	// プレイヤー攻撃とエネミーの当たり判定(エネミーへのダメージ）
 	void CollisoinAttacktoEnemy(D3DXVECTOR2 AttackPos);
+
+	bool CheckFujinAvatorSetEnd();
 
 	// エネミーを削除する
 	void DeleteEnemy();

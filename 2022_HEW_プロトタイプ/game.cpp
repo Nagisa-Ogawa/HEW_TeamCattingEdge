@@ -22,6 +22,8 @@
 #include "ShockWaveFactory.h"
 #include "FireBallFactory.h"
 #include "DamageFloorFactory.h"
+#include "WindBladeFactory.h"
+#include "FlashFactory.h"
 #include "UI.h"
 #include "gameover.h"
 
@@ -49,6 +51,8 @@ static ExplosionFactory explosionFactory;
 static ShockWaveFactory shockWaveFactory;
 static FireBallFactory fireBallFactory;
 static DamageFloorFactory damageFloorFactory;
+static WindBladeFactory windBladeFactory;
+static FlashFactory flashFactory;
 static UI ui(GetPlayer());
 
 //=============================================================================
@@ -56,7 +60,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_BASS_KASYA;
+	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
 
 	InitGameStage();
 }
@@ -198,6 +202,9 @@ void InitGameStage(void)
 	// 火の玉工場の初期化
 	fireBallFactory.Init();
 
+	windBladeFactory.Init();
+
+	flashFactory.Init();
 
 	//UI
 	ui.InitUI();
@@ -216,6 +223,10 @@ void UninitGameStage(void)
 
 	//数値表示の終了処理
 	UninitNumber();
+
+	flashFactory.Uninit();
+
+	windBladeFactory.Uninit();
 
 	// 火の玉工場の終了処理
 	fireBallFactory.Uninit();
@@ -280,6 +291,10 @@ void UpdateGameStage(void)
 	// 火の玉工場の更新処理
 	fireBallFactory.Update();
 
+	windBladeFactory.Update();
+
+	flashFactory.Update();
+
 	//UIのアップデート
 	ui.UpdateUI();
 }
@@ -308,6 +323,10 @@ void DrawGameStage(void)
 
 	// 火の玉工場の描画処理
 	fireBallFactory.Draw();
+
+	windBladeFactory.Draw();
+
+	flashFactory.Draw();
 
 	// プレイヤーの描画処理
 	DrawPlayer();
@@ -413,4 +432,14 @@ ShockWaveFactory * GetShockWaveFactory()
 FireBallFactory * GetFireBallFactory()
 {
 	return &fireBallFactory;
+}
+
+WindBladeFactory * GetWindBladeFactory()
+{
+	return &windBladeFactory;
+}
+
+FlashFactory * GetFlashFactory()
+{
+	return &flashFactory;
 }

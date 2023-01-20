@@ -25,6 +25,11 @@ void ShockWaveFactory::Uninit()
 	{
 		shockWave->Uninit();
 	}
+	for (ShockWave* shockWave : m_pShockWaveList)
+	{
+		delete shockWave;
+	}
+	m_pShockWaveList.clear();
 }
 
 void ShockWaveFactory::Update()

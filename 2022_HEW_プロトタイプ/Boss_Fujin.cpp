@@ -4,6 +4,10 @@
 #include "sprite.h"
 #include "Block.h"
 #include "texture.h"
+#include "WindBladeFactory.h"
+#include "FlashFactory.h"
+#include "game.h"
+#include "EnemyFactory.h"
 
 Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN)
@@ -13,6 +17,9 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 	m_HP = 1;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();
+	m_pWindBladeFactory = GetWindBladeFactory();
+	m_pFlashFactory = GetFlashFactory();
+	m_pEnemyFactory = GetEnemyFactory();
 	// 攻撃用変数
 	m_AttackTextureNo=LoadTexture((char*)"data/TEXTURE/fade_white.png");
 	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 100.0f);
@@ -59,8 +66,8 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_Muki += 4;
-			m_State = INHALE;
+			m_Muki += 2;
+			m_State = AVATOR;
 			// m_StateCount = 0;
 		}
 		else
@@ -72,7 +79,7 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_State = IDLE;
+			m_State = WINDBLADE;
 			// m_StateCount = 0;
 		}
 		else
@@ -86,10 +93,47 @@ void Boss_Fujin::Update()
 	case Boss_Fujin::BULLET_X:
 		break;
 	case Boss_Fujin::WINDBLADE:
+		if (m_WaitFrame == 10)
+		{
+			// 光るオブジェクト作成
+			m_pFlashFactory->Create(D3DXVECTOR2(SCREEN_WIDTH - 60.0f, SCREEN_HEIGHT - 400.0f), D3DXVECTOR2(180.0f, 180.0f));
+		}
+		if (m_WaitFrame == 90)
+		{
+			// 風の刃作成
+			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 400.0f), 1);
+		}
+		// 一定時間待機
+		if (m_WaitFrame >= 120)
+		{
+			m_WaitFrame = 0;
+			m_Muki = 0;
+			m_State = WAIT;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+
 		break;
 	case Boss_Fujin::AVATOR:
+		Avator();
 		break;
-	case Boss_Fujin::WIT:
+	case Boss_Fujin::MOVE:
+		Move();
+		break;
+	case Boss_Fujin::WAIT:
+		// 一定時間待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn = 0;
+			m_State = Boss_Fujin::IDLE;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	case Boss_Fujin::DEAD:
 		break;
@@ -153,47 +197,130 @@ void Boss_Fujin::InHale()
 	}
 }
 
+void Boss_Fujin::Avator()
+{
+	switch (m_MoveCount)
+	{
+	case 0:
+		// マップ外へ移動
+		SetMove(m_Pos, D3DXVECTOR2(SCREEN_WIDTH + m_Size.x / 2.0f, SCREEN_HEIGHT - m_Size.y / 2.0f - BLOCK_SIZE),m_State,m_Muki);
+		break;
+	case 1:
+		// 分身を三体作成
+		for (int i = 0; i < 3; i++)
+		{
+			m_pEnemyFactory->Create_FujinAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 300.0f));
+		}
+		m_MoveCount++;
+	case 2:
+		// 分身が消えるまで待機
+		// マップ内へ移動
+		break;
+	case 3:
+		break;
+	default:
+		break;
+	}
+}
+
+void Boss_Fujin::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_FUJIN state, int muki)
+{
+	m_BeforeState = m_State;
+	m_BeforeMuki = muki;
+	m_State = Boss_Fujin::MOVE;
+	m_StartPos = startPos;
+	m_EndPos = endPos;
+	m_NowDistance = 0.0f;
+	D3DXVECTOR2 vec = endPos - startPos;
+	D3DXVec2Normalize(&m_MoveVec, &vec);
+	m_MoveVec.x *= 12.0f;
+	m_MoveVec.y *= 12.0f;
+	m_MoveDistance = D3DXVec2Length(&vec);
+	// 移動方向からアニメーションの向きを決定
+	if (vec.x > 0)
+	{
+		m_Muki = 7;
+	}
+	else
+	{
+		m_Muki = 6;
+	}
+}
+
+void Boss_Fujin::Move()
+{
+	m_Vel += m_MoveVec;
+	D3DXVECTOR2 vec = (m_Pos + m_Vel) - m_StartPos;
+	float distance = D3DXVec2Length(&vec);
+	if (distance >= m_MoveDistance)
+	{
+		m_Muki = m_BeforeMuki;
+		m_State = m_BeforeState;
+		m_Pos = m_EndPos;
+		m_MoveCount++;
+		m_AnimationPtn = 0;
+	}
+	if (m_WaitFrame >= 10)
+	{
+		m_AnimationPtn++;
+		if (m_AnimationPtn >= 4)
+		{
+			m_AnimationPtn = 0;
+		}
+		m_WaitFrame = 0;
+	}
+	{
+		m_WaitFrame++;
+	}
+}
+
 void Boss_Fujin::AfterHitCheckBlockX(DWORD result)
 {
-	//当たり判定処理
-	if (result & HIT_LEFT)
+	if (m_State != MOVE)
 	{
-		if (m_Vel.x > 0.0)
-			m_Vel.x = 0.0f;
-	}
-	if (result & HIT_RIGHT)
-	{
-		if (m_Vel.x < 0.0)
-			m_Vel.x = 0.0f;
+		//当たり判定処理
+		if (result & HIT_LEFT)
+		{
+			if (m_Vel.x > 0.0)
+				m_Vel.x = 0.0f;
+		}
+		if (result & HIT_RIGHT)
+		{
+			if (m_Vel.x < 0.0)
+				m_Vel.x = 0.0f;
+		}
+		m_Vel.y += m_Gravity;
 	}
 
 	m_Pos.x += m_Vel.x;
 
 	result = 0;
-	m_Vel.y += m_Gravity;
 }
 
 void Boss_Fujin::AfterHitCheckBlockY(DWORD result)
 {
-	//落下させるか？処理
-	if ((result & HIT_UP) == 0 && m_IsGround == true)
+	if (m_State != MOVE)
 	{
-		m_IsGround = false;
-	}
-
-	//落下処理
-	if (m_IsGround == false)
-	{
-		if (result & HIT_UP)
+		//落下させるか？処理
+		if ((result & HIT_UP) == 0 && m_IsGround == true)
 		{
-			m_IsGround = true;
-			m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+			m_IsGround = false;
+		}
+
+		//落下処理
+		if (m_IsGround == false)
+		{
+			if (result & HIT_UP)
+			{
+				m_IsGround = true;
+				m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
+				m_Vel.y = 0.0f;
+			}
+		}
+		else // 最終的に地面に触れている
+		{
 			m_Vel.y = 0.0f;
 		}
-	}
-	else // 最終的に地面に触れている
-	{
-		m_Vel.y = 0.0f;
 	}
 
 	m_Pos.y += m_Vel.y;

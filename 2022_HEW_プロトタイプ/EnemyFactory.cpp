@@ -14,6 +14,7 @@
 #include "texture.h"
 #include "Enemy_Sub_ThrowBomb.h"
 #include "Boss_Fujin.h"
+#include "Enemy_FujinAvator.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -71,6 +72,13 @@ void EnemyFactory::Create_ExplosionGas(D3DXVECTOR2 pos)
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
 	m_pEnemyList.insert(enemyIt, new Enemy_ExplosionGas(pos, m_nowID,m_EnemyExplosionGasNo));
+}
+
+void EnemyFactory::Create_FujinAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Enemy_FujinAvator(pos, m_nowID, m_EnemyKasyaNo,targetPos));
 }
 
 void EnemyFactory::Create_Boss_Tengu(D3DXVECTOR2 pos)
@@ -131,10 +139,14 @@ void EnemyFactory::Update()
 
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		if (pEnemy->GetPos().x - pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - pCamera->pos.x <= SCREEN_WIDTH + 120.0f)
+		if (pEnemy->GetPos().x - pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - pCamera->pos.x <= SCREEN_WIDTH + 60.0f)
+		{
+			pEnemy->Update();	
+		}
+		// ボス風神の場合は画面外でもupdateを行う
+		else if (pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN|| pEnemy->GetEnemyType() == Enemy::FUFINAVATOR)
 		{
 			pEnemy->Update();
-			
 		}
 		if (pEnemy->GetPos().y >= SCREEN_HEIGHT + (BLOCK_SIZE * 2))
 		{
@@ -232,7 +244,7 @@ void EnemyFactory::CollisionWallToEnemy()
 	// すべての敵をチェック
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		if (pEnemy->GetPos().x - m_pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 120.0f) {
+		if ((pEnemy->GetPos().x - m_pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f)|| pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR) {
 
 			m_Result = 0;
 			if (!pEnemy->GetIsActive()) {
@@ -242,11 +254,12 @@ void EnemyFactory::CollisionWallToEnemy()
 			if (pEnemy->GetBlockLength() != 99999)
 			{
 				D3DXVECTOR2 vY(0.0f, -1.0f);
+				D3DXVECTOR2 vEnemyPos = pEnemy->GetPos() + pEnemy->GetVel();
 
 				//ブロックの座標(中心)
 				D3DXVECTOR2 BlockPos = D3DXVECTOR2((pEnemy->GetBlockIndexX() * BLOCK_SIZE) + 30.0f, (pEnemy->GetBlockIndexY() * BLOCK_SIZE) + 30.0f);
 
-				D3DXVECTOR2 vDist = -BlockPos;
+				D3DXVECTOR2 vDist = vEnemyPos - BlockPos;
 				D3DXVec2Normalize(&vDist, &vDist);
 
 				//ヒット方向の判定
@@ -285,7 +298,7 @@ void EnemyFactory::CollisionWallToEnemy()
 	// すべての敵をチェック
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		if (pEnemy->GetPos().x - m_pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 120.0f) {
+		if ((pEnemy->GetPos().x - m_pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f) || pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR) {
 			m_Result = 0;
 			if (!pEnemy->GetIsActive()) {
 				continue;
@@ -294,11 +307,12 @@ void EnemyFactory::CollisionWallToEnemy()
 			if (pEnemy->GetBlockLength() != 99999)
 			{
 				D3DXVECTOR2 vY(0.0f, -1.0f);
+				D3DXVECTOR2 vEnemyPos = pEnemy->GetPos() + pEnemy->GetVel();
 
 				//ブロックの座標(中心)
 				D3DXVECTOR2 BlockPos = D3DXVECTOR2((pEnemy->GetBlockIndexX() * BLOCK_SIZE) + 30.0f, (pEnemy->GetBlockIndexY() * BLOCK_SIZE) + 30.0f);
 
-				D3DXVECTOR2 vDist = -BlockPos;
+				D3DXVECTOR2 vDist = vEnemyPos - BlockPos;
 				D3DXVec2Normalize(&vDist, &vDist);
 
 				//ヒット方向の判定
@@ -365,14 +379,14 @@ void EnemyFactory::HitCheckWallToEnemy(std::vector<std::vector<int>>* g_Stage)
 						if (!pEnemy->GetIsActive()) {
 							continue;
 						}
-						if (pEnemy->GetPos().x - m_pCamera->pos.x >= -120.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 120.0f) {
-							D3DXVECTOR2 enemyPos = pEnemy->GetPos() + pEnemy->GetVel();
+						D3DXVECTOR2 vEnemyPos = pEnemy->GetPos() + pEnemy->GetVel();
+						if (vEnemyPos.x - m_pCamera->pos.x >= -60.0f && vEnemyPos.x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f) {
 
 							if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE,
-								enemyPos, pEnemy->GetSize().x, pEnemy->GetSize().y))
+								vEnemyPos, pEnemy->GetSize().x, pEnemy->GetSize().y))
 							{
 								//自分に当たっている中で一番近いブロックを探す
-								D3DXVECTOR2 vLength = BlockPos - enemyPos;
+								D3DXVECTOR2 vLength = BlockPos - vEnemyPos;
 								float length = D3DXVec2Length(&(vLength));
 								if (pEnemy->GetBlockLength() > length)
 								{
@@ -426,6 +440,31 @@ void EnemyFactory::CollisoinAttacktoEnemy(D3DXVECTOR2 AttackPos)
 	{
 		pEnemy->HitCheckPlayerAttack(AttackPos);
 	}
+}
+
+bool EnemyFactory::CheckFujinAvatorSetEnd()
+{
+	bool flag = true;
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		if (pEnemy->GetEnemyType() != Enemy::FUFINAVATOR)
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsActive())
+		{
+			continue;
+		}
+		if (pEnemy->GetIsDead())
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsEndSetUp())
+		{
+			flag = false;
+		}
+	}
+	return flag;
 }
 
 void EnemyFactory::DeleteEnemy()

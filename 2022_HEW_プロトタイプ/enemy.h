@@ -22,6 +22,7 @@ public:
 		GHOSTFIRE,
 		RUSH,
 		EXPLOSIONGAS,
+		FUFINAVATOR,
 		BOSS_TENGU,
 		BOSS_KASYA,
 		BOSS_FUJIN,
@@ -55,6 +56,7 @@ protected:
 	float m_BlockLength = 99999;//一番近いブロックの距離
 	int m_BlockIndex[2]{ -99999,-99999 };//1一番近いブロックの添え字
 	float m_BlockHeight = 0.0f;
+	bool m_IsEndSetUp = false;
 
 public:
 	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo,ENEMY_TYPE enemyType) :
@@ -95,6 +97,7 @@ public:
 	int GetBlockIndexY() { return m_BlockIndex[1]; };
 	float GetBlockLength() { return m_BlockLength; };
 	float GetBlockHeight() { return m_BlockHeight; };
+	bool GetIsEndSetUp() { return m_IsEndSetUp; };
 	// Set系関数
 	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };
 	void SetBlockIndexY(int num) { m_BlockIndex[1] = num; };

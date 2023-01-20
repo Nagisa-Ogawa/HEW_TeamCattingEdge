@@ -14,6 +14,7 @@ enum STATUS
 	normal,
 	warpwait,
 	warp,
+	attack,
 	death,
 	
 	STATUS_NUM,

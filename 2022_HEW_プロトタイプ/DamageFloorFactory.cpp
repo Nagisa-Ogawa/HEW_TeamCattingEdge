@@ -27,8 +27,9 @@ void DamageFloorFactory::Uninit()
 {
 	for (DamageFloor* pDamageFloor : m_pDamageFloorList)
 	{
-		pDamageFloor->Uninit();
+		delete pDamageFloor;
 	}
+	m_pDamageFloorList.clear();
 }
 
 void DamageFloorFactory::Update()

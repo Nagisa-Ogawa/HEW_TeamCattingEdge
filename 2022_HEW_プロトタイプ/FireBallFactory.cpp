@@ -33,6 +33,12 @@ void FireBallFactory::Uninit()
 	{
 		fireBall->Uninit();
 	}
+	for (FireBall* fireBall : m_pFireBallList)
+	{
+		delete fireBall;
+	}
+
+	m_pFireBallList.clear();
 }
 
 void FireBallFactory::Update()

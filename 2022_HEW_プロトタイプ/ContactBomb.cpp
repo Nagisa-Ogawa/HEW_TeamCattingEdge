@@ -50,7 +50,7 @@ void ContactBomb::Update()
 		if (HitCheckCircle())
 		{
 			m_State = ContactBomb::EXPLOSION;
-			PlayerDamage(10);
+			PlayerDamage(1);
 		}
 		//アニメーションカウンターをカウントアップして、ウエイト値を超えたら
 		if (m_AnimationCounter > 10)

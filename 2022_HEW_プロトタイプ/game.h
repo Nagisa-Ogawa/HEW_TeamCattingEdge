@@ -7,6 +7,8 @@ class BombFactory;
 class ExplosionFactory;
 class ShockWaveFactory;
 class FireBallFactory;
+class WindBladeFactory;
+class FlashFactory;
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -38,5 +40,7 @@ BombFactory* GetBombFactory();
 ExplosionFactory* GetExplosionFactory();
 ShockWaveFactory* GetShockWaveFactory();
 FireBallFactory* GetFireBallFactory();
+WindBladeFactory* GetWindBladeFactory();
+FlashFactory* GetFlashFactory();
 
 void SetGameScene(GAMESCENE scene);

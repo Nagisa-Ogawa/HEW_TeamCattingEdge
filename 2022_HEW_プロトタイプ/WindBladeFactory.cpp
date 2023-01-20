@@ -21,6 +21,11 @@ void WindBladeFactory::Uninit()
 	{
 		pWindBlade->Uninit();
 	}
+	for (WindBlade* pWindBlade : m_pWindBladeList)
+	{
+		delete pWindBlade;
+	}
+	m_pWindBladeList.clear();
 }
 
 void WindBladeFactory::Update()

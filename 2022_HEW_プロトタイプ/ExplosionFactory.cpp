@@ -27,6 +27,11 @@ void ExplosionFactory::Uninit()
 	{
 		pExplosion->Uninit();
 	}
+	for (Explosion* pExplosion : m_pExplosion)
+	{
+		delete pExplosion;
+	}
+	m_pExplosion.clear();
 }
 
 void ExplosionFactory::Update()
@@ -80,7 +85,7 @@ void ExplosionFactory::CollisionBlastToPlayer()
 		// ƒxƒNƒgƒ‹‚Ì•û‚ª’Z‚¢‚È‚ç“–‚½‚Á‚Ä‚¢‚é
 		if (len <= pExplosion->GetCollsionRad() + pPlayer->size / 2.0f)
 		{
-			PlayerDamage(10);
+			PlayerDamage(1);
 		}
 		return;
 	}
