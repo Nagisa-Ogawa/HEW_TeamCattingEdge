@@ -369,7 +369,7 @@ void EnemyFactory::HitCheckWallToEnemy(std::vector<std::vector<int>>* g_Stage)
 			//ƒqƒbƒg‚µ‚Ä‚¢‚é‚©‚ð”»’è‚·‚é
 			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
-			if (m_pCamera->pos.x <= BlockPos.x)
+			if (m_pCamera->pos.x-120.0f <= BlockPos.x)
 			{
 				if (m_pCamera->pos.x + SCREEN_WIDTH >= BlockPos.x)
 				{
