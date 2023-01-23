@@ -71,7 +71,7 @@ void Boss_Fujin::Update()
 			switch (m_StateCount)
 			{
 			case 0:
-				m_State = ATTACK;
+				m_State = WINDBLADE;
 				break;
 			case 1:
 				m_Muki += 4;
@@ -122,12 +122,12 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame == 10)
 		{
 			// 光るオブジェクト作成
-			m_pFlashFactory->Create(D3DXVECTOR2(SCREEN_WIDTH - 60.0f, SCREEN_HEIGHT - 400.0f), D3DXVECTOR2(180.0f, 180.0f));
+			m_pFlashFactory->Create(D3DXVECTOR2(SCREEN_WIDTH - 60.0f, SCREEN_HEIGHT - 200.0f), D3DXVECTOR2(180.0f, 180.0f));
 		}
 		if (m_WaitFrame == 90)
 		{
 			// 風の刃作成
-			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 400.0f), 1);
+			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(180.0f,360.0f), 1);
 		}
 		// 一定時間待機
 		if (m_WaitFrame >= 120)
@@ -333,7 +333,7 @@ void Boss_Fujin::Avator()
 		// 分身を三体作成
 		for (int i = 0; i < 3; i++)
 		{
-			m_pEnemyFactory->Create_FujinAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 300.0f));
+			m_pEnemyFactory->Create_FujinAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f));
 		}
 		m_MoveCount++;
 	case 2:

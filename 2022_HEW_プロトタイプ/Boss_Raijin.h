@@ -9,6 +9,8 @@
 class ExplosionFactory;
 class RayFactory;
 class EnemyFactory;
+class FlashFactory;
+class ThunderBladeFactory;
 struct PLAYER;
 
 class Boss_Raijin :public Enemy
@@ -58,13 +60,13 @@ private:
 	PLAYER* m_pPlayer = nullptr;
 	RayFactory* m_pRayFactory = nullptr;
 	EnemyFactory* m_pEnemyFactory = nullptr;
+	FlashFactory* m_pFlashFactory = nullptr;
+	ThunderBladeFactory* m_pThunderFactory = nullptr;
 	// 近接攻撃用変数宣言
 	int m_AttackTextureNo = -1;
 	D3DXVECTOR2 m_AttackCollisionSize = D3DXVECTOR2(0.0f, 0.0f);
-	// 吸い込み攻撃用変数宣言
-	D3DXVECTOR2 m_InHalePower = D3DXVECTOR2(0.0f, 0.0f);
-	float m_NowDistance = 0.0f;
-	float m_AttackDistance = 0.0f;
+	// 雷撃用変数宣言
+	D3DXVECTOR2 m_ThunderBoltPos = D3DXVECTOR2(0.0f, 0.0f);
 	// 移動用変数宣言
 	D3DXVECTOR2 m_MoveVec = D3DXVECTOR2(0.0f, 0.0f);
 	D3DXVECTOR2 m_StartPos = D3DXVECTOR2(0.0f, 0.0f);
@@ -85,6 +87,7 @@ public:
 	// エネミーの描画処理
 	void Draw() override;
 
+	void ThunderBlade();
 	void Avator();
 
 	/*void SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_RAIJIN state, int muki);

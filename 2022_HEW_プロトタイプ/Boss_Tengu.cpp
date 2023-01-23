@@ -6,6 +6,7 @@
 #include "player.h"
 #include "BombFactory.h"
 #include "ShockWaveFactory.h"
+#include "game.h"
 
 #define TENGU_WAITFRAME_SETUP (120)
 #define TENGU_WAITFRAME_AFTERDROP (20)
@@ -44,6 +45,7 @@ void Boss_Tengu::Init()
 
 void Boss_Tengu::Uninit()
 {
+	SetGameScene(GAMESCENE_PICTURE_STAGE02);
 }
 
 void Boss_Tengu::Update()

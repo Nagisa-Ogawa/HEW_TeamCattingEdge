@@ -40,7 +40,7 @@ private:
 	int m_Muki = 0;
 	bool m_IsActive = false;
 public:
-	WindBlade(D3DXVECTOR2 pos, int muki,int textureNo);
+	WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki,int textureNo);
 	// ‰Î‚Ì‹Ê‚Ì‰Šú‰»ˆ—
 	void Init();
 	// ‰Î‚Ì‹Ê‚ÌI—¹ˆ—
@@ -50,6 +50,11 @@ public:
 	// ‰Î‚Ì‹Ê‚Ì•`‰æˆ—
 	void Draw();
 	~WindBlade();
+
+	// GetŒnŠÖ”
+	bool GetIsActive() { return m_IsActive; };
+	D3DXVECTOR2 GetPos() { return m_Pos; };
+	D3DXVECTOR2 GetSize() { return m_Size; };
 
 };
 

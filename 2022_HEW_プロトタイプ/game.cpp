@@ -25,8 +25,11 @@
 #include "WindBladeFactory.h"
 #include "FlashFactory.h"
 #include "RayFactory.h"
+#include "ThunderBladeFactory.h"
 #include "UI.h"
 #include "gameover.h"
+#include "fade.h"
+#include "Game_illustration.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -54,6 +57,7 @@ static FireBallFactory fireBallFactory;
 static DamageFloorFactory damageFloorFactory;
 static WindBladeFactory windBladeFactory;
 static FlashFactory flashFactory;
+static ThunderBladeFactory thunderBladeFactory;
 static RayFactory rayFactory;
 static UI ui(GetPlayer());
 
@@ -62,9 +66,55 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_BASS_TENGU;
+	g_Scene = g_SceneNext = GAMESCENE_PICTURE_STAGE01;
 
-	InitGameStage();
+	switch (g_Scene)
+	{
+	case GAMESCENE_STAGE_TENGU:
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_TENGU:
+		InitGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_FINAL:
+		InitGameStage();
+		break;
+	case GAMESCENE_PICTURE_STAGE01:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE01_BOSS:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE02:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE02_BOSS:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03_BOSS:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	default:
+		break;
+	}
 }
 
 void UninitGame(void)
@@ -83,12 +133,35 @@ void UninitGame(void)
 	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		UninitGameStage();
+		break;
+	case GAMESCENE_BASS_FINAL:
+		UninitGameStage();
+		break;
+	case GAMESCENE_PICTURE_STAGE01:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE01_BOSS:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02_BOSS:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_BOSS:
+		UninitGameIllust();
+		break;
 	case GAMESCENE_PICTURE_OVERGAME:
-		UninitGameOver();
+		UninitGameIllust();
 		break;
 	case GAMESCENE_PICTURE_RESULT:
-		break;
-	case GAMESCENE_NUM:
+		UninitGameIllust();
 		break;
 	default:
 		break;
@@ -111,12 +184,35 @@ void UpdateGame(void)
 	case GAMESCENE_BASS_KASYA:
 		UpdateGameStage();
 		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_BASS_FINAL:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_PICTURE_STAGE01:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE01_BOSS:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02_BOSS:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_BOSS:
+		UpdateGameIllust();
+		break;
 	case GAMESCENE_PICTURE_OVERGAME:
-		UpdateGameOver();
+		UpdateGameIllust();
 		break;
 	case GAMESCENE_PICTURE_RESULT:
-		break;
-	case GAMESCENE_NUM:
+		UpdateGameIllust();
 		break;
 	default:
 		break;
@@ -146,12 +242,35 @@ void DrawGame(void)
 	case GAMESCENE_BASS_KASYA:
 		DrawGameStage();
 		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		DrawGameStage();
+		break;
+	case GAMESCENE_BASS_FINAL:
+		DrawGameStage();
+		break;
+	case GAMESCENE_PICTURE_STAGE01:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE01_BOSS:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02_BOSS:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_BOSS:
+		DrawGameIllust();
+		break;
 	case GAMESCENE_PICTURE_OVERGAME:
-		DrawGameOver();
+		DrawGameIllust();
 		break;
 	case GAMESCENE_PICTURE_RESULT:
-		break;
-	case GAMESCENE_NUM:
+		DrawGameIllust();
 		break;
 	default:
 		break;
@@ -193,6 +312,8 @@ void InitGameStage(void)
 
 	flashFactory.Init();
 
+	thunderBladeFactory.Init();
+
 	rayFactory.Init();
 
 	//UI
@@ -214,6 +335,8 @@ void UninitGameStage(void)
 	UninitNumber();
 
 	rayFactory.Uninit();
+
+	thunderBladeFactory.Uninit();
 
 	flashFactory.Uninit();
 
@@ -286,6 +409,8 @@ void UpdateGameStage(void)
 
 	flashFactory.Update();
 
+	thunderBladeFactory.Update();
+
 	rayFactory.Update();
 
 	//UIのアップデート
@@ -321,6 +446,8 @@ void DrawGameStage(void)
 
 	flashFactory.Draw();
 
+	thunderBladeFactory.Draw();
+
 	rayFactory.Draw();
 
 	// プレイヤーの描画処理
@@ -354,12 +481,89 @@ void ChangeGameScene(void)
 	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		UninitGameStage();
+		break;
+	case GAMESCENE_BASS_FINAL:
+		UninitGameStage();
+		break;
+	case GAMESCENE_PICTURE_STAGE01:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE01_BOSS:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE02_BOSS:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_BOSS:
+		UninitGameIllust();
+		break;
 	case GAMESCENE_PICTURE_OVERGAME:
-		UninitGameOver();
+		UninitGameIllust();
 		break;
 	case GAMESCENE_PICTURE_RESULT:
+		UninitGameIllust();
 		break;
-	case GAMESCENE_NUM:
+	default:
+		break;
+	}
+
+	switch (g_SceneNext)
+	{
+	case GAMESCENE_STAGE_TENGU:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_TENGU:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_STAGE_KASYA:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_KASYA:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_FINAL:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_PICTURE_STAGE01:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE01_BOSS:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE02:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE02_BOSS:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03_BOSS:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_OVERGAME:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_RESULT:
+		InitGameIllust(g_SceneNext, g_Scene);
 		break;
 	default:
 		break;
@@ -367,32 +571,6 @@ void ChangeGameScene(void)
 
 	//現在のシーンを更新する
 	g_Scene = g_SceneNext;
-
-	//更新されたシーンを初期化する
-	switch (g_SceneNext)
-	{
-	case GAMESCENE_STAGE_TENGU:
-		InitGameStage();
-		break;
-	case GAMESCENE_BASS_TENGU:
-		InitGameStage();
-		break;
-	case GAMESCENE_STAGE_KASYA:
-		InitGameStage();
-		break;
-	case GAMESCENE_BASS_KASYA:
-		InitGameStage();
-		break;
-	case GAMESCENE_PICTURE_OVERGAME:
-		InitGameOver();
-		break;
-	case GAMESCENE_PICTURE_RESULT:
-		break;
-	case GAMESCENE_NUM:
-		break;
-	default:
-		break;
-	}
 }
 
 void SetGameScene(GAMESCENE scene)
@@ -438,4 +616,9 @@ FlashFactory * GetFlashFactory()
 RayFactory * GetRayFactory()
 {
 	return &rayFactory;
+}
+
+ThunderBladeFactory * GetThunderBladeFactory()
+{
+	return &thunderBladeFactory;
 }

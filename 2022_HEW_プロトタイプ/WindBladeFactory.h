@@ -28,10 +28,12 @@ public:
 	void Draw();
 
 	// CreateŠÖ”
-	void Create(D3DXVECTOR2 pos, int muki);
+	void Create(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki);
 
 	// ƒvƒŒƒCƒ„[‚Æ•—‚Ìn‚Ì“–‚½‚è”»’è
 	void CollisionWindBladeToPlayer();
+	bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
+		D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
 	~WindBladeFactory();
 };
 

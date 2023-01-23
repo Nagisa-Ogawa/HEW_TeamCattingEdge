@@ -145,7 +145,7 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="EnemyFactory.h" />
     <ClInclude Include="Enemy_ExplosionGas.h" />
-    <ClInclude Include="Enemy_FujinAvator.h" />
+    <ClInclude Include="Enemy_BossAvator.h" />
     <ClInclude Include="Enemy_GhostFire.h" />
     <ClInclude Include="Enemy_HitDrop.h" />
     <ClInclude Include="Enemy_Rush.h" />
@@ -161,6 +161,7 @@
     <ClInclude Include="FlashFactory.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameover.h" />
+    <ClInclude Include="Game_illustration.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputx.h" />
     <ClInclude Include="InstallationBomb.h" />
@@ -177,6 +178,8 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="ThunderBlade.h" />
+    <ClInclude Include="ThunderBladeFactory.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="TRay.h" />
     <ClInclude Include="UI.h" />
@@ -201,7 +204,7 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="EnemyFactory.cpp" />
     <ClCompile Include="Enemy_ExplosionGas.cpp" />
-    <ClCompile Include="Enemy_FujinAvator.cpp" />
+    <ClCompile Include="Enemy_BossAvator.cpp" />
     <ClCompile Include="Enemy_GhostFire.cpp" />
     <ClCompile Include="Enemy_HitDrop.cpp" />
     <ClCompile Include="Enemy_Rush.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="FlashFactory.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameover.cpp" />
+    <ClCompile Include="Game_illustration.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputx.cpp" />
     <ClCompile Include="InstallationBomb.cpp" />
@@ -232,6 +236,8 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="ThunderBlade.cpp" />
+    <ClCompile Include="ThunderBladeFactory.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="TRay.cpp" />
     <ClCompile Include="UI.cpp" />

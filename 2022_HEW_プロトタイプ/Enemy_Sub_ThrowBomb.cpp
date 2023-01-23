@@ -8,12 +8,12 @@ Enemy_Sub_ThrowBomb::Enemy_Sub_ThrowBomb(D3DXVECTOR2 pos, int ID, int textureNo)
 
 Enemy_Sub_ThrowBomb::~Enemy_Sub_ThrowBomb()
 {
-	SetGameScene(GAMESCENE_BASS_TENGU);
+	SetGameScene(GAMESCENE_PICTURE_STAGE01_BOSS);
 }
 
 void Enemy_Sub_ThrowBomb::Uninit(void)
 {
-	SetGameScene(GAMESCENE_BASS_TENGU);
+	SetGameScene(GAMESCENE_PICTURE_STAGE01_BOSS);
 }
 
 void Enemy_Sub_ThrowBomb::Update(void)

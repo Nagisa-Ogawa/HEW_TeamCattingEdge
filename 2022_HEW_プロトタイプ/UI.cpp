@@ -2,6 +2,7 @@
 #include "sprite.h"
 #include "texture.h"
 #include "input.h"
+#include "camera.h"
 
 void Warp_Recast(void);
 void HP(void);
@@ -11,6 +12,7 @@ static GUI g_StatusBG;
 static GUI g_Life;
 static GUI g_Taiko;
 
+CAMERA_2D* basePos;
 static float g_AnimeTable[4] =
 {
 	0.0f,
@@ -23,6 +25,8 @@ void UI::InitUI(void)
 {
 	m_pPlayer = GetPlayer();
 
+	basePos = GetCamera();
+
 	g_StatusBG.Texture = LoadTexture((char*)"data/TEXTURE/UIBG.png");
 	g_Life.Texture = LoadTexture((char*)"data/TEXTURE/UILifeApple.png");
 	g_Taiko.Texture = LoadTexture((char*)"data/TEXTURE/UITaiko.png");
@@ -34,12 +38,13 @@ void UI::InitUI(void)
 
 void UI::UpdateUI(void)
 {
+
 	if (GetKeyboardRelease(DIK_HOME))
 		g_StatusBG.use = !g_StatusBG.use;
 
 	WarpStock =3-  m_pPlayer->warpFlag;
 
-	if (m_pPlayer->pos.x < g_StatusBG.pos.x + 300 && m_pPlayer->pos.y < g_StatusBG.pos.y + 200)
+	if (m_pPlayer->pos.x <  g_StatusBG.pos.x + 300 + basePos->pos.x && m_pPlayer->pos.y  <  g_StatusBG.pos.y + 200 + basePos->pos.y)
 	{
 		if (g_StatusBG.a > 0.2)
 		{
@@ -61,6 +66,8 @@ void UI::UpdateUI(void)
 
 void UI::DrawUI(void)
 {
+	D3DXVECTOR2 basePos = GetBase();
+
 	if (g_StatusBG.use)
 	{
 		DrawSpriteColor(g_StatusBG.Texture,

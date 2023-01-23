@@ -10,6 +10,7 @@ class FireBallFactory;
 class WindBladeFactory;
 class FlashFactory;
 class RayFactory;
+class ThunderBladeFactory;
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -54,5 +55,6 @@ FireBallFactory* GetFireBallFactory();
 WindBladeFactory* GetWindBladeFactory();
 FlashFactory* GetFlashFactory();
 RayFactory*	GetRayFactory();
+ThunderBladeFactory* GetThunderBladeFactory();
 
 void SetGameScene(GAMESCENE scene);

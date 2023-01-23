@@ -14,7 +14,7 @@
 #include "texture.h"
 #include "Enemy_Sub_ThrowBomb.h"
 #include "Boss_Fujin.h"
-#include "Enemy_FujinAvator.h"
+#include "Enemy_BossAvator.h"
 #include "Boss_Raijin.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
@@ -79,7 +79,7 @@ void EnemyFactory::Create_FujinAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Enemy_FujinAvator(pos, m_nowID, m_EnemyKasyaNo,targetPos));
+	m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyKasyaNo,targetPos));
 }
 
 void EnemyFactory::Create_Boss_Tengu(D3DXVECTOR2 pos)

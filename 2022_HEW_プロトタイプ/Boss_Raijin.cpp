@@ -6,6 +6,8 @@
 #include "texture.h"
 #include "game.h"
 #include "RayFactory.h"
+#include "FlashFactory.h"
+#include "ThunderBladeFactory.h"
 
 Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo)
 	: Enemy(pos, ID, D3DXVECTOR2(480.0f, 480.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_RAIJIN)
@@ -14,18 +16,17 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo)
 	m_Gravity = 4.0f;
 	m_HP = 1;
 	m_Muki = 0;
-	m_State = BULLET_T;
 	// 攻撃用変数
 	m_AttackTextureNo = LoadTexture((char*)"data/TEXTURE/fade_white.png");
 	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 100.0f);
-	// 吸い込み攻撃用変数
-	m_InHalePower = D3DXVECTOR2(5.0f, 5.0f);
 }
 
 void Boss_Raijin::Init()
 {
 	m_pPlayer = GetPlayer();
 	m_pRayFactory = GetRayFactory();
+	m_pFlashFactory = GetFlashFactory();
+	m_pThunderFactory = GetThunderBladeFactory();
 }
 
 void Boss_Raijin::Uninit()
@@ -64,13 +65,22 @@ void Boss_Raijin::Update()
 		m_WaitFrame++;
 		if (m_WaitFrame >= 120)
 		{
-			m_State = BULLET_T;
-
+			m_Muki += 2;
+			m_State = THUNDERBLADE;
 			m_WaitFrame = 0;
 		}
 
 		break;
 	case Boss_Raijin::ATTACK:
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_State = IDLE;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	case Boss_Raijin::SWITCH_BULLET:
 		break;
@@ -80,6 +90,7 @@ void Boss_Raijin::Update()
 		m_State = IDLE;
 		break;
 	case Boss_Raijin::THUNDERBLADE:
+		ThunderBlade();
 		break;
 	case Boss_Raijin::AVATOR:
 		break;
@@ -115,6 +126,32 @@ void Boss_Raijin::Draw()
 			DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x + 300.0f, basePos.y + m_Pos.y, m_AttackCollisionSize.x, m_AttackCollisionSize.y,
 				m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
 		}
+	}
+}
+
+void Boss_Raijin::ThunderBlade()
+{
+	if (m_WaitFrame == 10)
+	{
+		m_ThunderBoltPos = m_pPlayer->pos;
+		// 光るオブジェクト作成
+		m_pFlashFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, 200.0f), D3DXVECTOR2(180.0f, 180.0f));
+	}
+	if (m_WaitFrame == 90)
+	{
+		// 雷の刃作成
+		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, 200.0f+90.0f+360.0f), D3DXVECTOR2(90.0f, 720.0f));
+	}
+	// 一定時間待機
+	if (m_WaitFrame >= 120)
+	{
+		m_WaitFrame = 0;
+		m_Muki = 0;
+		m_State = IDLE;
+	}
+	else
+	{
+		m_WaitFrame++;
 	}
 }
 

@@ -6,6 +6,7 @@
 #include "game.h"
 #include "FireBallFactory.h"
 #include "FireBall.h"
+#include "game.h"
 
 Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) : 
 	Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo,ENEMY_TYPE::BOSS_KASYA)
@@ -27,7 +28,7 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 
 	m_pPlayer = GetPlayer();
 
-	m_LanePosXList[0] = 0.0f + BLOCK_SIZE       + (m_Size.x / 2.0f);
+	m_LanePosXList[0] = 0.0f + BLOCK_SIZE         + (m_Size.x / 2.0f);
 	m_LanePosXList[1] = 0.0f + BLOCK_SIZE * 14.0f - (m_Size.x / 2.0f);
 	m_LanePosXList[2] = 0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f);
 
@@ -43,6 +44,7 @@ void Boss_Kasya::Init()
 
 void Boss_Kasya::Uninit()
 {
+	SetGameScene(GAMESCENE_PICTURE_STAGE03);
 }
 
 void Boss_Kasya::Update()
@@ -186,60 +188,6 @@ void Boss_Kasya::Update()
 	default:
 		break;
 	}
-
-	//// 移動攻撃以外は地面との当たり判定をする
-	//if (m_State != Boss_Kasya::MOVE&&m_State != Boss_Kasya::MOVE_LEFT_RIGHT&&m_State != Boss_Kasya::MOVE_UP_DOWN) {
-	//	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	//	//当たり判定処理
-	//	if (result & HIT_LEFT)
-	//	{
-	//		if (m_Vel.x > 0.0)
-	//			m_Vel.x = 0.0f;
-	//	}
-	//	if (result & HIT_RIGHT)
-	//	{
-	//		if (m_Vel.x < 0.0)
-	//			m_Vel.x = 0.0f;
-	//	}
-
-	//	m_Pos.x += m_Vel.x;
-
-	//	result = 0;
-	//	m_Vel.y += m_Gravity;
-	//	result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	//	//落下させるか？処理
-	//	if ((result & HIT_UP) == 0 && m_IsGround == true)
-	//	{
-	//		m_IsGround = false;
-	//	}
-
-	//	//落下処理
-	//	if (m_IsGround == false)
-	//	{
-	//		if (result & HIT_UP)
-	//		{
-	//			m_IsGround = true;
-	//			m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-	//			m_Vel.y = 0.0f;
-	//		}
-	//	}
-	//	else // 最終的に地面に触れている
-	//	{
-	//		m_Vel.y = 0.0f;
-	//	}
-
-	//	m_Pos.y += m_Vel.y;
-	//}
-	//else {
-	//	m_Pos += m_Vel;
-	//}
-
-	//// プレイヤーの方を向く関数
-	//// LookPlayer();
-
-	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
-
-
 }
 
 void Boss_Kasya::Draw()

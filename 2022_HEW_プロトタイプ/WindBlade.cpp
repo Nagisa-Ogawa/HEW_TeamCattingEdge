@@ -2,7 +2,7 @@
 #include "sprite.h"
 #include "camera.h"
 
-WindBlade::WindBlade(D3DXVECTOR2 pos, int muki, int textureNo):m_Pos(pos),m_Muki(muki),m_TextureNo(textureNo)
+WindBlade::WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki, int textureNo):m_Pos(pos),m_Size(size),m_Muki(muki),m_TextureNo(textureNo)
 {
 	m_pCamera = GetCamera();
 	m_Power = D3DXVECTOR2(20.0f, 0.0f);
@@ -10,7 +10,6 @@ WindBlade::WindBlade(D3DXVECTOR2 pos, int muki, int textureNo):m_Pos(pos),m_Muki
 	m_pttern.x = 1.0f / m_divid.x;
 	m_pttern.y = 1.0f / m_divid.y;
 	m_IsActive = true;
-	m_Size = D3DXVECTOR2(60.0f, 120.0f);
 	if (m_Muki == 1)
 	{
 		m_Power.x *= -1.0f;
@@ -43,8 +42,8 @@ void WindBlade::Update()
 		m_Vel.x += m_Power.x;
 		m_Vel.y += m_Power.y;
 		m_Pos += m_Vel;
-		// ‰æ–ÊŠO‚È‚ç
-		if ((m_Pos.x - m_Size.x / 2.0f) + basePos.x <= 0 && (m_Pos.x + m_Size.x / 2.0f) + basePos.x >= SCREEN_WIDTH)
+		// ‰æ–ÊŠO‚È‚çpCamer
+		if (m_Pos.x - m_pCamera->pos.x <= -500.0f || m_Pos.x - m_pCamera->pos.x >= SCREEN_WIDTH + 500.0f)
 		{
 			m_State = DEAD;
 		}
