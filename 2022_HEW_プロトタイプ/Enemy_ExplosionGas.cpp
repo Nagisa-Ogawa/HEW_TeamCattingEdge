@@ -13,7 +13,7 @@ Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID, int textureNo):
 	// ìGÇÃÉTÉCÉYÇê›íË
 	m_HP = 1;
 	m_BombFrame = 100;
-	m_BombRange = 300.0f;
+	m_BombRange = 600.0f;
 	m_MaxSize = 30.0f;
 	m_ChangeSizeValue = m_MaxSize / m_BombFrame;
 	m_pExplosionFactory = GetExplosionFactory();

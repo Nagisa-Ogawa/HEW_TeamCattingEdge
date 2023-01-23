@@ -332,6 +332,14 @@ void UpdatePlayer(void)
 	{
 	case GAMESCENE_STAGE_TENGU:
 		pCamera->pos.x = g_Player.pos.x - SCREEN_WIDTH / 2;
+		if (pCamera->pos.x <= 0.0f)
+		{
+			pCamera->pos.x = 0.0f;
+		}
+		if (pCamera->pos.x >= 5460.0f)
+		{
+			pCamera->pos.x = 5460.0f;
+		}
 		break;
 	case GAMESCENE_STAGE_KASYA:
 		if (pCamera->pos.x <= 13380.0f)
@@ -614,7 +622,7 @@ void DrawPlayer(void)
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
 				0.4f, 0.0f, 0.2f, 1.0f,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+				D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
 				0.0f);
 			break;
 		case 2:
@@ -623,7 +631,7 @@ void DrawPlayer(void)
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
 				0.6f, 0.0f, -0.2f, 1.0f,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f),
+				D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
 				0.0f);
 			break;
 		default:
