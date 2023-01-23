@@ -134,6 +134,7 @@
     <ClInclude Include="Bomb.h" />
     <ClInclude Include="Boss_Fujin.h" />
     <ClInclude Include="Boss_Kasya.h" />
+    <ClInclude Include="Boss_Raijin.h" />
     <ClInclude Include="ContactBomb.h" />
     <ClInclude Include="BombFactory.h" />
     <ClInclude Include="Boss_Tengu.h" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="Boss_Fujin.cpp" />
     <ClCompile Include="Boss_Kasya.cpp" />
+    <ClCompile Include="Boss_Raijin.cpp" />
     <ClCompile Include="ContactBomb.cpp" />
     <ClCompile Include="BombFactory.cpp" />
     <ClCompile Include="Boss_Tengu.cpp" />

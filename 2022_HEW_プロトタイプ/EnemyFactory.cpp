@@ -15,6 +15,7 @@
 #include "Enemy_Sub_ThrowBomb.h"
 #include "Boss_Fujin.h"
 #include "Enemy_FujinAvator.h"
+#include "Boss_Raijin.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -100,6 +101,13 @@ void EnemyFactory::Create_Boss_Fujin(D3DXVECTOR2 pos)
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
 	m_pEnemyList.insert(enemyIt, new Boss_Fujin(pos, m_nowID, m_EnemyKasyaNo));
+}
+
+void EnemyFactory::Create_Boss_Raijin(D3DXVECTOR2 pos)
+{
+	m_nowID++;
+	auto enemyIt = m_pEnemyList.begin();
+	m_pEnemyList.insert(enemyIt, new Boss_Raijin(pos, m_nowID, m_EnemyKasyaNo));
 }
 
 void EnemyFactory::Init()
@@ -224,6 +232,9 @@ void EnemyFactory::SetEnemy()
 				break;
 			case 50:
 				Create_Boss_Fujin(pos);
+				break;
+			case 51:
+				Create_Boss_Raijin(pos);
 				break;
 				//エネミー以外
 			default:
@@ -465,6 +476,27 @@ bool EnemyFactory::CheckFujinAvatorSetEnd()
 		}
 	}
 	return flag;
+}
+
+bool EnemyFactory::CheckAliveFujinAvator()
+{
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		if (pEnemy->GetEnemyType() != Enemy::FUFINAVATOR)
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsActive())
+		{
+			continue;
+		}
+		if (pEnemy->GetIsDead())
+		{
+			continue;
+		}
+		return false;
+	}
+	return true;
 }
 
 void EnemyFactory::DeleteEnemy()

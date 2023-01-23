@@ -7,29 +7,24 @@
 //*****************************************************************************
 
 class ExplosionFactory;
-class WindBladeFactory;
 class RayFactory;
-class FlashFactory;
 class EnemyFactory;
 struct PLAYER;
 
-//*****************************************************************************
-// マクロ定義
-//*****************************************************************************
-class Boss_Fujin:public Enemy
+class Boss_Raijin :public Enemy
 {
 public:
-	enum STATE_ENEMY_FUJIN
+	enum STATE_ENEMY_RAIJIN
 	{
-		IDLE,		// 待機
-		ATTACK,		// 近接攻撃
-		INHALE,		// 吸い込み
-		BULLET_X,	// X弾
-		WINDBLADE,	// 風の刃
-		AVATOR,		// 分身
+		IDLE,			// 待機
+		ATTACK,			// 近接攻撃
+		SWITCH_BULLET,	// 特殊弾と位置を入れ替え
+		BULLET_T,		// ＋弾
+		THUNDERBLADE,	// 雷の刃
+		AVATOR,			// 分身
 		MOVE,
-		WAIT,		// 待機
-		DEAD,		// 死亡
+		WAIT,			// 待機
+		DEAD,			// 死亡
 	};
 private:
 	const float m_AnimeTable[6] =
@@ -55,17 +50,14 @@ private:
 		0.9f,	// 停止（右）
 	};
 
-	STATE_ENEMY_FUJIN m_State = IDLE;
-	STATE_ENEMY_FUJIN m_BeforeState = IDLE;
-	int m_StateCount = 0;
+	STATE_ENEMY_RAIJIN m_State = IDLE;
+	STATE_ENEMY_RAIJIN m_BeforeState = IDLE;
 
 	// 待機フレーム
 	int m_WaitFrame = 0;
 	PLAYER* m_pPlayer = nullptr;
-	WindBladeFactory* m_pWindBladeFactory = nullptr;
-	FlashFactory* m_pFlashFactory = nullptr;
-	EnemyFactory* m_pEnemyFactory = nullptr;
 	RayFactory* m_pRayFactory = nullptr;
+	EnemyFactory* m_pEnemyFactory = nullptr;
 	// 近接攻撃用変数宣言
 	int m_AttackTextureNo = -1;
 	D3DXVECTOR2 m_AttackCollisionSize = D3DXVECTOR2(0.0f, 0.0f);
@@ -73,8 +65,6 @@ private:
 	D3DXVECTOR2 m_InHalePower = D3DXVECTOR2(0.0f, 0.0f);
 	float m_NowDistance = 0.0f;
 	float m_AttackDistance = 0.0f;
-	// X弾攻撃用変数宣言
-	D3DXVECTOR2 m_BeforeShotPos = D3DXVECTOR2(0.0f, 0.0f);
 	// 移動用変数宣言
 	D3DXVECTOR2 m_MoveVec = D3DXVECTOR2(0.0f, 0.0f);
 	D3DXVECTOR2 m_StartPos = D3DXVECTOR2(0.0f, 0.0f);
@@ -85,7 +75,7 @@ private:
 
 
 public:
-	Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo);
+	Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理
@@ -95,16 +85,13 @@ public:
 	// エネミーの描画処理
 	void Draw() override;
 
-	void InHale();
-	void ShotBullet_X();
 	void Avator();
 
-	void SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_FUJIN state,int muki);
+	/*void SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_RAIJIN state, int muki);
 	void Move();
-
+*/
 	void AfterHitCheckBlockX(DWORD result) override;
 	void AfterHitCheckBlockY(DWORD result) override;
 
-	~Boss_Fujin();
+	~Boss_Raijin();
 };
-

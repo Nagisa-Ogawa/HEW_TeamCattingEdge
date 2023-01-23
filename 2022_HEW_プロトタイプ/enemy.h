@@ -26,6 +26,7 @@ public:
 		BOSS_TENGU,
 		BOSS_KASYA,
 		BOSS_FUJIN,
+		BOSS_RAIJIN,
 	};
 private:
 	int m_ID = -99999;	// “G‚ðŽ¯•Ê‚·‚é‚½‚ß‚ÌID

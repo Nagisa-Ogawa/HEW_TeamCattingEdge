@@ -60,6 +60,8 @@ public:
 	void Create_Boss_Tengu(D3DXVECTOR2 pos);
 	void Create_Boss_Kasya(D3DXVECTOR2 pos);
 	void Create_Boss_Fujin(D3DXVECTOR2 pos);
+	void Create_Boss_Raijin(D3DXVECTOR2 pos);
+
 
 	std::list<Enemy*>* GetEnemyList() { return &m_pEnemyList; };
 	// マップ情報からエネミーを作成
@@ -77,6 +79,7 @@ public:
 	void CollisoinAttacktoEnemy(D3DXVECTOR2 AttackPos);
 
 	bool CheckFujinAvatorSetEnd();
+	bool CheckAliveFujinAvator();
 
 	// エネミーを削除する
 	void DeleteEnemy();

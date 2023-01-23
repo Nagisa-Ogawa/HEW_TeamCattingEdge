@@ -8,6 +8,7 @@
 #include "FlashFactory.h"
 #include "game.h"
 #include "EnemyFactory.h"
+#include "RayFactory.h"
 
 Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN)
@@ -17,6 +18,7 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 	m_HP = 1;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();
+	m_pRayFactory = GetRayFactory();
 	m_pWindBladeFactory = GetWindBladeFactory();
 	m_pFlashFactory = GetFlashFactory();
 	m_pEnemyFactory = GetEnemyFactory();
@@ -66,9 +68,33 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_Muki += 2;
-			m_State = AVATOR;
-			// m_StateCount = 0;
+			switch (m_StateCount)
+			{
+			case 0:
+				m_State = ATTACK;
+				break;
+			case 1:
+				m_Muki += 4;
+				m_State = INHALE;
+				break;
+			case 2:
+				m_Muki += 4;
+				m_State = BULLET_X;
+				break;
+			case 3:
+				m_Muki += 2;
+				m_State = WINDBLADE;
+				break;
+			case 4:
+				m_State = AVATOR;
+				break;
+			default:
+				break;
+			}
+			m_StateCount++;
+			if (m_StateCount >= 5) {
+				m_StateCount = 0;
+			}
 		}
 		else
 		{
@@ -79,8 +105,7 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_State = WINDBLADE;
-			// m_StateCount = 0;
+			m_State = IDLE;
 		}
 		else
 		{
@@ -91,6 +116,7 @@ void Boss_Fujin::Update()
 		InHale();
 		break;
 	case Boss_Fujin::BULLET_X:
+		ShotBullet_X();
 		break;
 	case Boss_Fujin::WINDBLADE:
 		if (m_WaitFrame == 10)
@@ -197,11 +223,109 @@ void Boss_Fujin::InHale()
 	}
 }
 
+void Boss_Fujin::ShotBullet_X()
+{
+	switch (m_MoveCount)
+	{
+	case 0:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn += 2;
+			m_BeforeShotPos = m_Pos;
+			m_MoveCount++;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 1:
+		// X弾発射
+		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
+		m_MoveCount++;
+		break;
+	case 2:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn = 0;
+			m_MoveCount++;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 3:
+	{
+		// 上空へ移動
+		D3DXVECTOR2 pos = D3DXVECTOR2(1300.0f, 300.0f);
+		SetMove(m_Pos, pos, m_State, m_Muki);
+		break;
+	}
+	case 4:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn += 2;
+			m_MoveCount++;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 5:
+		// X弾発射
+		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
+		m_MoveCount++;
+	case 6:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn = 0;
+			m_MoveCount++;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 7:
+		// 地面へ移動
+		m_Muki = 0;
+		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
+		break;
+	case 8:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn = 0;
+			m_MoveCount = 0;
+			m_State = IDLE;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 void Boss_Fujin::Avator()
 {
 	switch (m_MoveCount)
 	{
 	case 0:
+		m_BeforeShotPos = m_Pos;
 		// マップ外へ移動
 		SetMove(m_Pos, D3DXVECTOR2(SCREEN_WIDTH + m_Size.x / 2.0f, SCREEN_HEIGHT - m_Size.y / 2.0f - BLOCK_SIZE),m_State,m_Muki);
 		break;
@@ -214,9 +338,26 @@ void Boss_Fujin::Avator()
 		m_MoveCount++;
 	case 2:
 		// 分身が消えるまで待機
-		// マップ内へ移動
+		if (m_pEnemyFactory->CheckAliveFujinAvator()) {
+			m_MoveCount++;
+		}
 		break;
 	case 3:
+		// マップ内へ移動
+		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
+		break;
+	case 4:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_MoveCount = 0;
+			m_State = IDLE;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	default:
 		break;
@@ -289,7 +430,9 @@ void Boss_Fujin::AfterHitCheckBlockX(DWORD result)
 			if (m_Vel.x < 0.0)
 				m_Vel.x = 0.0f;
 		}
-		m_Vel.y += m_Gravity;
+		if (m_State != BULLET_X&&m_State!=AVATOR) {
+			m_Vel.y += m_Gravity;
+		}
 	}
 
 	m_Pos.x += m_Vel.x;

@@ -9,15 +9,22 @@ bool HitCheckPlayerToXRay(D3DXVECTOR2 raypos, float raysize, D3DXVECTOR2 playerp
 bool HitCheckXRayLine(D3DXVECTOR2 startA, D3DXVECTOR2 endA, D3DXVECTOR2 startB, D3DXVECTOR2 endB);
 float crossX(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
 
-void XRay::Init(void)
+XRay::XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
+	:RayInterface(pos, playerpos)
 {
-	m_texture = LoadTexture((char*)"");
+	m_texture = LoadTexture((char*)"data/TEXTURE/XRay.png");
+	m_use = true;
 
 	m_pPlayer = GetPlayer();
 	m_state = Normal;
+	m_goalpos = m_pPlayer->pos;
 
 	m_vec = m_goalpos - m_pos;
-	D3DXVec2Normalize(&m_vec,&m_vec);
+	D3DXVec2Normalize(&m_vec, &m_vec);
+}
+
+void XRay::Init(void)
+{
 }
 
 void XRay::Update(void)
@@ -27,23 +34,22 @@ void XRay::Update(void)
 	case Normal:
 		m_pos += m_vec * RAYSPEED;
 
-		if (HitCheckBlockToXRay(m_pos,m_size))
+		if (HitCheckBlockToXRay(m_pos, m_size))
 			m_state = Expo;
 		break;
 	case Expo:
 		if (m_size <= MAXSIZE)
 		{
-			m_size += 0.1f;
+			m_size += 3.0f;
 		}
-
-		if (0)
+		else
 		{
 			m_use = false;
 		}
 		break;
 	}
 
-	if (HitCheckPlayerToXRay(m_pos,m_size, m_pPlayer->pos))
+	if (HitCheckPlayerToXRay(m_pos, m_size, m_pPlayer->pos))
 	{
 		PlayerDamage(1);
 	}
@@ -76,7 +82,7 @@ bool HitCheckBlockToXRay(D3DXVECTOR2 raypos,float size)
 			//ヒットしているかを判定する
 			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
-			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, raypos, size, size))
+			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, raypos, size , size))
 			{
 				return true;
 			}
@@ -88,29 +94,36 @@ bool HitCheckBlockToXRay(D3DXVECTOR2 raypos,float size)
 
 bool HitCheckPlayerToXRay(D3DXVECTOR2 raypos, float raysize, D3DXVECTOR2 playerpos)
 {
-	float size = 5.0f;
+	PLAYER* pPlayer = GetPlayer();
+	if (pPlayer->mutekiflag)
+	{
+		return false;
+	}
+
+	float size = raysize * 0.5f;
 	//頂点の作成
 	//外側４点
 	D3DXVECTOR2 out[4] = {
-		D3DXVECTOR2(raypos.x - (raysize* size), raypos.y - (raysize* size)),//outLT
-		D3DXVECTOR2(raypos.x + (raysize* size), raypos.y - (raysize* size)),//outRT
-		D3DXVECTOR2(raypos.x + (raysize* size), raypos.y + (raysize* size)),//outRB
-		D3DXVECTOR2(raypos.x - (raysize* size), raypos.y + (raysize* size)),//outLB
+		D3DXVECTOR2(raypos.x - size, raypos.y - size),//outLT
+		D3DXVECTOR2(raypos.x + size, raypos.y - size),//outRT
+		D3DXVECTOR2(raypos.x + size, raypos.y + size),//outRB
+		D3DXVECTOR2(raypos.x - size, raypos.y + size),//outLB
 	};
 	//内側４点
 	D3DXVECTOR2 in[4] = {
-		D3DXVECTOR2(0.0f, raypos.y - (raysize* size)), //inT
-		D3DXVECTOR2(raypos.x + (raysize* size), 0.0f), //inR
-		D3DXVECTOR2(0.0f, raypos.y + (raysize* size)), //inB
-		D3DXVECTOR2(raypos.x - (raysize* size), 0.0f), //inL
+		D3DXVECTOR2(raypos.x, raypos.y - (size * 0.28f)), //inT
+		D3DXVECTOR2(raypos.x + (size * 0.28f), raypos.y), //inR
+		D3DXVECTOR2(raypos.x, raypos.y + (size * 0.28f)), //inB
+		D3DXVECTOR2(raypos.x - (size * 0.28f), raypos.y), //inL
 	};
 	
 	//プレイヤー４点
-	D3DXVECTOR2 Player[4] = {
+	D3DXVECTOR2 Player[5] = {
 		D3DXVECTOR2(playerpos.x - 60.0f, playerpos.y - 60.0f), // PlayerLT
 		D3DXVECTOR2(playerpos.x + 60.0f, playerpos.y - 60.0f), // PlayerRT
 		D3DXVECTOR2(playerpos.x + 60.0f, playerpos.y + 60.0f), // PlayerRB
 		D3DXVECTOR2(playerpos.x - 60.0f, playerpos.y + 60.0f), // PlayerLB
+		D3DXVECTOR2(playerpos.x - 55.0f, playerpos.y - 55.0f), // PlayerLT <- もう一回
 	};
 	
 	

@@ -1,6 +1,6 @@
 /*==============================================================================
 
-   頂点管理 [player.cpp]
+   プレイヤー管理 [player.cpp]
 														 Author :
 														 Date   :
 --------------------------------------------------------------------------------
@@ -35,7 +35,7 @@
 
 #define MONOSIZE 64.0f
 
-#define WARPRECAST 3000//5000
+#define WARPRECAST 3000//3000
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -138,8 +138,6 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 
 	switch (gamescene)
 	{
-	case GAMESCENE_NONE:
-		break;
 	case GAMESCENE_STAGE_TENGU:
 		break;
 	case GAMESCENE_BASS_TENGU:
@@ -148,8 +146,6 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 		g_Player.pos = D3DXVECTOR2(400.0f, 540.0f);
 		break;
 	case GAMESCENE_BASS_KASYA:
-		break;
-	case GAMESCENE_STAGE_NUM:
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
 		break;
@@ -638,7 +634,7 @@ void DrawPlayer(void)
 
 void PlayerDamage(int num)
 {
-	// g_Player.hp -= num;
+	g_Player.hp -= num;
 
 	g_Player.mutekiflag = true;
 }
@@ -678,6 +674,26 @@ void PlayerStatusNormal(void)
 		}
 	}
 
+	//ワープリキャスト処理
+	if (g_Player.warpFlag < 3)
+	{
+		g_Player.warpRecast = timeGetTime();
+
+		if (g_Player.warpRecast - g_Player.warpStartRecast >= WARPRECAST)//3.000
+		{
+			g_Player.warpFlag++;
+
+			if (g_Player.warpFlag == 3)
+			{
+				g_Player.warpStartRecast = 0;
+			}
+			else
+			{
+				g_Player.warpStartRecast = timeGetTime();
+			}
+		}
+	}
+
 	//攻撃処理移行フラグ
 	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_RIGHT_SHOULDER) && g_Player.attackflag == 0)
 	{
@@ -700,26 +716,6 @@ void PlayerStatusNormal(void)
 		g_Player.status = attack;
 		g_Player.animeCounterAttack = 0;
 		g_Player.animeAttack = 0;
-	}
-
-	//ワープリキャスト処理
-	if (g_Player.warpFlag < 3)
-	{
-		g_Player.warpRecast = timeGetTime();
-
-		if (g_Player.warpRecast - g_Player.warpStartRecast >= WARPRECAST)//3.000
-		{
-			g_Player.warpFlag++;
-
-			if (g_Player.warpFlag == 3)
-			{
-				g_Player.warpStartRecast = 0;
-			}
-			else
-			{
-				g_Player.warpStartRecast = timeGetTime();
-			}
-		}
 	}
 }
 

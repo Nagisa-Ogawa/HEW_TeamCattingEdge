@@ -5,8 +5,7 @@
 class XRay:public RayInterface
 {
 public:
-	XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
-		:RayInterface(pos, playerpos) {};
+	XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos);
 	void Init(void);
 	void Update(void);
 	void Draw(void);

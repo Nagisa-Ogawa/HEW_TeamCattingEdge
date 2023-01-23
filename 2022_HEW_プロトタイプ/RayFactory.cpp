@@ -1,5 +1,6 @@
 #include "RayFactory.h"
 #include "XRay.h"
+#include "TRay.h"
 #include <algorithm>
 
 void RayFactory::Init(void)
@@ -27,6 +28,10 @@ void RayFactory::Update(void)
 			delete (*deleteit);
 			m_pRayList.erase(deleteit);
 		}
+		else
+		{
+			break;
+		}
 	}
 	
 }
@@ -51,5 +56,6 @@ void RayFactory::CreateXRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 
 void RayFactory::CreateTRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 {
-	//m_pRayList.push_back = new TRay(pos, playerpos);
+	auto It = m_pRayList.begin();
+	m_pRayList.insert(It, new TRay(pos, playerpos));
 }

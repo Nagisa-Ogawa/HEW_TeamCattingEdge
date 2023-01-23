@@ -6,8 +6,8 @@
 class TRay :public RayInterface
 {
 public:
-	TRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
-		:RayInterface(pos, playerpos) {};
+	TRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos);
+
 	void Init(void);
 	void Update(void);
 	void Draw(void);

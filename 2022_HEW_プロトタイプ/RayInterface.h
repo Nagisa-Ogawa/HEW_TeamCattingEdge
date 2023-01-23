@@ -1,8 +1,8 @@
 #pragma once
 #include "main.h"
 
-#define RAYSPEED 4.0f
-#define MAXSIZE 10.0f
+#define RAYSPEED 6.0f
+#define MAXSIZE 300.0f
 
 enum RayState
 {
@@ -18,7 +18,7 @@ protected:
 	D3DXVECTOR2 m_pos;
 	D3DXVECTOR2 m_goalpos;
 	D3DXVECTOR2 m_vec;
-	float		m_size;
+	float		m_size = 60.0f;
 	PLAYER*		m_pPlayer;
 	int			m_texture;
 	RayState	m_state;

@@ -24,6 +24,7 @@
 #include "DamageFloorFactory.h"
 #include "WindBladeFactory.h"
 #include "FlashFactory.h"
+#include "RayFactory.h"
 #include "UI.h"
 #include "gameover.h"
 
@@ -53,6 +54,7 @@ static FireBallFactory fireBallFactory;
 static DamageFloorFactory damageFloorFactory;
 static WindBladeFactory windBladeFactory;
 static FlashFactory flashFactory;
+static RayFactory rayFactory;
 static UI ui(GetPlayer());
 
 //=============================================================================
@@ -60,7 +62,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
+	g_Scene = g_SceneNext = GAMESCENE_BASS_TENGU;
 
 	InitGameStage();
 }
@@ -69,8 +71,6 @@ void UninitGame(void)
 {
 	switch (g_Scene)
 	{
-	case GAMESCENE_NONE:
-		break;
 	case GAMESCENE_STAGE_TENGU:
 		UninitGameStage();
 		break;
@@ -81,9 +81,6 @@ void UninitGame(void)
 		UninitGameStage();
 		break;
 	case GAMESCENE_BASS_KASYA:
-		UninitGameStage();
-		break;
-	case GAMESCENE_STAGE_NUM:
 		UninitGameStage();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -102,8 +99,6 @@ void UpdateGame(void)
 {
 	switch (g_Scene)
 	{
-	case GAMESCENE_NONE:
-		break;
 	case GAMESCENE_STAGE_TENGU:
 		UpdateGameStage();
 		break;
@@ -114,9 +109,6 @@ void UpdateGame(void)
 		UpdateGameStage();
 		break;
 	case GAMESCENE_BASS_KASYA:
-		UpdateGameStage();
-		break;
-	case GAMESCENE_STAGE_NUM:
 		UpdateGameStage();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -142,8 +134,6 @@ void DrawGame(void)
 {
 	switch (g_Scene)
 	{
-	case GAMESCENE_NONE:
-		break;
 	case GAMESCENE_STAGE_TENGU:
 		DrawGameStage();
 		break;
@@ -154,9 +144,6 @@ void DrawGame(void)
 		DrawGameStage();
 		break;
 	case GAMESCENE_BASS_KASYA:
-		DrawGameStage();
-		break;
-	case GAMESCENE_STAGE_NUM:
 		DrawGameStage();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -206,6 +193,8 @@ void InitGameStage(void)
 
 	flashFactory.Init();
 
+	rayFactory.Init();
+
 	//UI
 	ui.InitUI();
 
@@ -223,6 +212,8 @@ void UninitGameStage(void)
 
 	//数値表示の終了処理
 	UninitNumber();
+
+	rayFactory.Uninit();
 
 	flashFactory.Uninit();
 
@@ -295,6 +286,8 @@ void UpdateGameStage(void)
 
 	flashFactory.Update();
 
+	rayFactory.Update();
+
 	//UIのアップデート
 	ui.UpdateUI();
 }
@@ -328,6 +321,8 @@ void DrawGameStage(void)
 
 	flashFactory.Draw();
 
+	rayFactory.Draw();
+
 	// プレイヤーの描画処理
 	DrawPlayer();
 
@@ -359,8 +354,6 @@ void ChangeGameScene(void)
 	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
-	case GAMESCENE_STAGE_NUM:
-		break;
 	case GAMESCENE_PICTURE_OVERGAME:
 		UninitGameOver();
 		break;
@@ -389,8 +382,6 @@ void ChangeGameScene(void)
 		break;
 	case GAMESCENE_BASS_KASYA:
 		InitGameStage();
-		break;
-	case GAMESCENE_STAGE_NUM:
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
 		InitGameOver();
@@ -442,4 +433,9 @@ WindBladeFactory * GetWindBladeFactory()
 FlashFactory * GetFlashFactory()
 {
 	return &flashFactory;
+}
+
+RayFactory * GetRayFactory()
+{
+	return &rayFactory;
 }
