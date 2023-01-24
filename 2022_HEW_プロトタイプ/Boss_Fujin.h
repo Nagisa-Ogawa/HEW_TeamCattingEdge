@@ -41,18 +41,20 @@ private:
 		0.666667f,
 		0.833334f
 	};
-	const float M_MukiTable[10] =
+	const float M_MukiTable[12] =
 	{
-		0.0f,	// 待機（左）
-		0.1f,	// 待機（右）
-		0.2f,	// やられ（左）
-		0.3f,	// やられ（右）
-		0.4f,	// ブレス（左）
-		0.5f,	// ブレス（右）
-		0.6f,	// 移動（左）
-		0.7f,	// 移動（右）
-		0.8f,	// 停止（左）
-		0.9f,	// 停止（右）
+		0.000000f,	// 移動（左）
+		0.083333f,	// 移動（右）
+		0.166666f,	// 近接（左）
+		0.249999f,	// 近接（右）
+		0.333332f,	// やられ（右）
+		0.416665f,	// ブレス（左）
+		0.500000f,	// ブレス（右）
+		0.583333f,	// 移動（左）
+		0.666666f,	// 移動（右）
+		0.749999f,	// 停止（左）
+		0.833332f,	// 停止（右）
+		0.916665f,
 	};
 
 	STATE_ENEMY_FUJIN m_State = IDLE;
@@ -61,6 +63,7 @@ private:
 
 	// 待機フレーム
 	int m_WaitFrame = 0;
+	int m_AnimeFrame = 0;
 	PLAYER* m_pPlayer = nullptr;
 	WindBladeFactory* m_pWindBladeFactory = nullptr;
 	FlashFactory* m_pFlashFactory = nullptr;

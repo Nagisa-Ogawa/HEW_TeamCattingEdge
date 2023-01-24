@@ -2,6 +2,8 @@
 #include "enemy.h"
 
 class WindBladeFactory;
+class ThunderBladeFactory;
+class FlashFactory;
 class EnemyFactory;
 
 class Enemy_BossAvator :public Enemy
@@ -11,8 +13,15 @@ public:
 	{
 		IDLE,		// 待機
 		WINDBLADE,	// 風の刃
+		THUNDERBLADE,
 		MOVE,
 		DEAD,		// 死亡
+	};
+
+	enum AVATOR_MODE
+	{
+		FUJIN,
+		RAIJIN,
 	};
 private:
 	const float m_AnimeTable[6] =
@@ -40,9 +49,12 @@ private:
 
 	STATE_ENEMY_FUJINAVATOR m_State = IDLE;
 	STATE_ENEMY_FUJINAVATOR m_BeforeState = IDLE;
+	AVATOR_MODE m_mode;
 	// 待機フレーム
 	int m_WaitFrame = 0;
 	WindBladeFactory* m_pWindBladeFactory = nullptr;
+	ThunderBladeFactory* m_pThunderBladeFactory = nullptr;
+	FlashFactory* m_pFlashFactory = nullptr;
 	EnemyFactory* m_pEnemyFactory = nullptr;
 	// 移動用変数宣言
 	float m_NowDistance = 0.0f;
@@ -54,7 +66,7 @@ private:
 	int m_MoveCount = 0;
 	D3DXVECTOR2 m_TargetPos = D3DXVECTOR2(0.0f, 0.0f);
 public:
-	Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo,D3DXVECTOR2 targetPos);
+	Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo,D3DXVECTOR2 targetPos,AVATOR_MODE mode);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理
@@ -65,6 +77,7 @@ public:
 	void Draw() override;
 
 	void WindBlade();
+	void ThunderBlade();
 	void SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_FUJINAVATOR state, int muki);
 	void Move();
 

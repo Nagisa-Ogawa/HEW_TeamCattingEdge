@@ -7,8 +7,6 @@
 
 ==============================================================================*/
 #include "player.h"
-#include "fade.h"
-#include "input.h"
 #include "texture.h"
 #include "sprite.h"
 #include "number.h"
@@ -17,6 +15,7 @@
 #include "Block.h"
 #include "game.h"
 #include "EnemyFactory.h"
+#include "sound.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -55,10 +54,11 @@ D3DXVECTOR2 GetRightStick(int padNo);
 //*****************************************************************************
 static PLAYER g_Player;
 static D3DXVECTOR2 g_Direction;
+static int	g_SE_wapu;		// SEの識別子
 
-static int g_TextureLeft = 0;//プレイヤー用テクスチャの識別子
-static int g_TextureRight = 0;//プレイヤー用テクスチャの識別子
-static int g_TextureAttack = 0;
+static int g_TextureLeft = 0;	//プレイヤー用テクスチャの識別子
+static int g_TextureRight = 0;	//プレイヤー用テクスチャの識別子
+static int g_TextureAttack = 0;	//プレイヤー用テクスチャの識別子
 
 static float g_AnimeTable[8] =
 {
@@ -131,6 +131,10 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 	g_Player.attackflag = 0;
 	g_Player.attackRecast = 0;
 	g_Player.hp = 10;
+
+	//音関連の初期化
+	g_SE_wapu = LoadSound((char*)"data/SE/wa-pu.wav");
+	SetVolume(g_SE_wapu, 0.5f);
 
 	//その他の初期化
 	g_Player.enemyfactory = GetEnemyFactory();
@@ -793,6 +797,8 @@ void PlayerStatusWarp(void)
 	g_Player.vel = D3DXVECTOR2(0.0f, 0.0f);
 
 	g_Player.status = normal;
+
+	PlaySound(g_SE_wapu, 0);
 
 	if (g_Player.warpStartRecast == 0)
 	{

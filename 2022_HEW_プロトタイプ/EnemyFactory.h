@@ -6,6 +6,7 @@
 #include "player.h"
 #include "camera.h"
 
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -34,7 +35,8 @@ private:
 	int m_EnemyExplosionGasNo = -1;
 	int m_EnemyKasyaNo = -1;
 
-	int m_EnemyFujin = -1;
+	int m_EnemyFujinNo = -1;
+	int m_EnemyRaijinNo = -1;
 public:
 	EnemyFactory();
 	// エネミー工場の初期化処理
@@ -54,7 +56,7 @@ public:
 	void Create_GhostFire(D3DXVECTOR2 pos, int muki);
 	void Create_Rush(D3DXVECTOR2 pos);
 	void Create_ExplosionGas(D3DXVECTOR2 pos);
-	void Create_FujinAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos);
+	void Create_BossAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos, int mode);
 
 	// BOSS系Create関数
 	void Create_Boss_Tengu(D3DXVECTOR2 pos);

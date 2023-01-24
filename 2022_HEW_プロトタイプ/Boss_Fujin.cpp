@@ -9,9 +9,10 @@
 #include "game.h"
 #include "EnemyFactory.h"
 #include "RayFactory.h"
+#include "Enemy_BossAvator.h"
 
 Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
-	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN)
+	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 12.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
@@ -22,6 +23,7 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 	m_pWindBladeFactory = GetWindBladeFactory();
 	m_pFlashFactory = GetFlashFactory();
 	m_pEnemyFactory = GetEnemyFactory();
+	m_AttackDistance = 300.0f;
 	// 攻撃用変数
 	m_AttackTextureNo=LoadTexture((char*)"data/TEXTURE/fade_white.png");
 	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 100.0f);
@@ -68,13 +70,14 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
+			m_StateCount = 1;
 			switch (m_StateCount)
 			{
 			case 0:
 				m_State = WINDBLADE;
 				break;
 			case 1:
-				m_Muki += 4;
+				m_Muki += 8;
 				m_State = INHALE;
 				break;
 			case 2:
@@ -201,7 +204,8 @@ void Boss_Fujin::InHale()
 	if (distance <= m_AttackDistance)
 	{
 		m_WaitFrame = 0;
-		m_Muki = 0;
+		m_Muki -= 8;
+		m_AnimationPtn = 0;
 		m_State = ATTACK;
 	}
 	// ベクトルを正規化
@@ -214,12 +218,23 @@ void Boss_Fujin::InHale()
 	if (m_WaitFrame >= 600)
 	{
 		m_WaitFrame = 0;
-		m_Muki = 0;
+		m_Muki -= 8;
+		m_AnimationPtn = 0;
 		m_State = ATTACK;
 	}
 	else
 	{
 		m_WaitFrame++;
+	}
+	if (m_AnimeFrame >= 10) {
+		m_AnimeFrame = 0;
+		m_AnimationPtn++;
+		if (m_AnimationPtn >= 5) {
+			m_AnimationPtn = 2;
+		}
+	}
+	else {
+		m_AnimeFrame++;
 	}
 }
 
@@ -333,7 +348,7 @@ void Boss_Fujin::Avator()
 		// 分身を三体作成
 		for (int i = 0; i < 3; i++)
 		{
-			m_pEnemyFactory->Create_FujinAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f));
+			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f),Enemy_BossAvator::AVATOR_MODE::FUJIN);
 		}
 		m_MoveCount++;
 	case 2:

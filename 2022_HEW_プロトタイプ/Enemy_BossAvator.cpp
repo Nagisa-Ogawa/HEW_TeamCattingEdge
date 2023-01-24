@@ -4,17 +4,21 @@
 #include "Block.h"
 #include "texture.h"
 #include "WindBladeFactory.h"
+#include "ThunderBladeFactory.h"
+#include "FlashFactory.h"
 #include "game.h"
 #include "EnemyFactory.h"
 
-Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos)
-	: Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::FUFINAVATOR),m_TargetPos(targetPos)
+Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,Enemy_BossAvator::AVATOR_MODE mode)
+	: Enemy(pos, ID, D3DXVECTOR2(300.0f, 300.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::FUFINAVATOR),m_TargetPos(targetPos),m_mode(mode)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_HP = 1;
 	m_Muki = 0;
 	m_pWindBladeFactory = GetWindBladeFactory();
+	m_pThunderBladeFactory = GetThunderBladeFactory();
+	m_pFlashFactory = GetFlashFactory();
 	m_pEnemyFactory = GetEnemyFactory();
 }
 
@@ -54,10 +58,23 @@ void Enemy_BossAvator::Update()
 	switch (m_State)
 	{
 	case Enemy_BossAvator::IDLE:
-		m_State = WINDBLADE;
+		switch (m_mode)
+		{
+		case Enemy_BossAvator::FUJIN:
+			m_State = WINDBLADE;
+			break;
+		case Enemy_BossAvator::RAIJIN:
+			m_State = THUNDERBLADE;
+			break;
+		default:
+			break;
+		}
 		break;
 	case Enemy_BossAvator::WINDBLADE:
 		WindBlade();
+		break;
+	case Enemy_BossAvator::THUNDERBLADE:
+		ThunderBlade();
 		break;
 	case Enemy_BossAvator::MOVE:
 		Move();
@@ -115,6 +132,49 @@ void Enemy_BossAvator::WindBlade()
 		{
 			// 風の刃作成
 			m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x-100.0f, m_Pos.y+100.0f),D3DXVECTOR2(120.0f,240.0f), 1);
+		}
+		// 一定時間待機
+		if (m_WaitFrame >= 500)
+		{
+			m_WaitFrame = 0;
+			m_Muki = 0;
+			m_IsDie = true;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void Enemy_BossAvator::ThunderBlade()
+{
+	switch (m_MoveCount)
+	{
+	case 0:
+		// 決められた場所へ移動
+		SetMove(m_Pos, m_TargetPos, m_State, m_Muki);
+		break;
+	case 1:
+		m_IsEndSetUp = true;
+		// 他の分身が準備完了しているかチェック
+		if (m_pEnemyFactory->CheckFujinAvatorSetEnd())
+		{
+			m_MoveCount++;
+			m_WaitFrame = 0;
+		}
+	case 2:
+		if (m_WaitFrame == 200) {
+			// 光るオブジェクト作成
+			m_pFlashFactory->Create(D3DXVECTOR2(m_Pos.x, 200.0f), D3DXVECTOR2(180.0f, 180.0f));
+		}
+		if (m_WaitFrame == 280)
+		{
+			// 雷の刃作成
+			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, 200.0f + 90.0f + 360.0f), D3DXVECTOR2(90.0f, 720.0f));
 		}
 		// 一定時間待機
 		if (m_WaitFrame >= 500)

@@ -7,11 +7,16 @@
 #include "BombFactory.h"
 #include "ShockWaveFactory.h"
 #include "game.h"
+#include "sound.h"
 
 #define TENGU_WAITFRAME_SETUP (120)
 #define TENGU_WAITFRAME_AFTERDROP (20)
 #define TENGU_WAITFRAME_WAIT (60)
 #define TENGU_WAITFRAME_AFTERTHROW (60)
+
+static int	g_SE_throw;		// SEの識別子
+static int	g_SE_jump;		// SEの識別子
+static int	g_SE_tyakuti;		// SEの識別子
 
 Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo):
 	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,6.0f),textureNo,ENEMY_TYPE::BOSS_TENGU)
@@ -41,6 +46,13 @@ Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo):
 
 void Boss_Tengu::Init()
 {
+	//音関連の初期化
+	g_SE_jump = LoadSound((char*)"data/SE/Tengu_jump.wav");
+	SetVolume(g_SE_jump, 0.5f);
+	g_SE_throw = LoadSound((char*)"data/SE/Tengu_throw.wav");
+	SetVolume(g_SE_throw, 0.5f);
+	g_SE_tyakuti = LoadSound((char*)"data/SE/Tengu_Tyakuti.wav");
+	SetVolume(g_SE_tyakuti, 0.5f);
 }
 
 void Boss_Tengu::Uninit()
@@ -98,6 +110,7 @@ void Boss_Tengu::Update()
 		{
 			m_State = Boss_Tengu::JUMP;
 			m_WaitFrame = 0;
+			PlaySound(g_SE_jump, 0);
 			// ジャンプアニメーションにする
 			m_AnimationPtn++;
 		}
@@ -116,6 +129,8 @@ void Boss_Tengu::Update()
 		m_DropPower += m_AddDropPower;
 		if (m_IsGround)
 		{
+			//SE
+			//PlaySound(g_SE_tyakuti, 0);
 			// 衝撃波を左右に作成
 			ShockWave();
 			// 落下後の待機アニメーションへ
@@ -182,77 +197,6 @@ void Boss_Tengu::Update()
 	default:
 		break;
 	}
-
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	////当たり判定処理
-	//if (result & HIT_LEFT)
-	//{
-	//	if (m_Vel.x > 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//if (result & HIT_RIGHT)
-	//{
-	//	if (m_Vel.x < 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-
-	//m_Pos.x += m_Vel.x;
-
-	//if (m_State == Boss_Tengu::JUMP||m_State==Boss_Tengu::GLID)
-	//{
-	//	m_Vel.y += m_JumpPower.y;
-	//}
-	//else if (m_State == Boss_Tengu::DROP)
-	//{
-	//	m_Vel.y += m_DropPower;
-	//}
-	//else
-	//{
-	//	m_Vel.y += m_Gravity;
-	//}
-
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	////落下させるか？処理
-	//if ((result & HIT_UP) == 0 && m_IsGround == true)
-	//{
-	//	m_IsGround = false;
-	//}
-
-	////落下処理
-	//if (m_IsGround == false)
-	//{
-	//	if (result & HIT_UP)
-	//	{
-	//		m_IsGround = true;
-	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-	//		m_Vel.y = 0.0f;
-	//	}
-	//}
-	//else // 最終的に地面に触れている
-	//{
-	//	m_Vel.y = 0.0f;
-	//}
-
-	//m_Pos.y += m_Vel.y;
-	//// プレイヤーの方を向く関数
-	//LookPlayer();
-
-	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
-
-	////アニメーションカウンターをカウントアップして、ウエイト値を超えたら
-	//if (m_AnimationCounter > 20)
-	//{
-	//	//アニメーションパターンを切り替える
-	//	m_AnimationPtn++;
-	//	//最後のアニメーションパターンを表示したらリセットする
-	//	if (m_AnimationPtn >= m_divid.x)
-	//	{
-	//		m_AnimationPtn = 0;
-	//	}
-	//	//アニメーションカウンターのリセット
-	//	m_AnimationCounter = 0;
-	//}
-	//m_AnimationCounter++;
 }
 
 void Boss_Tengu::Draw()
@@ -487,6 +431,8 @@ void Boss_Tengu::Throw()
 		m_Muki = 3;
 	}
 	m_AnimationPtn = 1;
+	//SEを入力
+	PlaySound(g_SE_throw,0);
 	m_State = Boss_Tengu::AFTERTHROW;
 }
 

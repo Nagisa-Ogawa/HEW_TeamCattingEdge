@@ -8,6 +8,8 @@
 #include "RayFactory.h"
 #include "FlashFactory.h"
 #include "ThunderBladeFactory.h"
+#include "EnemyFactory.h"
+#include "Enemy_BossAvator.h"
 
 Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo)
 	: Enemy(pos, ID, D3DXVECTOR2(480.0f, 480.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_RAIJIN)
@@ -27,6 +29,7 @@ void Boss_Raijin::Init()
 	m_pRayFactory = GetRayFactory();
 	m_pFlashFactory = GetFlashFactory();
 	m_pThunderFactory = GetThunderBladeFactory();
+	m_pEnemyFactory = GetEnemyFactory();
 }
 
 void Boss_Raijin::Uninit()
@@ -66,7 +69,7 @@ void Boss_Raijin::Update()
 		if (m_WaitFrame >= 120)
 		{
 			m_Muki += 2;
-			m_State = THUNDERBLADE;
+			m_State = AVATOR;
 			m_WaitFrame = 0;
 		}
 
@@ -93,8 +96,10 @@ void Boss_Raijin::Update()
 		ThunderBlade();
 		break;
 	case Boss_Raijin::AVATOR:
+		Avator();
 		break;
 	case Boss_Raijin::MOVE:
+		Move();
 		break;
 	case Boss_Raijin::WAIT:
 		break;
@@ -157,6 +162,97 @@ void Boss_Raijin::ThunderBlade()
 
 void Boss_Raijin::Avator()
 {
+	switch (m_MoveCount)
+	{
+	case 0:
+		m_BeforeShotPos = m_Pos;
+		// マップ外へ移動
+		SetMove(m_Pos, D3DXVECTOR2(SCREEN_WIDTH + m_Size.x / 2.0f, SCREEN_HEIGHT - m_Size.y / 2.0f - BLOCK_SIZE), m_State, m_Muki);
+		break;
+	case 1:
+		// 分身を三体作成
+		for (int i = 0; i < 4; i++)
+		{
+			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2((i*400.0f)+400.0f, 150.0f),Enemy_BossAvator::AVATOR_MODE::RAIJIN);
+		}
+		m_MoveCount++;
+	case 2:
+		// 分身が消えるまで待機
+		if (m_pEnemyFactory->CheckAliveFujinAvator()) {
+			m_MoveCount++;
+		}
+		break;
+	case 3:
+		// マップ内へ移動
+		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
+		break;
+	case 4:
+		// 待機
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_MoveCount = 0;
+			m_State = IDLE;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void Boss_Raijin::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, Boss_Raijin::STATE_ENEMY_RAIJIN state, int muki)
+{
+	m_BeforeState = m_State;
+	m_BeforeMuki = muki;
+	m_State = Boss_Raijin::MOVE;
+	m_StartPos = startPos;
+	m_EndPos = endPos;
+	m_NowDistance = 0.0f;
+	D3DXVECTOR2 vec = endPos - startPos;
+	D3DXVec2Normalize(&m_MoveVec, &vec);
+	m_MoveVec.x *= 12.0f;
+	m_MoveVec.y *= 12.0f;
+	m_MoveDistance = D3DXVec2Length(&vec);
+	// 移動方向からアニメーションの向きを決定
+	if (vec.x > 0)
+	{
+		m_Muki = 7;
+	}
+	else
+	{
+		m_Muki = 6;
+	}
+}
+
+void Boss_Raijin::Move()
+{
+	m_Vel += m_MoveVec;
+	D3DXVECTOR2 vec = (m_Pos + m_Vel) - m_StartPos;
+	float distance = D3DXVec2Length(&vec);
+	if (distance >= m_MoveDistance)
+	{
+		m_Muki = m_BeforeMuki;
+		m_State = m_BeforeState;
+		m_Pos = m_EndPos;
+		m_MoveCount++;
+		m_AnimationPtn = 0;
+	}
+	if (m_WaitFrame >= 10)
+	{
+		m_AnimationPtn++;
+		if (m_AnimationPtn >= 4)
+		{
+			m_AnimationPtn = 0;
+		}
+		m_WaitFrame = 0;
+	}
+	{
+		m_WaitFrame++;
+	}
 }
 
 void Boss_Raijin::AfterHitCheckBlockX(DWORD result)
@@ -174,7 +270,9 @@ void Boss_Raijin::AfterHitCheckBlockX(DWORD result)
 			if (m_Vel.x < 0.0)
 				m_Vel.x = 0.0f;
 		}
-		m_Vel.y += m_Gravity;
+		if (m_State != BULLET_T && m_State != AVATOR) {
+			m_Vel.y += m_Gravity;
+		}
 	}
 
 	m_Pos.x += m_Vel.x;

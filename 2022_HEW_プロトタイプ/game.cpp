@@ -27,7 +27,6 @@
 #include "ThunderBladeFactory.h"
 #include "RayFactory.h"
 #include "UI.h"
-#include "gameover.h"
 #include "fade.h"
 #include "Game_illustration.h"
 
@@ -58,6 +57,7 @@ static DamageFloorFactory damageFloorFactory;
 static WindBladeFactory windBladeFactory;
 static FlashFactory flashFactory;
 static RayFactory rayFactory;
+static ThunderBladeFactory thunderBladeFactory;
 static UI ui(GetPlayer());
 
 //=============================================================================
@@ -65,7 +65,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_PICTURE_STAGE01;
+	g_Scene = g_SceneNext = GAMESCENE_BASS_TENGU;
 
 	switch (g_Scene)
 	{
@@ -311,6 +311,8 @@ void InitGameStage(void)
 
 	flashFactory.Init();
 
+	thunderBladeFactory.Init();
+
 	rayFactory.Init();
 
 	//UI
@@ -332,6 +334,8 @@ void UninitGameStage(void)
 	UninitNumber();
 
 	rayFactory.Uninit();
+
+	thunderBladeFactory.Uninit();
 
 	flashFactory.Uninit();
 
@@ -404,6 +408,8 @@ void UpdateGameStage(void)
 
 	flashFactory.Update();
 
+	thunderBladeFactory.Update();
+
 	rayFactory.Update();
 
 	//UIのアップデート
@@ -438,6 +444,8 @@ void DrawGameStage(void)
 	windBladeFactory.Draw();
 
 	flashFactory.Draw();
+
+	thunderBladeFactory.Draw();
 
 	rayFactory.Draw();
 
@@ -611,5 +619,5 @@ RayFactory * GetRayFactory()
 
 ThunderBladeFactory * GetThunderBladeFactory()
 {
-	return nullptr;
+	return &thunderBladeFactory;
 }

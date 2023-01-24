@@ -160,7 +160,6 @@
     <ClInclude Include="Flash.h" />
     <ClInclude Include="FlashFactory.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="gameover.h" />
     <ClInclude Include="Game_illustration.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="inputx.h" />
@@ -219,7 +218,6 @@
     <ClCompile Include="Flash.cpp" />
     <ClCompile Include="FlashFactory.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gameover.cpp" />
     <ClCompile Include="Game_illustration.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="inputx.cpp" />

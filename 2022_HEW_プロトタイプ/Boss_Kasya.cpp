@@ -32,9 +32,9 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 	m_LanePosXList[1] = 0.0f + BLOCK_SIZE * 14.0f - (m_Size.x / 2.0f);
 	m_LanePosXList[2] = 0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f);
 
-	m_LanePosYList[0] = 0.0f + BLOCK_SIZE * 5.0f  - (m_Size.y / 2.0f);
-	m_LanePosYList[1] = 0.0f + BLOCK_SIZE * 11.0f -  (m_Size.y / 2.0f);
-	m_LanePosYList[2] = 0.0f + BLOCK_SIZE * 17.0f -  (m_Size.y / 2.0f);
+	m_LanePosYList[0] = 0.0f + BLOCK_SIZE * 6.0f  - (m_Size.y / 2.0f);
+	m_LanePosYList[1] = 0.0f + BLOCK_SIZE * 12.0f -  (m_Size.y / 2.0f);
+	m_LanePosYList[2] = 0.0f + BLOCK_SIZE * 18.0f -  (m_Size.y / 2.0f);
 
 }
 

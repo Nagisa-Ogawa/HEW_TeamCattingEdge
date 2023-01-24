@@ -67,6 +67,8 @@ private:
 	D3DXVECTOR2 m_AttackCollisionSize = D3DXVECTOR2(0.0f, 0.0f);
 	// 雷撃用変数宣言
 	D3DXVECTOR2 m_ThunderBoltPos = D3DXVECTOR2(0.0f, 0.0f);
+	// 分身攻撃用変数宣言
+	D3DXVECTOR2 m_BeforeShotPos = D3DXVECTOR2(0.0f, 0.0f);
 	// 移動用変数宣言
 	D3DXVECTOR2 m_MoveVec = D3DXVECTOR2(0.0f, 0.0f);
 	D3DXVECTOR2 m_StartPos = D3DXVECTOR2(0.0f, 0.0f);
@@ -74,6 +76,7 @@ private:
 	float m_MoveDistance = 0.0f;
 	int m_BeforeMuki = -1;
 	int m_MoveCount = 0;
+	float m_NowDistance = 0.0f;
 
 
 public:
@@ -90,9 +93,9 @@ public:
 	void ThunderBlade();
 	void Avator();
 
-	/*void SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_RAIJIN state, int muki);
+	void SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_RAIJIN state, int muki);
 	void Move();
-*/
+
 	void AfterHitCheckBlockX(DWORD result) override;
 	void AfterHitCheckBlockY(DWORD result) override;
 

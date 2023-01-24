@@ -17,7 +17,6 @@
 #include "game.h"
 #include "fade.h"
 #include "inputx.h"
-#include "gameover.h"
 #include "result.h"
 
 
@@ -237,8 +236,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// フェードの初期化
 	InitFade();
 
-	InitGameOver();
-
 	InitResult();
 
 	//初期シーンとしてタイトル画面をセット
@@ -256,8 +253,6 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 void Uninit(void)
 {
 	UninitResult();
-
-	UninitGameOver();
 
 	UninitInputX();
 
@@ -302,9 +297,6 @@ void Update(void)
 	case SCENE_GAME:
 		UpdateGame();
 		break;
-	case SCENE_OVER_GAME:
-		UpdateGameOver();
-		break;
 	case SCENE_RESULT:
 		UpdateResult();
 		break;
@@ -339,9 +331,6 @@ void Draw(void)
 		break;
 	case SCENE_GAME:
 		DrawGame();
-		break;
-	case SCENE_OVER_GAME:
-		DrawGameOver();
 		break;
 	case SCENE_RESULT:
 		DrawResult();
