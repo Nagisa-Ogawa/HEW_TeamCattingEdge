@@ -55,11 +55,11 @@ void Boss_Fujin::Update()
 		m_AnimationPtn = 0;
 		if (m_Muki % 2 == 0)
 		{
-			m_Muki = 2;
+			m_Muki = 10;
 		}
 		else
 		{
-			m_Muki = 3;
+			m_Muki = 11;
 		}
 		m_WaitFrame = 0;
 		m_State = DEAD;
@@ -70,10 +70,11 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_StateCount = 1;
+			// m_StateCount = 4;
 			switch (m_StateCount)
 			{
 			case 0:
+				m_Muki += 6;
 				m_State = WINDBLADE;
 				break;
 			case 1:
@@ -81,14 +82,15 @@ void Boss_Fujin::Update()
 				m_State = INHALE;
 				break;
 			case 2:
-				m_Muki += 4;
+				m_Muki += 2;
 				m_State = BULLET_X;
 				break;
 			case 3:
-				m_Muki += 2;
+				m_Muki += 6;
 				m_State = WINDBLADE;
 				break;
 			case 4:
+				m_Muki += 4;
 				m_State = AVATOR;
 				break;
 			default:
@@ -105,14 +107,18 @@ void Boss_Fujin::Update()
 		}
 		break;
 	case Boss_Fujin::ATTACK:
-		if (m_WaitFrame >= 60)
-		{
-			m_WaitFrame = 0;
+		if (m_AnimeFrame >= 10 && m_AnimationPtn < 3) {
+			m_AnimeFrame = 0;
+			m_AnimationPtn++;
+		}
+		else if (m_AnimeFrame >= 80) {
+			m_AnimeFrame = 0;
+			m_AnimationPtn = 0;
+			m_Muki -= 6;
 			m_State = IDLE;
 		}
-		else
-		{
-			m_WaitFrame++;
+		else {
+			m_AnimeFrame++;
 		}
 		break;
 	case Boss_Fujin::INHALE:
@@ -122,21 +128,30 @@ void Boss_Fujin::Update()
 		ShotBullet_X();
 		break;
 	case Boss_Fujin::WINDBLADE:
-		if (m_WaitFrame == 10)
+		if (m_AnimeFrame >= 10 && m_AnimationPtn < 3) {
+			m_AnimeFrame = 0;
+			m_AnimationPtn++;
+		}
+		else {
+			m_AnimeFrame++;
+		}
+
+		if (m_WaitFrame == 80)
 		{
 			// 光るオブジェクト作成
 			m_pFlashFactory->Create(D3DXVECTOR2(SCREEN_WIDTH - 60.0f, SCREEN_HEIGHT - 200.0f), D3DXVECTOR2(180.0f, 180.0f));
 		}
-		if (m_WaitFrame == 90)
+		if (m_WaitFrame == 160)
 		{
 			// 風の刃作成
 			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(180.0f,360.0f), 1);
 		}
 		// 一定時間待機
-		if (m_WaitFrame >= 120)
+		if (m_WaitFrame >= 300)
 		{
 			m_WaitFrame = 0;
-			m_Muki = 0;
+			m_AnimationPtn = 0;
+			m_Muki -= 6;
 			m_State = WAIT;
 		}
 		else
@@ -165,6 +180,20 @@ void Boss_Fujin::Update()
 		}
 		break;
 	case Boss_Fujin::DEAD:
+		if (m_WaitFrame >= 10)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 6)
+			{
+				m_AnimationPtn = 0;
+				m_IsActive = false;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	default:
 		break;
@@ -219,6 +248,7 @@ void Boss_Fujin::InHale()
 	{
 		m_WaitFrame = 0;
 		m_Muki -= 8;
+		m_Muki += 6;
 		m_AnimationPtn = 0;
 		m_State = ATTACK;
 	}
@@ -244,12 +274,15 @@ void Boss_Fujin::ShotBullet_X()
 	{
 	case 0:
 		// 待機
-		if (m_WaitFrame >= 60)
+		if (m_WaitFrame >= 10)
 		{
 			m_WaitFrame = 0;
-			m_AnimationPtn += 2;
-			m_BeforeShotPos = m_Pos;
-			m_MoveCount++;
+			m_AnimationPtn ++;
+			if (m_AnimationPtn >= 4) {
+				m_AnimationPtn = 3;
+				m_BeforeShotPos = m_Pos;
+				m_MoveCount++;
+			}
 		}
 		else
 		{
@@ -266,7 +299,6 @@ void Boss_Fujin::ShotBullet_X()
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_AnimationPtn = 0;
 			m_MoveCount++;
 		}
 		else
@@ -277,16 +309,17 @@ void Boss_Fujin::ShotBullet_X()
 	case 3:
 	{
 		// 上空へ移動
+		m_AnimationPtn = 0;
+		m_Muki -= 2;
 		D3DXVECTOR2 pos = D3DXVECTOR2(1300.0f, 300.0f);
 		SetMove(m_Pos, pos, m_State, m_Muki);
 		break;
 	}
 	case 4:
-		// 待機
 		if (m_WaitFrame >= 60)
 		{
+			m_Muki += 2;
 			m_WaitFrame = 0;
-			m_AnimationPtn += 2;
 			m_MoveCount++;
 		}
 		else
@@ -295,15 +328,29 @@ void Boss_Fujin::ShotBullet_X()
 		}
 		break;
 	case 5:
+		if (m_WaitFrame >= 10)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 4) {
+				m_AnimationPtn = 3;
+				m_MoveCount++;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 6:
 		// X弾発射
 		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
 		m_MoveCount++;
-	case 6:
+	case 7:
 		// 待機
 		if (m_WaitFrame >= 60)
 		{
 			m_WaitFrame = 0;
-			m_AnimationPtn = 0;
 			m_MoveCount++;
 		}
 		else
@@ -311,12 +358,13 @@ void Boss_Fujin::ShotBullet_X()
 			m_WaitFrame++;
 		}
 		break;
-	case 7:
+	case 8:
 		// 地面へ移動
-		m_Muki = 0;
+		m_AnimationPtn = 0;
+		m_Muki -=2;
 		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
 		break;
-	case 8:
+	case 9:
 		// 待機
 		if (m_WaitFrame >= 60)
 		{
@@ -340,28 +388,56 @@ void Boss_Fujin::Avator()
 	switch (m_MoveCount)
 	{
 	case 0:
+		if (m_WaitFrame >= 10)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 4) {
+				m_AnimationPtn = 3;
+				m_MoveCount++;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 1:
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_MoveCount++;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 2:
 		m_BeforeShotPos = m_Pos;
+		m_AnimationPtn = 0;
 		// マップ外へ移動
 		SetMove(m_Pos, D3DXVECTOR2(SCREEN_WIDTH + m_Size.x / 2.0f, SCREEN_HEIGHT - m_Size.y / 2.0f - BLOCK_SIZE),m_State,m_Muki);
 		break;
-	case 1:
+	case 3:
 		// 分身を三体作成
 		for (int i = 0; i < 3; i++)
 		{
-			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f),Enemy_BossAvator::AVATOR_MODE::FUJIN);
+			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f),D3DXVECTOR2(6.0f,12.0f), Enemy_BossAvator::AVATOR_MODE::FUJIN,0);
 		}
 		m_MoveCount++;
-	case 2:
+	case 4:
 		// 分身が消えるまで待機
 		if (m_pEnemyFactory->CheckAliveFujinAvator()) {
 			m_MoveCount++;
+			m_Muki -= 4;
 		}
 		break;
-	case 3:
+	case 5:
 		// マップ内へ移動
 		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
 		break;
-	case 4:
+	case 6:
 		// 待機
 		if (m_WaitFrame >= 60)
 		{
@@ -392,14 +468,15 @@ void Boss_Fujin::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, STATE_ENEMY_F
 	m_MoveVec.x *= 12.0f;
 	m_MoveVec.y *= 12.0f;
 	m_MoveDistance = D3DXVec2Length(&vec);
+	m_AnimationPtn = 1;
 	// 移動方向からアニメーションの向きを決定
 	if (vec.x > 0)
 	{
-		m_Muki = 7;
+		m_Muki = 1;
 	}
 	else
 	{
-		m_Muki = 6;
+		m_Muki = 0;
 	}
 }
 
@@ -419,9 +496,9 @@ void Boss_Fujin::Move()
 	if (m_WaitFrame >= 10)
 	{
 		m_AnimationPtn++;
-		if (m_AnimationPtn >= 4)
+		if (m_AnimationPtn >= 3)
 		{
-			m_AnimationPtn = 0;
+			m_AnimationPtn = 1;
 		}
 		m_WaitFrame = 0;
 	}

@@ -35,6 +35,7 @@ void ThunderBladeFactory::Update()
 	{
 		pThunderBlade->Update();
 	}
+	CollisionThunderBladeToPlayer();
 }
 
 void ThunderBladeFactory::Draw()
@@ -52,6 +53,29 @@ void ThunderBladeFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 
 void ThunderBladeFactory::CollisionThunderBladeToPlayer()
 {
+	if (m_pPlayer->mutekiflag)
+	{
+		return;
+	}
+	// 全ての風の刃をチェック
+	for (ThunderBlade* pWindBlade : m_pThunderBladeList)
+	{
+		if (!pWindBlade->GetIsActive())
+		{
+			continue;
+		}
+		if (!pWindBlade->GetIsCanHit()) {
+			continue;
+		}
+		// プレイヤーと風の刃の当たり判定
+		if (HitCheckBox(m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size),
+			pWindBlade->GetPos(), pWindBlade->GetSize()))
+		{
+			// プレイヤーへダメージを与える
+			PlayerDamage(1);
+		}
+	}
+
 }
 
 bool ThunderBladeFactory::HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize, D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize)
@@ -80,7 +104,8 @@ bool ThunderBladeFactory::HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySiz
 		}
 	}
 
-	return false;}
+	return false;
+}
 
 ThunderBladeFactory::~ThunderBladeFactory()
 {

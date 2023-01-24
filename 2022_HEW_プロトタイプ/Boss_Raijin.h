@@ -11,6 +11,7 @@ class RayFactory;
 class EnemyFactory;
 class FlashFactory;
 class ThunderBladeFactory;
+class SwitchBulletFactory;
 struct PLAYER;
 
 class Boss_Raijin :public Enemy
@@ -29,44 +30,50 @@ public:
 		DEAD,			// 死亡
 	};
 private:
-	const float m_AnimeTable[6] =
+	const float m_AnimeTable[8] =
 	{
-		0.000000f,
-		0.166667f,
-		0.333334f,
-		0.500000f,
-		0.666667f,
-		0.833334f
+		0.000f,
+		0.125f,
+		0.250f,
+		0.375f,
+		0.500f,
+		0.625f,
+		0.750f,
+		0.875f,
 	};
-	const float M_MukiTable[10] =
+	const float M_MukiTable[8] =
 	{
-		0.0f,	// 待機（左）
-		0.1f,	// 待機（右）
-		0.2f,	// やられ（左）
-		0.3f,	// やられ（右）
-		0.4f,	// ブレス（左）
-		0.5f,	// ブレス（右）
-		0.6f,	// 移動（左）
-		0.7f,	// 移動（右）
-		0.8f,	// 停止（左）
-		0.9f,	// 停止（右）
+		0.000f,
+		0.125f,
+		0.250f,
+		0.375f,
+		0.500f,
+		0.625f,
+		0.750f,
+		0.875f,
 	};
 
 	STATE_ENEMY_RAIJIN m_State = IDLE;
 	STATE_ENEMY_RAIJIN m_BeforeState = IDLE;
 
 	// 待機フレーム
+	int m_StateCount = 0;
 	int m_WaitFrame = 0;
 	PLAYER* m_pPlayer = nullptr;
 	RayFactory* m_pRayFactory = nullptr;
 	EnemyFactory* m_pEnemyFactory = nullptr;
 	FlashFactory* m_pFlashFactory = nullptr;
 	ThunderBladeFactory* m_pThunderFactory = nullptr;
+	SwitchBulletFactory* m_pSwitchBulletFactory = nullptr;
 	// 近接攻撃用変数宣言
 	int m_AttackTextureNo = -1;
 	D3DXVECTOR2 m_AttackCollisionSize = D3DXVECTOR2(0.0f, 0.0f);
 	// 雷撃用変数宣言
 	D3DXVECTOR2 m_ThunderBoltPos = D3DXVECTOR2(0.0f, 0.0f);
+	// 雷弾用変数宣言
+	D3DXVECTOR2 m_SwitchStartPos = D3DXVECTOR2(0.0f, 0.0f);
+	D3DXVECTOR2 m_SwitchPos = D3DXVECTOR2(0.0f, 0.0f);
+	D3DXVECTOR2 m_TargetPos = D3DXVECTOR2(0.0f, 0.0f);
 	// 分身攻撃用変数宣言
 	D3DXVECTOR2 m_BeforeShotPos = D3DXVECTOR2(0.0f, 0.0f);
 	// 移動用変数宣言
@@ -80,7 +87,7 @@ private:
 
 
 public:
-	Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo);
+	Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理
@@ -90,6 +97,8 @@ public:
 	// エネミーの描画処理
 	void Draw() override;
 
+	void SwitchBullet();
+	void ShotBullet_T();
 	void ThunderBlade();
 	void Avator();
 

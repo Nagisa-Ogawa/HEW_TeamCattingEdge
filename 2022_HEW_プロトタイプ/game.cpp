@@ -25,6 +25,7 @@
 #include "WindBladeFactory.h"
 #include "FlashFactory.h"
 #include "ThunderBladeFactory.h"
+#include "SwitchBulletFactory.h"
 #include "RayFactory.h"
 #include "UI.h"
 #include "fade.h"
@@ -58,6 +59,7 @@ static WindBladeFactory windBladeFactory;
 static FlashFactory flashFactory;
 static RayFactory rayFactory;
 static ThunderBladeFactory thunderBladeFactory;
+static SwitchBulletFactory switchBulletFactory;
 static UI ui(GetPlayer());
 
 //=============================================================================
@@ -313,6 +315,8 @@ void InitGameStage(void)
 
 	thunderBladeFactory.Init();
 
+	switchBulletFactory.Init();
+
 	rayFactory.Init();
 
 	//UI
@@ -334,6 +338,8 @@ void UninitGameStage(void)
 	UninitNumber();
 
 	rayFactory.Uninit();
+
+	switchBulletFactory.Uninit();
 
 	thunderBladeFactory.Uninit();
 
@@ -410,6 +416,8 @@ void UpdateGameStage(void)
 
 	thunderBladeFactory.Update();
 
+	switchBulletFactory.Update();
+
 	rayFactory.Update();
 
 	//UIのアップデート
@@ -446,6 +454,8 @@ void DrawGameStage(void)
 	flashFactory.Draw();
 
 	thunderBladeFactory.Draw();
+
+	switchBulletFactory.Draw();
 
 	rayFactory.Draw();
 
@@ -620,4 +630,9 @@ RayFactory * GetRayFactory()
 ThunderBladeFactory * GetThunderBladeFactory()
 {
 	return &thunderBladeFactory;
+}
+
+SwitchBulletFactory * GetSwitchBulletFactory()
+{
+	return &switchBulletFactory;
 }

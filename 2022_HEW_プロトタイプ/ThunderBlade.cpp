@@ -31,11 +31,13 @@ void ThunderBlade::Update()
 	{
 	case ThunderBlade::IDLE:
 		m_State = THUNDERBOLT;
+		m_IsCanHit = true;
 		break;
 	case ThunderBlade::THUNDERBOLT:
 		if (m_WaitFrame >= 120)
 		{
 			m_WaitFrame = 0;
+			m_IsCanHit = false;
 			m_State = DEAD;
 		}
 		else

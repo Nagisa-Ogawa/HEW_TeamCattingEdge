@@ -11,6 +11,7 @@ class WindBladeFactory;
 class FlashFactory;
 class RayFactory;
 class ThunderBladeFactory;
+class SwitchBulletFactory;
 
 //*****************************************************************************
 // É}ÉNÉçíËã`
@@ -56,5 +57,6 @@ WindBladeFactory* GetWindBladeFactory();
 FlashFactory* GetFlashFactory();
 RayFactory*	GetRayFactory();
 ThunderBladeFactory* GetThunderBladeFactory();
+SwitchBulletFactory* GetSwitchBulletFactory();
 
 void SetGameScene(GAMESCENE scene);

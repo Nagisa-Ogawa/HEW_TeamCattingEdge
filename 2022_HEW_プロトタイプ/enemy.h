@@ -58,6 +58,7 @@ protected:
 	int m_BlockIndex[2]{ -99999,-99999 };//1àÍî‘ãﬂÇ¢ÉuÉçÉbÉNÇÃìYÇ¶éö
 	float m_BlockHeight = 0.0f;
 	bool m_IsEndSetUp = false;
+	bool m_IsStealth = true;
 
 public:
 	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo,ENEMY_TYPE enemyType) :
@@ -99,6 +100,8 @@ public:
 	float GetBlockLength() { return m_BlockLength; };
 	float GetBlockHeight() { return m_BlockHeight; };
 	bool GetIsEndSetUp() { return m_IsEndSetUp; };
+	bool GetIsStealth() { return m_IsStealth; };
+
 	// Setånä÷êî
 	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };
 	void SetBlockIndexY(int num) { m_BlockIndex[1] = num; };

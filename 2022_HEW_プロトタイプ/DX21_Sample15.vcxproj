@@ -176,6 +176,8 @@
     <ClInclude Include="ShockWaveFactory.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
+    <ClInclude Include="SwitchBullet.h" />
+    <ClInclude Include="SwitchBulletFactory.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="ThunderBlade.h" />
     <ClInclude Include="ThunderBladeFactory.h" />
@@ -233,6 +235,8 @@
     <ClCompile Include="ShockWaveFactory.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
+    <ClCompile Include="SwitchBullet.cpp" />
+    <ClCompile Include="SwitchBulletFactory.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="ThunderBlade.cpp" />
     <ClCompile Include="ThunderBladeFactory.cpp" />

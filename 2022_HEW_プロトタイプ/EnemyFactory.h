@@ -56,13 +56,13 @@ public:
 	void Create_GhostFire(D3DXVECTOR2 pos, int muki);
 	void Create_Rush(D3DXVECTOR2 pos);
 	void Create_ExplosionGas(D3DXVECTOR2 pos);
-	void Create_BossAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos, int mode);
+	void Create_BossAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos, D3DXVECTOR2 divid, int mode,int muki);
 
 	// BOSSånCreateä÷êî
 	void Create_Boss_Tengu(D3DXVECTOR2 pos);
 	void Create_Boss_Kasya(D3DXVECTOR2 pos);
 	void Create_Boss_Fujin(D3DXVECTOR2 pos);
-	void Create_Boss_Raijin(D3DXVECTOR2 pos);
+	void Create_Boss_Raijin(D3DXVECTOR2 pos,int muki);
 
 
 	std::list<Enemy*>* GetEnemyList() { return &m_pEnemyList; };

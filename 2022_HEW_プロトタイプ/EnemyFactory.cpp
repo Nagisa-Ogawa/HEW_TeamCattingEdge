@@ -75,15 +75,15 @@ void EnemyFactory::Create_ExplosionGas(D3DXVECTOR2 pos)
 	m_pEnemyList.insert(enemyIt, new Enemy_ExplosionGas(pos, m_nowID,m_EnemyExplosionGasNo));
 }
 
-void EnemyFactory::Create_BossAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos, int mode)
+void EnemyFactory::Create_BossAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, int mode,int muki)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
 	if (mode == Enemy_BossAvator::AVATOR_MODE::FUJIN) {
-		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyKasyaNo, targetPos, Enemy_BossAvator::AVATOR_MODE::FUJIN));
+		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyFujinNo, targetPos,divid, Enemy_BossAvator::AVATOR_MODE::FUJIN,muki));
 	}
 	else {
-		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyKasyaNo, targetPos, Enemy_BossAvator::AVATOR_MODE::RAIJIN));
+		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyRaijinNo, targetPos,divid, Enemy_BossAvator::AVATOR_MODE::RAIJIN,muki));
 	}
 }
 
@@ -108,11 +108,11 @@ void EnemyFactory::Create_Boss_Fujin(D3DXVECTOR2 pos)
 	m_pEnemyList.insert(enemyIt, new Boss_Fujin(pos, m_nowID, m_EnemyFujinNo));
 }
 
-void EnemyFactory::Create_Boss_Raijin(D3DXVECTOR2 pos)
+void EnemyFactory::Create_Boss_Raijin(D3DXVECTOR2 pos,int muki)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Boss_Raijin(pos, m_nowID, m_EnemyRaijinNo));
+	m_pEnemyList.insert(enemyIt, new Boss_Raijin(pos, m_nowID, m_EnemyRaijinNo,muki));
 }
 
 void EnemyFactory::Init()
@@ -242,7 +242,10 @@ void EnemyFactory::SetEnemy()
 				Create_Boss_Fujin(pos);
 				break;
 			case 51:
-				Create_Boss_Raijin(pos);
+				Create_Boss_Raijin(pos,0);
+				break;
+			case 52:
+				Create_Boss_Raijin(pos, 1);
 				break;
 				//エネミー以外
 			default:
