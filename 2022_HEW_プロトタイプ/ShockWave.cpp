@@ -3,15 +3,24 @@
 #include "sprite.h"
 #include "camera.h"
 
-ShockWave::ShockWave(D3DXVECTOR2 pos, D3DXVECTOR2 moveVec,int muki):m_MoveVec(moveVec),m_Muki(muki)
+ShockWave::ShockWave(D3DXVECTOR2 pos, D3DXVECTOR2 moveVec,int muki):m_MoveVec(moveVec)
 {
-	m_Size = D3DXVECTOR2(60.0f, 120.0f);
+	m_Size = D3DXVECTOR2(120.0f, 120.0f);
 	m_Pos = D3DXVECTOR2(pos.x, pos.y - m_Size.y / 2);
-	m_divid = D3DXVECTOR2(1.0f, 2.0f);
+	m_divid = D3DXVECTOR2(2.0f, 4.0f);
 	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
 	m_IsActive = true;
 	// 敵のテクスチャを読み込み
-	m_TextureNo = LoadTexture((char*)"data/TEXTURE/ShockWave.png");
+	m_TextureNo = LoadTexture((char*)"data/TEXTURE/WindBlade.png");
+	m_pCamera = GetCamera();
+	if (muki == 0)
+	{
+		m_Muki = 1;
+	}
+	else
+	{
+		m_Muki = 0;
+	}
 }
 
 void ShockWave::Init()
@@ -30,9 +39,25 @@ void ShockWave::Update()
 	}
 	// 決まった方向に進む
 	m_Vel += m_MoveVec;
-	// 壁との当たり判定
-	// 画面外チェック
 	m_Pos += m_Vel;
+	// 画面外ならpCamer
+	if (m_Pos.x - m_pCamera->pos.x <= -500.0f || m_Pos.x - m_pCamera->pos.x >= SCREEN_WIDTH + 500.0f)
+	{
+		m_IsActive = false;
+	}
+	if (m_WaitFrame >= 10)
+	{
+		m_WaitFrame = 0;
+		m_AnimationPtn++;
+		if (m_AnimationPtn >= 2)
+		{
+			m_AnimationPtn = 0;
+		}
+	}
+	else
+	{
+		m_WaitFrame++;
+	}
 
 
 	m_Vel = D3DXVECTOR2(0.0f, 0.0f);

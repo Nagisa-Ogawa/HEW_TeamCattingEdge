@@ -144,7 +144,7 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame == 160)
 		{
 			// •—‚Ìnì¬
-			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(180.0f,360.0f), 1);
+			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(300.0f,300.0f), 1);
 		}
 		// ˆê’èŽžŠÔ‘Ò‹@
 		if (m_WaitFrame >= 300)

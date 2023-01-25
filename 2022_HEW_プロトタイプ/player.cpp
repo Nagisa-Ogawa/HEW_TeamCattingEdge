@@ -352,7 +352,7 @@ void UpdatePlayer(void)
 		//ここで火車ボスステージへシーン移行
 		if (g_Player.pos.x >= 15360.0f)
 		{
-			SetGameScene(GAMESCENE_BASS_KASYA);
+			SetGameScene(GAMESCENE_PICTURE_STAGE02_BOSS	);
 		}
 		break;
 	default:

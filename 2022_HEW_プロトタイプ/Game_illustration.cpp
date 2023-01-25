@@ -23,22 +23,22 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ステージ1.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE01_BOSS:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_天狗.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE02:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ステージ2.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE02_BOSS:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_火車.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE03:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ステージ3.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE03_BOSS:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/title.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/GAMEOVER.png");
 		break;
 	case GAMESCENE_PICTURE_RESULT:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/ED.png");

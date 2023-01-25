@@ -130,7 +130,7 @@ void Boss_Tengu::Update()
 		if (m_IsGround)
 		{
 			//SE
-			//PlaySound(g_SE_tyakuti, 0);
+			PlaySound(g_SE_tyakuti, 0);
 			// 衝撃波を左右に作成
 			ShockWave();
 			// 落下後の待機アニメーションへ

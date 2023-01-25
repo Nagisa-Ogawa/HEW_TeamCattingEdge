@@ -25,8 +25,8 @@
 #include "WindBladeFactory.h"
 #include "FlashFactory.h"
 #include "ThunderBladeFactory.h"
-#include "SwitchBulletFactory.h"
 #include "RayFactory.h"
+#include "SwitchBulletFactory.h"
 #include "UI.h"
 #include "fade.h"
 #include "Game_illustration.h"
@@ -67,7 +67,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_BASS_TENGU;
+	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
 
 	switch (g_Scene)
 	{
@@ -339,7 +339,7 @@ void UninitGameStage(void)
 
 	rayFactory.Uninit();
 
-	switchBulletFactory.Uninit();
+	switchBulletFactory.Init();
 
 	thunderBladeFactory.Uninit();
 

@@ -5,6 +5,9 @@
 #include "texture.h"
 #include "ExplosionFactory.h"
 #include "texture.h"
+#include "sound.h"
+
+static int	g_SE_bomb;		// SEの識別子
 
 ContactBomb::ContactBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos) : Bomb(ID,pos,endPos)
 {
@@ -12,6 +15,10 @@ ContactBomb::ContactBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos) : Bomb(ID,p
 	// 敵のテクスチャを読み込み
 	m_TextureNo = LoadTexture((char*)"data/TEXTURE/bomb.png");
 	m_BombType = Bomb::CONTACT;
+
+	//音関連の初期化
+	g_SE_bomb = LoadSound((char*)"data/SE/Tengu_bomb.wav");
+	SetVolume(g_SE_bomb, 0.3f);
 };
 
 void ContactBomb::Init()
@@ -69,6 +76,8 @@ void ContactBomb::Update()
 	case ContactBomb::EXPLOSION:
 		// 爆発を作成
 		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(100.0f, 100.0f));
+		PlaySound(g_SE_bomb, 0);
+
 		m_IsActive = false;
 		break;
 	default:

@@ -6,7 +6,7 @@ WindBlade::WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki, int textureNo):
 {
 	m_pCamera = GetCamera();
 	m_Power = D3DXVECTOR2(20.0f, 0.0f);
-	m_divid = D3DXVECTOR2(2.0f, 2.0f);
+	m_divid = D3DXVECTOR2(2.0f, 4.0f);
 	m_pttern.x = 1.0f / m_divid.x;
 	m_pttern.y = 1.0f / m_divid.y;
 	m_IsActive = true;
@@ -14,6 +14,15 @@ WindBlade::WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki, int textureNo):
 	{
 		m_Power.x *= -1.0f;
 	}
+	if (m_Muki == 1)
+	{
+		m_Muki = 0;
+	}
+	else
+	{
+		m_Muki = 1;
+	}
+	m_Muki += 2;
 }
 
 void WindBlade::Init()
@@ -46,6 +55,19 @@ void WindBlade::Update()
 		if (m_Pos.x - m_pCamera->pos.x <= -500.0f || m_Pos.x - m_pCamera->pos.x >= SCREEN_WIDTH + 500.0f)
 		{
 			m_State = DEAD;
+		}
+		if (m_WaitFrame >= 10)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 2)
+			{
+				m_AnimationPtn = 0;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
 		}
 		break;
 	}

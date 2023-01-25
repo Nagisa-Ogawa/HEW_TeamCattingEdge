@@ -69,7 +69,7 @@ void ThunderBladeFactory::CollisionThunderBladeToPlayer()
 		}
 		// プレイヤーと風の刃の当たり判定
 		if (HitCheckBox(m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size),
-			pWindBlade->GetPos(), pWindBlade->GetSize()))
+			pWindBlade->GetPos(), pWindBlade->GetCollisionSize()))
 		{
 			// プレイヤーへダメージを与える
 			PlayerDamage(1);

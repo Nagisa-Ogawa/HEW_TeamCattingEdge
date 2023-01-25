@@ -6,6 +6,9 @@
 #include "Block.h"
 #include "game.h"
 #include "ExplosionFactory.h"
+#include "sound.h"
+
+static int	g_SE_bomb;		// SEの識別子
 
 Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(7.0f, 2.0f),textureNo,ENEMY_TYPE::EXPLOSIONGAS)
@@ -20,6 +23,10 @@ Enemy_ExplosionGas::Enemy_ExplosionGas(D3DXVECTOR2 pos, int ID, int textureNo):
 	m_DeadAnimeNum = 3;
 	m_DeadAnimeFrame = 10;
 	m_Muki = 0;
+
+	//音関連の初期化
+	g_SE_bomb = LoadSound((char*)"data/SE/Tengu_bomb.wav");
+	SetVolume(g_SE_bomb, 0.3f);
 }
 
 void Enemy_ExplosionGas::Init()
@@ -91,6 +98,7 @@ void Enemy_ExplosionGas::Update()
 			m_AnimationPtn++;
 			if (m_AnimationPtn >= 7) {
 				m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
+				PlaySound(g_SE_bomb, 0);
 				m_IsActive = false;
 			}
 		}
@@ -102,46 +110,6 @@ void Enemy_ExplosionGas::Update()
 	default:
 		break;
 	}
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	////当たり判定処理
-	//if (result & HIT_LEFT)
-	//{
-	//	if (m_Vel.x > 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//if (result & HIT_RIGHT)
-	//{
-	//	if (m_Vel.x < 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//m_Vel.y += m_Gravity;
-
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-
-	////落下させるか？処理
-	//if ((result & HIT_UP) == 0 && m_IsGround == true)
-	//{
-	//	m_IsGround = false;
-	//}
-
-	////落下処理
-	//if (m_IsGround == false)
-	//{
-	//	if (result & HIT_UP)
-	//	{
-	//		m_IsGround = true;
-	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-	//		m_Vel.y = 0.0f;
-	//	}
-	//}
-	//else // 最終的に地面に触れている
-	//{
-	//	m_Vel.y = 0.0f;
-	//}
-
-	//m_Pos += m_Vel;
-	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
-
 }
 
 void Enemy_ExplosionGas::Draw()

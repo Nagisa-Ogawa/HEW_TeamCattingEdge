@@ -2,19 +2,23 @@
 
 #include "main.h"
 
+struct CAMERA_2D;
+
 class ShockWave
 {
 public:
-public:
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[1] =
+	const float m_AnimeTable[2] =
 	{
 		0.0f,
+		0.5f,
 	};
-	const float M_MukiTable[2] =
+	const float M_MukiTable[4] =
 	{
 		0.0f,	//右向き
-		0.5f,
+		0.25f,
+		0.50f,
+		0.75f,
 	};
 	enum STATE_SHOCKWAVE
 	{
@@ -26,6 +30,7 @@ private:
 	D3DXVECTOR2 m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 	D3DXVECTOR2 m_MoveVec = D3DXVECTOR2(0.0f, 0.0f);
 	int m_Muki = -1;	// 衝撃波の向き
+	CAMERA_2D* m_pCamera = nullptr;
 
 	int m_TextureNo = -1;	// 爆弾が使用するテクスチャの番号
 
@@ -35,6 +40,7 @@ private:
 	D3DXVECTOR2 m_divid;
 	D3DXVECTOR2 m_pttern;
 	bool m_IsActive = false;
+	int m_WaitFrame = 0;
 
 	STATE_SHOCKWAVE m_State = STATE_SHOCKWAVE::MOVE;
 public:

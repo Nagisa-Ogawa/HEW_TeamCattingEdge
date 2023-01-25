@@ -5,8 +5,9 @@
 ThunderBlade::ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size,int textureNo):
 	m_Pos(pos),m_Size(size),m_TextureNo(textureNo)
 {
+	m_CollisionSize = D3DXVECTOR2(size.x / 4.0f, size.y);
 	m_pCamera = GetCamera();
-	m_divid = D3DXVECTOR2(1.0f, 1.0f);
+	m_divid = D3DXVECTOR2(13.0f, 1.0f);
 	m_pttern.x = 1.0f / m_divid.x;
 	m_pttern.y = 1.0f / m_divid.y;
 	m_IsActive = true;
@@ -31,14 +32,21 @@ void ThunderBlade::Update()
 	{
 	case ThunderBlade::IDLE:
 		m_State = THUNDERBOLT;
-		m_IsCanHit = true;
 		break;
 	case ThunderBlade::THUNDERBOLT:
-		if (m_WaitFrame >= 120)
+		if (m_WaitFrame >= 2)
 		{
 			m_WaitFrame = 0;
-			m_IsCanHit = false;
-			m_State = DEAD;
+			m_AnimationPtn++;
+			if (m_AnimationPtn == 4)
+			{
+				m_IsCanHit = true;
+			}
+			else if (m_AnimationPtn >= 12)
+			{
+				m_IsCanHit = false;
+				m_State = DEAD;
+			}
 		}
 		else
 		{

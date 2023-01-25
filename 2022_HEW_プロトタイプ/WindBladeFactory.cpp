@@ -13,7 +13,7 @@ void WindBladeFactory::Init()
 {
 	m_pPlayer = GetPlayer();
 	m_pCamera = GetCamera();
-	m_WindBladeNo = LoadTexture((char*)"data/TEXTURE/ShockWave.png");
+	m_WindBladeNo = LoadTexture((char*)"data/TEXTURE/WindBlade.png");
 }
 
 void WindBladeFactory::Uninit()

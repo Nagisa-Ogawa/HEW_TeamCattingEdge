@@ -41,6 +41,7 @@ protected:
 	//bool m_IsUse = false;		// 使用しているかのフラグ
 	int m_EnemyTextureNo;		// 敵が使用するテクスチャの番号
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 敵の表示サイズ
+	D3DXVECTOR2 m_CollisionSize = D3DXVECTOR2(0.0f, 0.0f); // 敵の当たり判定サイズ
 	int m_AnimationPtn = 0;		// 敵のアニメーションのパターン番号
 	int m_AnimationCounter = 0;	// 敵のアニメーションのカウンター
 	float m_Gravity = 0.98f;	// 重力

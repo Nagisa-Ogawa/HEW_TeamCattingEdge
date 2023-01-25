@@ -5,6 +5,9 @@
 #include "player.h"
 #include "Block.h"
 #include "FireBall.h"
+#include "sound.h"
+
+static int	g_SE_fire;		// SE‚ÌŽ¯•ÊŽq
 
 Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(240.0f, 240.0f), D3DXVECTOR2(13.0f, 6.0f),textureNo,ENEMY_TYPE::GHOSTFIRE)
@@ -14,6 +17,10 @@ Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo
 	m_WaitIdleTime = 30;
 	m_WaitNextThrowTime = 10;
 	int m_CooldownTime = 30;
+
+	//‰¹ŠÖ˜A‚Ì‰Šú‰»
+	g_SE_fire = LoadSound((char*)"data/SE/Kasya_fire.wav");
+	SetVolume(g_SE_fire, 0.5f);
 }
 
 void Enemy_GhostFire::Init()
@@ -143,9 +150,20 @@ void Enemy_GhostFire::Draw()
 {
 	if (m_IsActive)
 	{
-		D3DXVECTOR2 basePos = GetBase();
-		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+		if (m_Muki % 2 == 0)
+		{
+			D3DXVECTOR2 basePos = GetBase();
+			DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+				m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+		}
+		else
+		{
+			D3DXVECTOR2 basePos = GetBase();
+			DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+				m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 0.5f, 0.5f, 1.0f));
+
+		}
 	}
 }
 
@@ -208,7 +226,15 @@ void Enemy_GhostFire::Throw()
 		if (m_AnimationPtn == 6 || m_AnimationPtn == 9) {
 			D3DXVECTOR2 pos = m_Pos;
 			pos.y += m_Size.y / 7.5f;
-			m_pFireBallFactory->Create(pos, m_Muki, D3DXVECTOR2(10.0f, 0.0f), FireBall::MODE::GHOSTFIRE);
+			if (m_Muki % 2 == 0)
+			{
+				m_pFireBallFactory->Create(pos, 0, D3DXVECTOR2(10.0f, 0.0f), FireBall::MODE::GHOSTFIRE);
+			}
+			else
+			{
+				m_pFireBallFactory->Create(pos, 1, D3DXVECTOR2(10.0f, 0.0f), FireBall::MODE::GHOSTFIRE);
+			}
+			PlaySound(g_SE_fire, 0);
 		}
 		if (m_AnimationPtn >= 13) {
 			m_WaitFrame = 0;

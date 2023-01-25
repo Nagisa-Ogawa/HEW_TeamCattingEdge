@@ -4,6 +4,9 @@
 #include "camera.h"
 #include "Block.h"
 #include "player.h"
+#include "sound.h"
+
+static int	g_SE_jump;		// SEの識別子
 
 Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 4.0f),textureNo,ENEMY_TYPE::HITDROP)
@@ -15,6 +18,10 @@ Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
 	m_DeadAnimeNum = 3;
 	m_DeadAnimeFrame = 10;
 	m_Muki = 0;
+
+	//音関連の初期化
+	g_SE_jump = LoadSound((char*)"data/SE/Tengu_jump.wav");
+	SetVolume(g_SE_jump, 0.5f);
 }
 
 void Enemy_HitDrop::Init()
@@ -59,6 +66,7 @@ void Enemy_HitDrop::Update()
 		// 待機
 		if (m_WaitFrame >= ENEMY_WAITFRAME_SETUP)
 		{
+			PlaySound(g_SE_jump, 0);
 			m_State = Enemy_HitDrop::JUMP;
 			m_WaitFrame = 0;
 			// ジャンプアニメーションにする

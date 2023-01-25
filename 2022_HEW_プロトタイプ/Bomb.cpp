@@ -5,7 +5,6 @@
 #include "ExplosionFactory.h"
 #include "Block.h"
 
-
 Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos)
 		: m_ID(ID),m_Pos(pos), m_StartPos(pos), m_EndPos(endPos)
 {

@@ -7,6 +7,12 @@
 #include "FireBallFactory.h"
 #include "FireBall.h"
 #include "game.h"
+#include "sound.h"
+
+static int	g_SE_fire;		// SEの識別子
+static int	g_SE_hasiri;	// SEの識別子
+static int	g_SE_teisi;		// SEの識別子
+
 
 Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) : 
 	Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo,ENEMY_TYPE::BOSS_KASYA)
@@ -40,6 +46,13 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 
 void Boss_Kasya::Init()
 {
+	//音関連の初期化
+	g_SE_hasiri= LoadSound((char*)"data/SE/kasya-hasiri.wav");
+	SetVolume(g_SE_hasiri, 1.5f);
+	g_SE_teisi = LoadSound((char*)"data/SE/Kasya_Teisi.wav");
+	SetVolume(g_SE_teisi, 0.5f);
+	g_SE_fire = LoadSound((char*)"data/SE/Kasya_fire.wav");
+	SetVolume(g_SE_fire, 0.5f);
 }
 
 void Boss_Kasya::Uninit()
@@ -274,6 +287,7 @@ void Boss_Kasya::SetUp_Move()
 			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[2]));
 		}
 		m_BeforeState = Boss_Kasya::SETUP_MOVE;
+		PlaySound(g_SE_hasiri, -1);
 		m_IsStop = true;
 		break;
 	case 1:
@@ -291,6 +305,8 @@ void Boss_Kasya::SetUp_Move()
 		else {
 			m_State = Boss_Kasya::MOVE_UP_DOWN;
 		}
+
+		PlaySound(g_SE_hasiri, -1);
 	}
 	else
 	{
@@ -335,6 +351,7 @@ void Boss_Kasya::Move_Left_Right()
 	case 5:
 		m_State = Boss_Kasya::WAIT;
 		m_Muki = 1;
+		StopSound(g_SE_hasiri);
 		break;
 	default:
 		break;
@@ -401,6 +418,7 @@ void Boss_Kasya::Move_Up_Down()
 	case 5:
 		m_State = Boss_Kasya::WAIT;
 		m_Muki = 1;
+		StopSound(g_SE_hasiri);
 		break;
 	default:
 		break;
@@ -416,6 +434,7 @@ void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, D3DXVECTOR2 m
 	m_NowDistance = 0.0f;
 	D3DXVECTOR2 vec = endPos - startPos;
 	m_MoveDistance = D3DXVec2Length(&vec);
+	PlaySound(g_SE_hasiri, -1);
 	// 移動方向からアニメーションの向きを決定
 	if (vec.x > 0)
 	{
@@ -438,6 +457,7 @@ void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos)
 	m_MoveVec.x *= 12.0f;
 	m_MoveVec.y *= 12.0f;
 	m_MoveDistance = D3DXVec2Length(&vec);
+	PlaySound(g_SE_hasiri, -1);
 	// 移動方向からアニメーションの向きを決定
 	if (vec.x > 0)
 	{
@@ -458,6 +478,7 @@ void Boss_Kasya::SetMove(D3DXVECTOR2 startPos, D3DXVECTOR2 endPos, D3DXVECTOR2 m
 	m_NowDistance = 0.0f;
 	D3DXVECTOR2 vec = endPos - startPos;
 	m_MoveDistance = D3DXVec2Length(&vec);
+	PlaySound(g_SE_hasiri, -1);
 	// 移動方向からアニメーションの向きを決定
 	if (isRight)
 	{
@@ -478,6 +499,7 @@ void Boss_Kasya::Move()
 		if (m_IsStop) {
 			m_Muki += 2;
 			m_State = Boss_Kasya::STOP;
+			StopSound(g_SE_hasiri);
 		}
 		else {
 			m_Muki = m_BeforeMuki;
@@ -502,6 +524,11 @@ void Boss_Kasya::Move()
 
 void Boss_Kasya::Stop()
 {
+	if (m_AnimeFrame == 1)
+	{
+		PlaySound(g_SE_teisi, 0);
+	}
+
 	if (m_AnimeFrame >= 20)
 	{
 		m_AnimationPtn++;
@@ -512,7 +539,7 @@ void Boss_Kasya::Stop()
 		}
 		m_AnimeFrame = 0;
 	}
-	{
+	else{
 		m_AnimeFrame++;
 	}
 }
@@ -590,6 +617,7 @@ void Boss_Kasya::OneShot()
 			pos.x -= 150.0f;
 			pos.y += 15.0f;
 			m_pFireBallFactory->Create(pos, 1, D3DXVECTOR2(-6.0f, m_OneShotDirection * 12.0f), FireBall::MODE::KASYA_ONESHOT);
+			PlaySound(g_SE_fire, 0);
 		}
 		if (m_AnimationPtn >= 6) {
 			m_OneShotDirection *= -1.0f;
@@ -617,10 +645,12 @@ void Boss_Kasya::ThreeShot()
 			if (m_Muki % 2 == 0) {
 				pos.x -= 150.0f;
 				m_pFireBallFactory->Create(pos, 1, D3DXVECTOR2(-5.0f - ((float)m_NowShotFireBall*7.5f), -3.0f), FireBall::MODE::KASYA_THREESHOT);
+				PlaySound(g_SE_fire, 0);
 			}
 			else {
 				pos.x += 150.0f;
 				m_pFireBallFactory->Create(pos, 1, D3DXVECTOR2( 5.0f + ((float)m_NowShotFireBall*7.5f), -3.0f), FireBall::MODE::KASYA_THREESHOT);
+				PlaySound(g_SE_fire, 0);
 			}
 			m_NowShotFireBall++;
 		}

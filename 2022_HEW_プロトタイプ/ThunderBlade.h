@@ -13,9 +13,21 @@ public:
 		DEAD,
 	};
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[1] =
+	const float m_AnimeTable[13] =
 	{
-		0.0f,
+		0.00000f,
+		0.07692f,
+		0.15384f,
+		0.23076f,
+		0.30768f,
+		0.38460f,
+		0.46152f,
+		0.53844f,
+		0.61536f,
+		0.69228f,
+		0.76920f,
+		0.84612f,
+		0.92304f,
 	};
 	const float M_MukiTable[1] =
 	{
@@ -30,6 +42,7 @@ private:
 	int m_TextureNo = -1;
 	int m_WaitFrame = 0;
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 火の玉の表示サイズ
+	D3DXVECTOR2 m_CollisionSize = D3DXVECTOR2(0.0f, 0.0f);
 	int m_AnimationPtn = 0;		// アニメーションのパターン番号
 	int m_AnimationCounter = 0;	// アニメーションのカウンター
 	D3DXVECTOR2 m_divid;
@@ -57,6 +70,7 @@ public:
 	bool GetIsActive() { return m_IsActive; };
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
+	D3DXVECTOR2 GetCollisionSize() { return m_CollisionSize; };
 	bool GetIsCanHit() { return m_IsCanHit; };
 
 };

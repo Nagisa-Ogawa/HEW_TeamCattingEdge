@@ -451,12 +451,12 @@ void Boss_Raijin::ThunderBlade()
 	{
 		m_ThunderBoltPos = m_pPlayer->pos;
 		// 光るオブジェクト作成
-		m_pFlashFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, 200.0f), D3DXVECTOR2(180.0f, 180.0f));
+		m_pFlashFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 600.0f), D3DXVECTOR2(180.0f, 180.0f));
 	}
 	if (m_WaitFrame == 120)
 	{
 		// 雷の刃作成
-		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, 200.0f+90.0f+360.0f), D3DXVECTOR2(90.0f, 720.0f));
+		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f));
 	}
 	// 一定時間待機
 	if (m_WaitFrame >= 300)

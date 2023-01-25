@@ -6,7 +6,9 @@
 #include "Block.h"
 #include "game.h"
 #include "ExplosionFactory.h"
+#include "sound.h"
 
+static int	g_SE_bomb;		// SE‚ÌŽ¯•ÊŽq
 
 Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f),textureNo,ENEMY_TYPE::SELFDESTRUCT)
@@ -23,6 +25,10 @@ Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID, int textureNo):
 	m_pExplosionFactory = GetExplosionFactory();
 	m_DeadAnimeNum = 3;
 	m_DeadAnimeFrame = 10;
+
+	//‰¹ŠÖ˜A‚Ì‰Šú‰»
+	g_SE_bomb = LoadSound((char*)"data/SE/Tengu_bomb.wav");
+	SetVolume(g_SE_bomb, 0.3f);
 }
 
 void Enemy_SelfDestruct::Init()
@@ -84,6 +90,7 @@ void Enemy_SelfDestruct::Update()
 		// Ž©‰ó
 		// ”š”­‚ðì¬
 		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
+		PlaySound(g_SE_bomb, 0);
 		m_IsDead = true;
 		m_IsDie = true;
 		// m_State = Enemy_SelfDestruct::IDLE;

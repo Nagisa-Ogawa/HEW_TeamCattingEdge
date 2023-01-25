@@ -50,6 +50,7 @@ private:
 	int m_TextureNo = -1;
 	int m_WaitFrame = 0;
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 火の玉の表示サイズ
+	D3DXVECTOR2 m_CollisionSize = D3DXVECTOR2(0.0f, 0.0f);
 	int m_AnimationPtn = 0;		// 火の玉のアニメーションのパターン番号
 	int m_AnimationCounter = 0;	// 火の玉のアニメーションのカウンター
 	D3DXVECTOR2 m_divid;
@@ -99,6 +100,7 @@ public:
 	bool GetIsActive() { return m_IsActive; };
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
+	D3DXVECTOR2 GetCollisionSize() { return m_CollisionSize; };
 	D3DXVECTOR2 GetPower() { return m_ThrowPower; };
 	bool GetHittingFlag() { return m_isHittingWall; };
 	bool GetPassThroughFlag() { return m_isPassThrough; };

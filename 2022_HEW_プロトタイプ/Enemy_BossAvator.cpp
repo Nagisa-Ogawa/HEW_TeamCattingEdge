@@ -192,7 +192,7 @@ void Enemy_BossAvator::WindBlade()
 		if (m_WaitFrame == 120)
 		{
 			// •—‚Ìnì¬
-			m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x-100.0f, m_Pos.y+100.0f),D3DXVECTOR2(120.0f,240.0f), 1);
+			m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x-100.0f, m_Pos.y+100.0f),D3DXVECTOR2(180.0f,180.0f), 1);
 		}
 		// ˆê’èŽžŠÔ‘Ò‹@
 		if (m_WaitFrame >= 300)

@@ -18,10 +18,12 @@ public:
 		0.0f,
 		0.5f,
 	};
-	const float M_MukiTable[2] =
+	const float M_MukiTable[4] =
 	{
 		0.00f,
+		0.25f,
 		0.50f,
+		0.75f,
 	};
 private:
 	CAMERA_2D* m_pCamera = nullptr;
