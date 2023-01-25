@@ -8,7 +8,7 @@ SwitchBullet::SwitchBullet(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,D3DX
 {
 	m_pCamera = GetCamera();
 	m_Power = D3DXVECTOR2(20.0f, 0.0f);
-	m_divid = D3DXVECTOR2(1.0f, 1.0f);
+	m_divid = D3DXVECTOR2(6.0f, 2.0f);
 	m_pttern.x = 1.0f / m_divid.x;
 	m_pttern.y = 1.0f / m_divid.y;
 	m_TargetDistance = 400.0f;
@@ -16,6 +16,14 @@ SwitchBullet::SwitchBullet(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,D3DX
 	if (m_Muki == 1)
 	{
 		m_Power.x *= -1.0f;
+	}
+	if (m_Muki == 1)
+	{
+		m_Muki = 0;
+	}
+	else
+	{
+		m_Muki = 1;
 	}
 }
 
@@ -53,11 +61,12 @@ void SwitchBullet::Update()
 			D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 			float len = pVec.x;
 			// ƒvƒŒƒCƒ„[‚ð’Ê‚è‰ß‚¬‚Äˆê’èˆÈã
-			if (m_Muki == 0) {
+			if (m_Muki == 1) {
 				if (len >= m_TargetDistance && m_Pos.x > m_TargetPos.x) {
 					m_IsSwitch = true;
 					m_State = SWITCH;
 					m_SwitchPos = m_Pos;
+					m_AnimationPtn = 0;
 				}
 			}
 			else {
@@ -65,6 +74,7 @@ void SwitchBullet::Update()
 					m_IsSwitch = true;
 					m_State = SWITCH;
 					m_SwitchPos = m_Pos;
+					m_AnimationPtn = 0;
 				}
 			}
 		}
@@ -78,6 +88,19 @@ void SwitchBullet::Update()
 			break;
 		default:
 			break;
+		}
+		if (m_WaitFrame >= 5)
+		{
+			m_WaitFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 6)
+			{
+				m_AnimationPtn = 0;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
 		}
 		break;
 	}
@@ -99,7 +122,7 @@ void SwitchBullet::Draw()
 	}
 	D3DXVECTOR2 basePos = GetBase();
 	DrawSprite(m_TextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		0.0f, 0.0f, m_pttern.x, m_pttern.y);
+		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
 }
 
 SwitchBullet::~SwitchBullet()
@@ -115,6 +138,7 @@ void SwitchBullet::Switch(D3DXVECTOR2 pos)
 	m_SwitchPos = pos;
 	m_IsSwitch = true;
 	m_State = SWITCH;
+	m_AnimationPtn = 0;
 }
 
 void SwitchBullet::Died()

@@ -14,7 +14,7 @@ void SwitchBulletFactory::Init()
 {
 	m_pPlayer = GetPlayer();
 	m_pCamera = GetCamera();
-	m_SwitchBulletNo = LoadTexture((char*)"data/TEXTURE/SwitchBullet.png");
+	m_SwitchBulletNo = LoadTexture((char*)"data/TEXTURE/TBullet.png");
 }
 
 void SwitchBulletFactory::Uninit()

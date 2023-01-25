@@ -67,7 +67,7 @@ void Boss_Fujin::Update()
 	switch (m_State)
 	{
 	case Boss_Fujin::IDLE:
-		if (m_WaitFrame >= 60)
+		if (m_WaitFrame >= 120)
 		{
 			m_WaitFrame = 0;
 			// m_StateCount = 4;

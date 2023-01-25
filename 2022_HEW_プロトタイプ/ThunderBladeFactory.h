@@ -15,6 +15,7 @@ private:
 	int m_nowID = -1;
 
 	int m_ThunderBladeNo = -1;
+	int m_BigThunderBladeNo = -1;
 
 public:
 	ThunderBladeFactory();
@@ -28,7 +29,7 @@ public:
 	void Draw();
 
 	// CreateŠÖ”
-	void Create(D3DXVECTOR2 pos, D3DXVECTOR2 size);
+	void Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,int mode);
 
 	// ƒvƒŒƒCƒ„[‚Æ•—‚Ìn‚Ì“–‚½‚è”»’è
 	void CollisionThunderBladeToPlayer();

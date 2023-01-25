@@ -12,6 +12,12 @@ public:
 		THUNDERBOLT,
 		DEAD,
 	};
+
+	enum THUNDERBLADE_MODE
+	{
+		NORMAL,
+		BIG,
+	};
 	// アニメーションのUV値の指定に使う配列
 	const float m_AnimeTable[13] =
 	{
@@ -53,7 +59,7 @@ private:
 	int m_ThunderBoltFrame = 0;
 	int m_HitStartFrame = 0;
 public:
-	ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo);
+	ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,THUNDERBLADE_MODE mode);
 	// 火の玉の初期化処理
 	void Init();
 	// 火の玉の終了処理

@@ -251,7 +251,7 @@ void Enemy_BossAvator::ThunderBlade()
 		if (m_WaitFrame == 80)
 		{
 			// —‹‚Ìnì¬
-			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, 200.0f+80.0f+ 360.0f), D3DXVECTOR2(90.0f, 720.0f));
+			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),1);
 		}
 		// ˆê’èŽžŠÔ‘Ò‹@
 		if (m_WaitFrame >= 300)

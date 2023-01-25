@@ -20,6 +20,7 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki)
 	m_Gravity = 4.0f;
 	m_HP = 1;
 	m_Muki = muki;
+	m_WaitFrame = 60;
 	// 攻撃用変数
 	m_AttackTextureNo = LoadTexture((char*)"data/TEXTURE/fade_white.png");
 	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 100.0f);
@@ -68,7 +69,6 @@ void Boss_Raijin::Update()
 	switch (m_State)
 	{
 	case Boss_Raijin::IDLE:
-		m_WaitFrame++;
 		if (m_WaitFrame >= 120)
 		{
 			m_WaitFrame = 0;
@@ -98,6 +98,10 @@ void Boss_Raijin::Update()
 			if (m_StateCount >= 4) {
 				m_StateCount = 0;
 			}
+		}
+		else
+		{
+			m_WaitFrame++;
 		}
 
 		break;
@@ -192,10 +196,10 @@ void Boss_Raijin::SwitchBullet()
 			m_TargetPos = m_pPlayer->pos;
 			m_TargetPos.y=  BLOCK_SIZE * 18.0f - 120.0f;
 			if (m_Muki % 2 == 0) {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(240.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::ONCE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::ONCE);
 			}
 			else {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(240.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::ONCE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::ONCE);
 
 			}
 			m_WaitFrame = 0;
@@ -240,12 +244,25 @@ void Boss_Raijin::SwitchBullet()
 			m_Pos.x = m_SwitchPos.x;
 			m_IsStealth = true;
 		}
-		if (m_WaitFrame == 180) {
+		if (m_WaitFrame == 180)
+		{
+			if (m_Muki % 2 == 0)
+			{
+				// 光るオブジェクト作成
+				m_pFlashFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(180.0f, 180.0f));
+			}
+			else
+			{
+				// 光るオブジェクト作成
+				m_pFlashFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(180.0f, 180.0f));
+			}
+		}
+		if (m_WaitFrame == 240) {
 			if (m_Muki % 2 == 0) {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x - 100, m_TargetPos.y), D3DXVECTOR2(240.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::TWICE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x - 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::TWICE);
 			}
 			else {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x + 100, m_TargetPos.y), D3DXVECTOR2(240.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::TWICE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x + 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::TWICE);
 			}
 			// 雷弾発射
 			m_MoveCount++;
@@ -456,7 +473,7 @@ void Boss_Raijin::ThunderBlade()
 	if (m_WaitFrame == 120)
 	{
 		// 雷の刃作成
-		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f));
+		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),0);
 	}
 	// 一定時間待機
 	if (m_WaitFrame >= 300)
@@ -505,7 +522,7 @@ void Boss_Raijin::Avator()
 		// 分身を三体作成
 		for (int i = 0; i < 4; i++)
 		{
-			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2((i*400.0f)+400.0f, 150.0f),D3DXVECTOR2(8.0f,8.0f), Enemy_BossAvator::AVATOR_MODE::RAIJIN,m_Muki);
+			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2((i*400.0f)+400.0f, 300.0f),D3DXVECTOR2(8.0f,8.0f), Enemy_BossAvator::AVATOR_MODE::RAIJIN,m_Muki);
 		}
 		m_MoveCount++;
 	case 3:

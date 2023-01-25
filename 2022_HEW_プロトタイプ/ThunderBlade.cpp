@@ -2,10 +2,17 @@
 #include "sprite.h"
 #include "camera.h"
 
-ThunderBlade::ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size,int textureNo):
+ThunderBlade::ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size,int textureNo,ThunderBlade::THUNDERBLADE_MODE mode):
 	m_Pos(pos),m_Size(size),m_TextureNo(textureNo)
 {
-	m_CollisionSize = D3DXVECTOR2(size.x / 4.0f, size.y);
+	if (mode == THUNDERBLADE_MODE::NORMAL)
+	{
+		m_CollisionSize = D3DXVECTOR2(size.x / 4.0f, size.y);
+	}
+	else
+	{
+		m_CollisionSize = D3DXVECTOR2(size.x, size.y);
+	}
 	m_pCamera = GetCamera();
 	m_divid = D3DXVECTOR2(13.0f, 1.0f);
 	m_pttern.x = 1.0f / m_divid.x;

@@ -19,13 +19,19 @@ public:
 		TWICE,
 	};
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[1] =
+	const float m_AnimeTable[6] =
 	{
-		0.0f,
+		0.000000f,
+		0.166667f,
+		0.333334f,
+		0.500000f,
+		0.666667f,
+		0.833334f
 	};
-	const float M_MukiTable[1] =
+	const float M_MukiTable[2] =
 	{
 		0.00f,
+		0.50f,
 	};
 private:
 	CAMERA_2D* m_pCamera = nullptr;

@@ -14,6 +14,7 @@ void ThunderBladeFactory::Init()
 	m_pPlayer = GetPlayer();
 	m_pCamera = GetCamera();
 	m_ThunderBladeNo = LoadTexture((char*)"data/TEXTURE/ThunderBlade.png");
+	m_BigThunderBladeNo = LoadTexture((char*)"data/TEXTURE/BigThunderBlade.png");
 }
 
 void ThunderBladeFactory::Uninit()
@@ -46,9 +47,16 @@ void ThunderBladeFactory::Draw()
 	}
 }
 
-void ThunderBladeFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size)
+void ThunderBladeFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,int mode)
 {
-	m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_ThunderBladeNo));
+	if (mode == 0)
+	{
+		m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_ThunderBladeNo,(ThunderBlade::THUNDERBLADE_MODE)mode));
+	}
+	else
+	{
+		m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_BigThunderBladeNo, (ThunderBlade::THUNDERBLADE_MODE)mode));
+	}
 }
 
 void ThunderBladeFactory::CollisionThunderBladeToPlayer()
