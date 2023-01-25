@@ -18,6 +18,7 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki)
 {
 	// “G‚ÌƒTƒCƒY‚ğİ’è
 	m_Gravity = 4.0f;
+	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
 	m_HP = 1;
 	m_Muki = muki;
 	m_WaitFrame = 60;

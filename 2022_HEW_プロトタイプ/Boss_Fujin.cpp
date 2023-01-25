@@ -16,6 +16,7 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 {
 	// “G‚ÌƒTƒCƒY‚ğİ’è
 	m_Gravity = 4.0f;
+	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
 	m_HP = 1;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();

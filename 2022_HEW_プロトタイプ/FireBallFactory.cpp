@@ -364,7 +364,7 @@ void FireBallFactory::CollisionPlayerToFireBall()
 			continue;
 		}
 		// プレイヤーと当たったなら
-		if (HitCheckBox(fireBall->GetPos(), fireBall->GetSize(),
+		if (HitCheckBox(fireBall->GetPos(), fireBall->GetCollisionSize(),
 			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size)))
 		{
 			// プレイヤーのHPを減らす

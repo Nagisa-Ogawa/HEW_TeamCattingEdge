@@ -94,6 +94,7 @@ public:
 	ENEMY_TYPE GetEnemyType() { return m_EnemyType; };
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
+	D3DXVECTOR2 GetCollisionSize() { return m_CollisionSize; };
 	D3DXVECTOR2 GetVel() { return m_Vel; };
 	bool GetIsActive() { return m_IsActive; };
 	bool GetIsDead() { return m_IsDead; };

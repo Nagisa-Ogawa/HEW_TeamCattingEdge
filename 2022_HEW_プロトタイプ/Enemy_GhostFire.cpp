@@ -17,6 +17,7 @@ Enemy_GhostFire::Enemy_GhostFire(D3DXVECTOR2 pos, int muki,int ID, int textureNo
 	m_WaitIdleTime = 30;
 	m_WaitNextThrowTime = 10;
 	int m_CooldownTime = 30;
+	m_CollisionSize = D3DXVECTOR2(40.0f, 60.0f);
 
 	//‰¹ŠÖ˜A‚Ì‰Šú‰»
 	g_SE_fire = LoadSound((char*)"data/SE/Kasya_fire.wav");

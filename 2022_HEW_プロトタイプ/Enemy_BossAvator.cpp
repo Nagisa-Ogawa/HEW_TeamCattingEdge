@@ -201,6 +201,7 @@ void Enemy_BossAvator::WindBlade()
 			m_Muki -= 6;
 			m_AnimationPtn = 0;
 			m_IsDie = true;
+			m_IsDead = true;
 		}
 		else
 		{

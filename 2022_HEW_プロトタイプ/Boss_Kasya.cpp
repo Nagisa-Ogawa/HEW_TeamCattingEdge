@@ -20,6 +20,7 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 {
 	// “G‚ÌƒTƒCƒY‚ğİ’è
 	m_Gravity = 4.0f;
+	m_CollisionSize=D3DXVECTOR2(300.0f, 240.0f);
 	m_HP = 1;
 	m_Muki = 0;
 	m_IdleWaitFrame = 120;

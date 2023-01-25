@@ -9,7 +9,7 @@
 FireBall::FireBall(int ID,D3DXVECTOR2 pos, int muki, D3DXVECTOR2 power,FireBall::MODE mode,int textureNo):
 	m_ID(ID), m_Pos(pos),m_Muki(muki),m_ThrowPower(power),m_Mode(mode)
 {
-	m_CollisionSize=D3DXVECTOR2(m_Size.x, m_Size.y/2.0f);
+	m_CollisionSize=D3DXVECTOR2(m_Size.x-30.0f, m_Size.y/2.0f);
 	m_DistanceMax = 600.0f;
 	m_StartPos = m_Pos;
 	m_divid = D3DXVECTOR2(3.0f, 4.0f);

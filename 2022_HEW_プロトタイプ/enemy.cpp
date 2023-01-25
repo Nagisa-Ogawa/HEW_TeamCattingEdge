@@ -32,7 +32,7 @@ void Enemy::HitCheckPlayerAttack(D3DXVECTOR2 AttackPos)
 	if (m_IsDead) {
 		return;
 	}
-	if (HitCheckBox(AttackPos,120.0f,120.0f,m_Pos,m_Size.x,m_Size.y))
+	if (HitCheckBox(AttackPos,120.0f,120.0f,m_Pos,m_CollisionSize.x, m_CollisionSize.y))
 	{
 		Damege(1);
 	}

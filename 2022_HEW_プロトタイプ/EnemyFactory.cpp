@@ -450,8 +450,8 @@ void EnemyFactory::CollisionPlayerToEnemy()
 			continue;
 		}
 		// “G‚Æ“–‚½‚Á‚½‚È‚ç
-		if (HitCheckBox(pEnemy->GetPos(), pEnemy->GetSize(),
-			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size)))
+		if (HitCheckBox(pEnemy->GetPos(), pEnemy->GetCollisionSize(),
+			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size-70.0f, m_pPlayer->size)))
 		{
 			// ƒvƒŒƒCƒ„[‚ÌHP‚ğŒ¸‚ç‚·
 			PlayerDamage(1);
