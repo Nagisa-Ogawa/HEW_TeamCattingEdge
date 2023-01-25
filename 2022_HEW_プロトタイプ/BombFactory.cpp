@@ -4,6 +4,7 @@
 #include "Bomb.h"
 #include "ContactBomb.h"
 #include "InstallationBomb.h"
+#include "ContactBomb_Boss.h"
 #include "game.h"
 #include "ShockWaveFactory.h"
 
@@ -21,6 +22,12 @@ void BombFactory::CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endP
 {
 	m_nowID++;
 	m_pBombList.push_back(new InstallationBomb(m_nowID, createPos, endPos));
+}
+
+void BombFactory::CreateContactBomb_Boss(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos)
+{
+	m_nowID++;
+	m_pBombList.push_back(new ContactBomb_Boss(m_nowID, createPos, endPos));
 }
 
 void BombFactory::Init()

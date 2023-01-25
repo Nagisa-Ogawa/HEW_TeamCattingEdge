@@ -21,6 +21,7 @@ public:
 	{
 		CONTACT,
 		INSTALLATION,
+		BOSS_CONTACT,
 	};
 protected:
 	int m_ID = -1;
@@ -51,7 +52,7 @@ protected:
 	D3DXVECTOR2 m_pttern;
 	bool m_IsActive = false;
 public:
-	Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos);
+	Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos,BOMB_TYPE type);
 	// ”š’e‚Ì‰Šú‰»ˆ—
 	virtual void Init() = 0;
 	// ”š’e‚ÌI—¹ˆ—

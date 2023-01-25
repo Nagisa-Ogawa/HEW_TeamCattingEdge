@@ -33,6 +33,8 @@ static Anime LStick;
 static Anime RStick;
 static Anime RHituzi;
 static Anime LHituzi;
+static Anime Arrow;
+static Anime ArrowH;
 
 static int Frame;
 static bool Warp;
@@ -46,6 +48,8 @@ static int AttackFrame;
 
 bool title;
 int Apush;
+
+bool arrow;
 
 static float SticksW[5]=
 {
@@ -112,6 +116,15 @@ void InitTitle(void)
 	RHituzi.pos.x += 300;
 	RHituzi.pack = D3DXVECTOR2(HituziW[1], HituziH[1]);
 	RHituzi.size = D3DXVECTOR2(150, 150);
+
+	Arrow.Texture = LoadTexture((char*)"data/TEXTURE/arrow.png");
+	Arrow.pack = D3DXVECTOR2(0.5, 1);
+	Arrow.pos = D3DXVECTOR2(0, RStick.pos.y);
+
+	ArrowH.Texture =Arrow.Texture;
+	ArrowH.pack = D3DXVECTOR2(0.5, 1);
+	ArrowH.pos = D3DXVECTOR2(0, RStick.pos.y-200);
+
 	//タイトル用BGMの読み込み
 	g_BGMNo = LoadSound((char*)"data/BGM/sample000.wav");
 
@@ -164,6 +177,23 @@ void UpdateTitle(void)
 			warp = 0;
 	}
 
+	if (warp  == 1 )
+	{
+		arrow = 1;
+		Arrow.pos.x += 1.5f;
+		ArrowH.pos.x -= 1.5f;
+	}
+	else if (warp == 4)
+	{
+		arrow = 0;
+		Arrow.pos.x -= 1.5f;
+		ArrowH.pos.x += 1.5f;
+	}
+	else
+	{
+		Arrow.pos.x = RStick.pos.x;
+		ArrowH.pos.x = RStick.pos.x;
+	}
 
 	if (Frame % 120 == 119)
 	{
@@ -210,6 +240,26 @@ void DrawTitle(void)
 {
 	DrawSpriteLeftTop(BGManual, 0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT,
 		0.0f, 0.0f, 1.0f, 1.0f);
+	int a = 4 - arrow * 4;
+
+	if (warp == 1)
+	{
+		DrawSpriteLeftTop(Arrow.Texture, Arrow.pos.x, Arrow.pos.y, Arrow.size.x, Arrow.size.y,
+			HituziW[arrow * 4], 0, Arrow.pack.x, Arrow.pack.y);
+
+
+		DrawSpriteLeftTop(ArrowH.Texture, ArrowH.pos.x, ArrowH.pos.y, ArrowH.size.x, ArrowH.size.y,
+			HituziW[a], 0, ArrowH.pack.x, ArrowH.pack.y);
+	}
+	if (warp == 4)
+	{
+		DrawSpriteLeftTop(Arrow.Texture, Arrow.pos.x, Arrow.pos.y, Arrow.size.x, Arrow.size.y,
+			HituziW[arrow * 4], 0, Arrow.pack.x, Arrow.pack.y);
+
+
+		DrawSpriteLeftTop(ArrowH.Texture, ArrowH.pos.x, ArrowH.pos.y, ArrowH.size.x, ArrowH.size.y,
+			0.5, 0, ArrowH.pack.x, ArrowH.pack.y);
+	}
 
 	DrawSpriteLeftTop(LStick.Texture, LStick.pos.x, LStick.pos.y, LStick.size.x, LStick.size.y,
 		SticksW[1], SticksH[LStick.anmNext], LStick.pack.x, LStick.pack.y);							//LL

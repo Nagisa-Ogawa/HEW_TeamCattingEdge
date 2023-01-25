@@ -6,9 +6,9 @@ ExplosionFactory::ExplosionFactory()
 {
 }
 
-void ExplosionFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size)
+void ExplosionFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,int damage)
 {
-	m_pExplosion.push_back(new Explosion(pos, size, (size.x / 2.0f), (size.x / 2.0f) + 50.0f, m_TextureNo));
+	m_pExplosion.push_back(new Explosion(pos, size, (size.x / 2.0f), (size.x / 2.0f) + 50.0f, m_TextureNo,damage));
 }
 
 void ExplosionFactory::Init()
@@ -85,7 +85,7 @@ void ExplosionFactory::CollisionBlastToPlayer()
 		// ƒxƒNƒgƒ‹‚Ì•û‚ª’Z‚¢‚È‚ç“–‚½‚Á‚Ä‚¢‚é
 		if (len <= pExplosion->GetCollsionRad() + pPlayer->size / 2.0f)
 		{
-			PlayerDamage(1);
+			PlayerDamage(pExplosion->GetDamage());
 		}
 		return;
 	}

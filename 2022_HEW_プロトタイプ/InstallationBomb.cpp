@@ -13,7 +13,7 @@
 
 static int	g_SE_bomb;		// SE‚ÌŽ¯•ÊŽq
 
-InstallationBomb::InstallationBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos) : Bomb(ID,pos, endPos)
+InstallationBomb::InstallationBomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos) : Bomb(ID,pos, endPos,BOMB_TYPE::INSTALLATION)
 {
 	m_NowFrame = 0;
 	m_Gravity = 4.0f;
@@ -71,7 +71,7 @@ void InstallationBomb::Update()
 		break;
 	case InstallationBomb::EXPLOSION:
 		// ”š”­‚ðì¬
-		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(100.0f, 100.0f));
+		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(100.0f, 100.0f),2);
 		PlaySound(g_SE_bomb, 0);
 
 		m_IsActive = false;

@@ -11,7 +11,7 @@ private:
 public:
 	ExplosionFactory();
 	// “G‚ğì¬
-	void Create(D3DXVECTOR2 pos, D3DXVECTOR2 size);
+	void Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,int damage);
 	void Init();
 	// ”š’eHê‚ÌI—¹ˆ—
 	void Uninit();

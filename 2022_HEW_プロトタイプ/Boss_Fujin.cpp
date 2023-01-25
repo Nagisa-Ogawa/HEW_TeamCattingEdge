@@ -234,6 +234,7 @@ void Boss_Fujin::InHale()
 	{
 		m_WaitFrame = 0;
 		m_Muki -= 8;
+		m_Muki += 6;
 		m_AnimationPtn = 0;
 		m_State = ATTACK;
 	}

@@ -81,7 +81,7 @@ bool HitCheckBlockToTRay(D3DXVECTOR2 raypos, float size)
 			}
 
 			//ƒqƒbƒg‚µ‚Ä‚¢‚é‚©‚ð”»’è‚·‚é
-			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
+			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, (y - 1) * BLOCK_SIZE);
 
 			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, raypos, size, size))
 			{

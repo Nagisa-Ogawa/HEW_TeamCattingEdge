@@ -5,8 +5,8 @@
 #include "ExplosionFactory.h"
 #include "Block.h"
 
-Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos)
-		: m_ID(ID),m_Pos(pos), m_StartPos(pos), m_EndPos(endPos)
+Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos,Bomb::BOMB_TYPE type)
+		: m_ID(ID),m_Pos(pos), m_StartPos(pos), m_EndPos(endPos),m_BombType(type)
 {
 	m_divid = D3DXVECTOR2(2.0f, 1.0f);
 	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);
@@ -34,7 +34,14 @@ Bomb::Bomb(int ID,D3DXVECTOR2 pos, D3DXVECTOR2 endPos)
 	m_EndVec = endVec;
 
 	m_ThrowPower = D3DXVECTOR2(0.1f, -500.0f);
-	m_ThrowFrame = 70;
+	if (m_BombType == BOMB_TYPE::BOSS_CONTACT)
+	{
+		m_ThrowFrame = 100;
+	}
+	else
+	{
+		m_ThrowFrame = 70;
+	}
 	//D3DXVECTOR2 pVec = m_EndPos - m_StartPos;
 	//float distance = D3DXVec2Length(&pVec);
 	//m_ThrowFrame = distance/5.0f;

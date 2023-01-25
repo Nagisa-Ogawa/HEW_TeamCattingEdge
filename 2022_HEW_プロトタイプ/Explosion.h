@@ -36,6 +36,7 @@ private:
 	bool m_IsActive = false;
 	STATE_EXPLOSION m_State;
 	int m_TextureNo = 0;
+	int m_Damage = 0;
 
 	// 爆風関連
 	float m_CollisionRad = 0.0f;	// 現在の爆風の当たり判定用円の半径
@@ -44,7 +45,7 @@ private:
 	float m_ChangeBlastSize = 0.0f;	// 爆風の1フレームでの変化値
 
 public:
-	Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad,float lastRad,int textureNo);
+	Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad,float lastRad,int textureNo,int damage);
 	// 爆発の初期化処理
 	void Init();
 	// 爆発の終了処理
@@ -57,6 +58,7 @@ public:
 	// Get系関数
 	float GetCollsionRad() { return m_CollisionRad; };
 	bool GetIsActive() { return m_IsActive; };
+	int GetDamage() { return m_Damage; };
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	~Explosion();
 };

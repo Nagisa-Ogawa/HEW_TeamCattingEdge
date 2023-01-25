@@ -14,6 +14,7 @@ public:
 	// “G‚ğì¬
 	void CreateContactBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos);
 	void CreateInstallationBomb(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos);
+	void CreateContactBomb_Boss(D3DXVECTOR2 createPos, D3DXVECTOR2 endPos);
 	void Init();
 	// ”š’eHê‚ÌI—¹ˆ—
 	void Uninit();

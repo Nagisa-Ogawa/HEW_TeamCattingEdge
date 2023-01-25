@@ -444,6 +444,11 @@ void EnemyFactory::CollisionPlayerToEnemy()
 		if (pEnemy->GetIsDead()) {
 			continue;
 		}
+		// •ªg‚Ì“G‚È‚ç“–‚½‚ç‚È‚¢
+		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::FUFINAVATOR)
+		{
+			continue;
+		}
 		// “G‚Æ“–‚½‚Á‚½‚È‚ç
 		if (HitCheckBox(pEnemy->GetPos(), pEnemy->GetSize(),
 			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size)))

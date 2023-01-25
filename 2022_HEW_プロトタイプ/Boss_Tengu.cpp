@@ -92,16 +92,21 @@ void Boss_Tengu::Update()
 		D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 		float len = D3DXVec2Length(&pVec);
 		// プレイヤーが範囲内に入ったなら攻撃準備へ
-		if (len < m_ActiveRad_Jump&&m_IsGround)
+		if (len < m_ActiveRad_Throw)
+		{
+			m_State = Boss_Tengu::THROW_INSTALLATION;
+			m_ActiveRad_Throw = 0.0f;
+		}
+		else if (len < m_ActiveRad_Jump&&m_IsGround)
 		{
 			ChangeSetUp();
 			m_ActiveRad_Jump = 0.0f;
 		}
-		if (len < m_ActiveRad_Throw)
+		else
 		{
-			m_State = Boss_Tengu::THROW;
-			m_ActiveRad_Throw = 0.0f;
+			m_State = Boss_Tengu::THROW_CONTACT;
 		}
+		
 		break;
 	}
 	case Boss_Tengu::SETUP:
@@ -152,9 +157,12 @@ void Boss_Tengu::Update()
 			m_WaitFrame++;
 		}
 		break;
-	case Boss_Tengu::THROW:
-		Throw();
+	case Boss_Tengu::THROW_INSTALLATION:
+		Throw_Installation();
 		m_ActiveRad_Jump = 600.0f;
+		break;
+	case Boss_Tengu::THROW_CONTACT:
+		Throw_Contact();
 		break;
 	case Boss_Tengu::AFTERTHROW:
 		if (m_WaitFrame >= TENGU_WAITFRAME_AFTERTHROW)
@@ -393,7 +401,7 @@ void Boss_Tengu::ShockWave()
 	m_pShockWaveFactory->Create(pos, D3DXVECTOR2(m_ShockWavePower.x*-1, m_ShockWavePower.y), 1);
 }
 
-void Boss_Tengu::Throw()
+void Boss_Tengu::Throw_Installation()
 {
 	// 爆弾を投げる場所を決定
 	PLAYER* pPlayer = GetPlayer();
@@ -436,11 +444,50 @@ void Boss_Tengu::Throw()
 	m_State = Boss_Tengu::AFTERTHROW;
 }
 
+void Boss_Tengu::Throw_Contact()
+{
+	// 爆弾を投げる場所を決定
+	PLAYER* pPlayer = GetPlayer();
+	// 始点と終点と開始ベクトルと終了ベクトルを決定
+	D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
+	// 距離から移動ベクトルの量を変化
+	D3DXVECTOR2 startVec = D3DXVECTOR2(0.0f, -800.0f);
+	D3DXVECTOR2 endVec = D3DXVECTOR2(0.0f, 800.0f);
+	float distance = m_ThrowDistance;
+	float offset = m_ThrowOffset;
+	if (pVec.x < 0)
+	{
+		startVec.x = -5.0f;
+		endVec.x = -5.0f;
+	}
+	else
+	{
+		startVec.x = 5.0f;
+		endVec.x = 5.0f;
+		distance *= -1.0f;
+		offset *= -1.0f;
+	}
+	m_pBombFactory->CreateContactBomb_Boss(m_Pos, pPlayer->pos);
+	// 向きによってアニメーションを変える
+	if (m_Muki == 0)
+	{
+		m_Muki = 2;
+	}
+	else
+	{
+		m_Muki = 3;
+	}
+	m_AnimationPtn = 1;
+	//SEを入力
+	PlaySound(g_SE_throw, 0);
+	m_State = Boss_Tengu::AFTERTHROW;
+}
+
 void Boss_Tengu::LookPlayer()
 {
 	// 向きを変えてはいけない状態なら変えない
 	if (m_State== Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID || m_State == Boss_Tengu::DROP||
-			m_State==Boss_Tengu::SETUP||m_State==Boss_Tengu::THROW||m_State==Boss_Tengu::AFTERTHROW||m_State==Boss_Tengu::DEAD)
+			m_State==Boss_Tengu::SETUP||m_State==Boss_Tengu::THROW_INSTALLATION||m_State==Boss_Tengu::AFTERTHROW||m_State==Boss_Tengu::DEAD)
 	{
 		return;
 	}

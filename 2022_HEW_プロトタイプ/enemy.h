@@ -70,6 +70,7 @@ public:
 		m_IsActive = true;
 		m_IsGround = false;
 		m_IsDead = false;
+		m_CollisionSize = size;
 	};
 	// エネミーの初期化処理
 	virtual void Init() = 0;

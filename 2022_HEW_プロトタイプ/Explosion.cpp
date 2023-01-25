@@ -3,8 +3,8 @@
 #include "sprite.h"
 #include "camera.h"
 
-Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad, float lastRad,int textureNo):
-			m_Pos(pos),m_Size(size),m_CollisionRad(collisionRad),m_LastRad(lastRad),m_TextureNo(textureNo)
+Explosion::Explosion(D3DXVECTOR2 pos,D3DXVECTOR2 size,float collisionRad, float lastRad,int textureNo,int damage):
+			m_Pos(pos),m_Size(size),m_CollisionRad(collisionRad),m_LastRad(lastRad),m_TextureNo(textureNo),m_Damage(damage)
 {
 	m_divid = D3DXVECTOR2(7.0f, 1.0f);
 	m_pttern = D3DXVECTOR2(1.0f / m_divid.x, 1.0f / m_divid.y);

@@ -14,7 +14,8 @@ public:
 		GLID,
 		DROP,
 		AFTERDROP,
-		THROW,
+		THROW_INSTALLATION,
+		THROW_CONTACT,
 		AFTERTHROW,
 		WAIT,
 		DEAD,
@@ -90,7 +91,8 @@ public:
 	// ÕŒ‚”g‚ð”­¶‚³‚¹‚éŠÖ”
 	void ShockWave();
 	// ”š’e‚ð“Š‚°‚é
-	void Throw();
+	void Throw_Installation();
+	void Throw_Contact();
 	// ƒvƒŒƒCƒ„[‚Ì•û‚ðŒü‚­ŠÖ”
 	void LookPlayer();
 

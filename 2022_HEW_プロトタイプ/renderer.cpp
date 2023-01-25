@@ -255,6 +255,15 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	sd.OutputWindow = hWnd;
 	sd.SampleDesc.Count = 1;
 	sd.SampleDesc.Quality = 0;
+
+	//----------------------------------------------------------
+	//															
+	//						‚±‚±‚Å‘S‰æ–Ê						
+	//			
+	//
+	//----------------------------------------------------------
+
+
 	sd.Windowed = TRUE;
 
 	hr = D3D11CreateDeviceAndSwapChain( NULL,

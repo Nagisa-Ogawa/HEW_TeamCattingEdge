@@ -14,7 +14,6 @@ XRay::XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 {
 	m_texture = LoadTexture((char*)"data/TEXTURE/XRay.png");
 	m_use = true;
-
 	m_pPlayer = GetPlayer();
 	m_state = Normal;
 	m_goalpos = m_pPlayer->pos;
@@ -57,7 +56,7 @@ void XRay::Update(void)
 
 void XRay::Draw(void)
 {
-	DrawSpriteColor(m_texture, m_pos.x, m_pos.y, m_size, m_size, 0.0f, 0.0f, 1.0f, 1.0f, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	DrawSpriteColor(m_texture, m_pos.x, m_pos.y, m_size*0.71f, m_size*0.71f, 0.0f, 0.0f, 1.0f, 1.0f, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
 void XRay::Uninit(void)
@@ -80,7 +79,7 @@ bool HitCheckBlockToXRay(D3DXVECTOR2 raypos,float size)
 			}
 
 			//ƒqƒbƒg‚µ‚Ä‚¢‚é‚©‚ð”»’è‚·‚é
-			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, y * BLOCK_SIZE);
+			D3DXVECTOR2 BlockPos = D3DXVECTOR2(x * BLOCK_SIZE, (y-1) * BLOCK_SIZE);
 
 			if (HitCheckBox_Block(BlockPos, BLOCK_SIZE, BLOCK_SIZE, raypos, size , size))
 			{

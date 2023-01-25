@@ -89,7 +89,7 @@ void Enemy_SelfDestruct::Update()
 	case Enemy_SelfDestruct::BOMB:
 		// Ž©‰ó
 		// ”š”­‚ðì¬
-		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
+		m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f),1);
 		PlaySound(g_SE_bomb, 0);
 		m_IsDead = true;
 		m_IsDie = true;

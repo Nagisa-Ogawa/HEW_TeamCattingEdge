@@ -97,7 +97,7 @@ void Enemy_ExplosionGas::Update()
 			m_WaitAnimeFrame = 0;
 			m_AnimationPtn++;
 			if (m_AnimationPtn >= 7) {
-				m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f));
+				m_pExplosionFactory->Create(m_Pos, D3DXVECTOR2(200.0f, 200.0f),1);
 				PlaySound(g_SE_bomb, 0);
 				m_IsActive = false;
 			}
