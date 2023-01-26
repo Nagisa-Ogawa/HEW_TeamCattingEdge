@@ -47,6 +47,8 @@ struct PLAYER
 	float		gravity;		//重力
 	int			warpFlag;		//ワープ回数フラグ
 
+	D3DXVECTOR2 beforewarppos;
+	D3DXVECTOR2 afterwarppos;										
 	//落下処理関連
 	D3DXVECTOR2	dorpspeed;		//落下速度
 	bool        LandingFlag;	//着地フラグ
@@ -57,10 +59,14 @@ struct PLAYER
 	int			animeRun;
 	int			animeAttack;
 	int			animeDeath;
+	int			animeWarpKaminari;
+	int			animeAttackKaminari;
 	int			animeCounterWalk;
 	int			animeCounterRun;
 	int			animeCounterAttack;
 	int			animeCounterDeath;
+	int			animeCounterWarpKaminari;
+	int			animeCounterAttackKaminari;
 	bool		move;
 
 	//戦闘関連

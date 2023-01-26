@@ -36,6 +36,7 @@ enum GAMESCENE {
 	GAMESCENE_PICTURE_STAGE03_BOSS, //ステージ３（ラスボス）の挿絵
 	GAMESCENE_PICTURE_OVERGAME,		//ゲームオーバー
 	GAMESCENE_PICTURE_RESULT,		//リザルト
+	GAMESCENE_PICTURE_STAFFROLL,
 
 	GAMESCENE_NUM,	//終端コード
 };
@@ -48,6 +49,7 @@ void UninitGame(void);
 void UpdateGame(void);
 void DrawGame(void);
 
+GAMESCENE* GetNowScene();
 EnemyFactory* GetEnemyFactory();
 BombFactory* GetBombFactory();
 ExplosionFactory* GetExplosionFactory();

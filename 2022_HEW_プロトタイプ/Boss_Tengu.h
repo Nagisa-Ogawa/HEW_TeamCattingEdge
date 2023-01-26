@@ -41,7 +41,7 @@ private:
 	};
 
 	STATE_BOSS_TENGU m_State = IDLE;
-
+	STATE_BOSS_TENGU m_BeforeState = IDLE;
 	// ジャンプ系
 	float m_ActiveRad_Jump = 0.0f;
 	D3DXVECTOR2 m_JumpPowerMax = D3DXVECTOR2(0.0f, 0.0f);	// 敵のジャンプの最大パワー

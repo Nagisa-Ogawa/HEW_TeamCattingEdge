@@ -62,4 +62,5 @@ enum SCENE {
 //*****************************************************************************
 
 float frand(void);
+int Rand_int(int num);
 void SetScene(SCENE nextScene);

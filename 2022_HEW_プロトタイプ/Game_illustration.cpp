@@ -43,6 +43,7 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 	case GAMESCENE_PICTURE_RESULT:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/ED.png");
 		break;
+		
 	default:
 		break;
 	}

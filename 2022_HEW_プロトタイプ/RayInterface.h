@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 
-#define RAYSPEED 6.0f
+#define RAYSPEED 10.0f
 #define MAXSIZE 300.0f
 
 enum RayState

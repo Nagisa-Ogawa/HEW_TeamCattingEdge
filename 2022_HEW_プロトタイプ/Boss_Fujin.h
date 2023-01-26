@@ -21,12 +21,12 @@ class Boss_Fujin:public Enemy
 public:
 	enum STATE_ENEMY_FUJIN
 	{
-		IDLE,		// 待機
-		ATTACK,		// 近接攻撃
 		INHALE,		// 吸い込み
 		BULLET_X,	// X弾
 		WINDBLADE,	// 風の刃
 		AVATOR,		// 分身
+		IDLE,		// 待機
+		ATTACK,		// 近接攻撃
 		MOVE,
 		WAIT,		// 待機
 		DEAD,		// 死亡
@@ -59,6 +59,7 @@ private:
 
 	STATE_ENEMY_FUJIN m_State = IDLE;
 	STATE_ENEMY_FUJIN m_BeforeState = IDLE;
+	STATE_ENEMY_FUJIN m_LastTimeState = IDLE;
 	int m_StateCount = 0;
 
 	// 待機フレーム
@@ -86,9 +87,8 @@ private:
 	int m_BeforeMuki = -1;
 	int m_MoveCount = 0;
 
-
 public:
-	Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo);
+	Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

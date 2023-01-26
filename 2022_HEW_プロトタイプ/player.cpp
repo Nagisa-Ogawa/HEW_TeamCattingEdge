@@ -44,6 +44,7 @@ void PlayerStatusWarpwait(void);
 void PlayerStatusWarp(void);
 void PlayerStatusAttack(void);
 void PlayerStatusDeath(void);
+void DrawWarpKaminari(D3DXVECTOR2 beforepos, D3DXVECTOR2 afterpos);
 
 //スティック情報取得関数
 D3DXVECTOR2 GetLeftStick(int padNo);
@@ -54,10 +55,19 @@ D3DXVECTOR2 GetRightStick(int padNo);
 //*****************************************************************************
 static PLAYER g_Player;
 static D3DXVECTOR2 g_Direction;
+
 static int	g_SE_wapu;		// SEの識別子
+static int	g_SE_attack;		// SEの識別子
+static int	g_SE_walk;		// SEの識別子
+static int	g_SE_dash;		// SEの識別子
+static int	g_SE_damage;		// SEの識別子
+static bool g_Frag_warpTextrue = false;
+static bool g_Frag_dashSE = false;
+static bool g_Frag_damageSE = false;
 
 static int g_TextureLeft = 0;	//プレイヤー用テクスチャの識別子
 static int g_TextureRight = 0;	//プレイヤー用テクスチャの識別子
+static int g_TextureWarp = 0;	//プレイヤー用テクスチャの識別子
 static int g_TextureAttack = 0;	//プレイヤー用テクスチャの識別子
 
 static float g_AnimeTable[8] =
@@ -91,6 +101,8 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 	//テクスチャの読み込み
 	g_TextureLeft  = LoadTexture((char*)"data/TEXTURE/hituzi_L.png");
 	g_TextureRight = LoadTexture((char*)"data/TEXTURE/hituzi_R.png");
+	g_TextureWarp = LoadTexture((char*)"data/TEXTURE/ワープ.png");
+	g_TextureAttack = LoadTexture((char*)"data/TEXTURE/ワープ.png");
 
 	//データの初期化
 
@@ -110,6 +122,8 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 	g_Player.warppower = 420.0f; //最大距離
 	g_Player.warpFlag = 3;//int
 	g_Player.gravity = 0.6f;
+	g_Player.beforewarppos = D3DXVECTOR2(0.0f, 0.0f);
+	g_Player.afterwarppos = D3DXVECTOR2(0.0f, 0.0f);
 
 	//落下処理関連の初期化
 	g_Player.dorpspeed = D3DXVECTOR2(0.0f, 0.0f);
@@ -135,6 +149,14 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 	//音関連の初期化
 	g_SE_wapu = LoadSound((char*)"data/SE/wa-pu.wav");
 	SetVolume(g_SE_wapu, 0.5f);
+	g_SE_attack = LoadSound((char*)"data/SE/player_attack.wav");
+	SetVolume(g_SE_attack, 0.5f);
+	g_SE_walk = LoadSound((char*)"data/SE/player_walk.wav");
+	SetVolume(g_SE_walk, 0.5f);
+	g_SE_dash = LoadSound((char*)"data/SE/kasya-hasiri.wav");
+	SetVolume(g_SE_dash, 1.0f);
+	g_SE_damage = LoadSound((char*)"data/SE/player_damage.wav");
+	SetVolume(g_SE_damage, 0.8f);
 
 	//その他の初期化
 	g_Player.enemyfactory = GetEnemyFactory();
@@ -150,6 +172,12 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 		g_Player.pos = D3DXVECTOR2(400.0f, 540.0f);
 		break;
 	case GAMESCENE_BASS_KASYA:
+		break;
+	case GAMESCENE_BASS_FUJINRAIJIN:
+		g_Player.pos = D3DXVECTOR2(960.0f, 540.0f);
+		break;
+	case GAMESCENE_BASS_FINAL:
+		g_Player.pos = D3DXVECTOR2(960.0f, 540.0f);
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
 		break;
@@ -178,6 +206,13 @@ void UninitPlayer(void)
 //=============================================================================
 void UpdatePlayer(void)
 {
+	if (g_Frag_damageSE)
+	{
+		PlaySound(g_SE_damage, 0);
+
+		g_Frag_damageSE = false;
+	}
+
 	//１フレーム前のポジションを更新
 	g_Player.oldpos = g_Player.pos;
 
@@ -205,6 +240,7 @@ void UpdatePlayer(void)
 	case attack:
 		PlayerStatusAttack();
 		result = hitChackNormalPlayer_Block(g_Player.vel);
+
 		g_Player.dorpspeed.y += g_Player.gravity;
 		break;
 	case death:
@@ -314,6 +350,8 @@ void UpdatePlayer(void)
 		if (g_Player.attackRecast == 30)
 		{
 			g_Player.attackflag = 3;
+			g_Player.animeCounterAttackKaminari = 0;
+			g_Player.animeAttackKaminari = 0;
 		}
 
 		if (g_Player.attackRecast >= 60)
@@ -370,144 +408,220 @@ void DrawPlayer(void)
 	//ベース座標を受け取る
 	D3DXVECTOR2 basePos = GetBase();
 
-	switch (g_Player.status)
+	//ワープ時の雷の描画
+	if (g_Frag_warpTextrue == true)
 	{
-		//徒歩状態
-	case normal:
-		if (g_Player.waitafterwarp > 0)
+		DrawWarpKaminari(g_Player.beforewarppos, g_Player.pos);
+	}
+
+	if (g_Player.mutekiflag == true)
+	{
+		float color = (float)(g_Player.mutekitime % 30);
+
+		switch (g_Player.status)
 		{
+			//徒歩状態
+		case normal:
+			if (g_Player.waitafterwarp > 0)
+			{
+				DrawSpriteColor(g_TextureRight,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[1],
+					g_AnimeTableTate[4],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else
+			{
+				switch (g_Player.muki)
+				{
+				case 0:
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[0],
+						g_AnimeTableTate[0],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+					break;
+				case 1:
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+					break;
+				case 2:
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeRun],
+						g_AnimeTableTate[2],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+					break;
+				case 3:
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+					break;
+				case 4:
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeRun],
+						g_AnimeTableTate[2],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));					
+					break;
+				default:
+					break;
+				}
+			}
+			break;
+			//ワープ待機状態
+		case warpwait:
+			//本体の描画
 			DrawSpriteColor(g_TextureRight,
 				basePos.x + g_Player.pos.x,
 				basePos.y + (g_Player.pos.y),
+				g_Player.size, g_Player.size,
+				g_AnimeTable[0],
+				g_AnimeTableTate[4],
+				PATTERN_WIDTH,
+				PATTERN_HEIGHT,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+
+			//ワープ先の描画
+			DrawSpriteColor(g_TextureRight,
+				basePos.x + g_Player.warppos.x,
+				basePos.y + (g_Player.warppos.y),
 				g_Player.size, g_Player.size,
 				g_AnimeTable[1],
 				g_AnimeTableTate[4],
 				PATTERN_WIDTH,
 				PATTERN_HEIGHT,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		}
-		else
-		{
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.7f));
+			break;
+			//ワ－プ状態
+		case warp:
+			break;
+		case attack:
 			switch (g_Player.muki)
 			{
-			case 0:
-				if (g_Player.mutekiflag == true)
-				{
-					float color = (float)(g_Player.mutekitime % 30);
-
-					DrawSpriteColor(g_TextureRight,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[0],
-						g_AnimeTableTate[0],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
-				}
-				else
-				{
-					DrawSpriteColor(g_TextureRight,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[0],
-						g_AnimeTableTate[0],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				}
-				break;
-			case 1:
-				if (g_Player.mutekiflag == true)
-				{
-					float color = (float)(g_Player.mutekitime % 30);
-
-					DrawSpriteColor(g_TextureRight,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[g_Player.animeWalk],
-						g_AnimeTableTate[1],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
-				}
-				else
-				{
-					DrawSpriteColor(g_TextureRight,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[g_Player.animeWalk],
-						g_AnimeTableTate[1],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				}
-				break;
 			case 2:
-				if (g_Player.mutekiflag == true)
-				{
-					float color = (float)(g_Player.mutekitime % 30);
-
-					DrawSpriteColor(g_TextureRight,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[g_Player.animeRun],
-						g_AnimeTableTate[2],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
-				}
-				else
-				{
-					DrawSpriteColor(g_TextureRight,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[g_Player.animeRun],
-						g_AnimeTableTate[2],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				}
-				break;
-			case 3:
-				if (g_Player.mutekiflag == true)
-				{
-					float color = (float)(g_Player.mutekitime % 30);
-
-					DrawSpriteColor(g_TextureLeft,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[g_Player.animeWalk],
-						g_AnimeTableTate[1],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
-				}
-				else
-				{
-					DrawSpriteColor(g_TextureLeft,
-						basePos.x + g_Player.pos.x,
-						basePos.y + (g_Player.pos.y),
-						g_Player.size, g_Player.size,
-						g_AnimeTable[g_Player.animeWalk],
-						g_AnimeTableTate[1],
-						PATTERN_WIDTH,
-						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-				}
+				DrawSpriteColor(g_TextureRight,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[g_Player.animeAttack],
+					g_AnimeTableTate[3],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
 				break;
 			case 4:
-				if (g_Player.mutekiflag == true)
+				DrawSpriteColor(g_TextureLeft,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[g_Player.animeAttack],
+					g_AnimeTableTate[3],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				break;
+			default:
+				DrawSpriteColor(g_TextureRight,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[g_Player.animeAttack],
+					g_AnimeTableTate[3],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
+				break;
+			}
+			break;
+		case death:
+			DrawSpriteColor(g_TextureRight,
+				basePos.x + g_Player.pos.x,
+				basePos.y + (g_Player.pos.y),
+				g_Player.size, g_Player.size,
+				g_AnimeTable[g_Player.animeDeath],
+				g_AnimeTableTate[6],
+				PATTERN_WIDTH,
+				PATTERN_HEIGHT,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			break;
+		}
+	}
+	else
+	{
+		switch (g_Player.status)
+		{
+		//徒歩状態
+		case normal:
+			if (g_Player.waitafterwarp > 0)
+			{
+				DrawSpriteColor(g_TextureRight,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[1],
+					g_AnimeTableTate[4],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			}
+			else
+			{
+				switch (g_Player.muki)
 				{
-					float color = (float)(g_Player.mutekitime % 30);
-
-					DrawSpriteColor(g_TextureLeft,
+				case 0:
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[0],
+						g_AnimeTableTate[0],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					break;
+				case 1:
+					DrawSpriteColor(g_TextureRight,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					break;
+				case 2:
+					DrawSpriteColor(g_TextureRight,
 						basePos.x + g_Player.pos.x,
 						basePos.y + (g_Player.pos.y),
 						g_Player.size, g_Player.size,
@@ -515,10 +629,20 @@ void DrawPlayer(void)
 						g_AnimeTableTate[2],
 						PATTERN_WIDTH,
 						PATTERN_HEIGHT,
-						D3DXCOLOR(1.0f, 1.0f, 1.0f, color / 30));
-				}
-				else
-				{
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					break;
+				case 3:
+					DrawSpriteColor(g_TextureLeft,
+						basePos.x + g_Player.pos.x,
+						basePos.y + (g_Player.pos.y),
+						g_Player.size, g_Player.size,
+						g_AnimeTable[g_Player.animeWalk],
+						g_AnimeTableTate[1],
+						PATTERN_WIDTH,
+						PATTERN_HEIGHT,
+						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					break;
+				case 4:
 					DrawSpriteColor(g_TextureLeft,
 						basePos.x + g_Player.pos.x,
 						basePos.y + (g_Player.pos.y),
@@ -528,89 +652,89 @@ void DrawPlayer(void)
 						PATTERN_WIDTH,
 						PATTERN_HEIGHT,
 						D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+					break;
+				default:
+					break;
 				}
+			}
+			break;
+		//ワープ待機状態
+		case warpwait:
+			//本体の描画
+			DrawSpriteColor(g_TextureRight,
+				basePos.x + g_Player.pos.x,
+				basePos.y + (g_Player.pos.y),
+				g_Player.size, g_Player.size,
+				g_AnimeTable[0],
+				g_AnimeTableTate[4],
+				PATTERN_WIDTH,
+				PATTERN_HEIGHT,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+			//ワープ先の描画
+			DrawSpriteColor(g_TextureRight,
+				basePos.x + g_Player.warppos.x,
+				basePos.y + (g_Player.warppos.y),
+				g_Player.size, g_Player.size,
+				g_AnimeTable[1],
+				g_AnimeTableTate[4],
+				PATTERN_WIDTH,
+				PATTERN_HEIGHT,
+				D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.7f));
+			break;
+			//ワ－プ状態
+		case warp:
+			break;
+		case attack:
+			switch (g_Player.muki)
+			{
+			case 2:
+				DrawSpriteColor(g_TextureRight,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[g_Player.animeAttack],
+					g_AnimeTableTate[3],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				break;
+			case 4:
+				DrawSpriteColor(g_TextureLeft,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[g_Player.animeAttack],
+					g_AnimeTableTate[3],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				break;
 			default:
+				DrawSpriteColor(g_TextureRight,
+					basePos.x + g_Player.pos.x,
+					basePos.y + (g_Player.pos.y),
+					g_Player.size, g_Player.size,
+					g_AnimeTable[g_Player.animeAttack],
+					g_AnimeTableTate[3],
+					PATTERN_WIDTH,
+					PATTERN_HEIGHT,
+					D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				break;
 			}
-		}
-		break;
-		//ワープ待機状態
-	case warpwait:
-		//本体の描画
-		DrawSpriteColor(g_TextureRight,
-			basePos.x + g_Player.pos.x,
-			basePos.y + (g_Player.pos.y),
-			g_Player.size, g_Player.size,
-			g_AnimeTable[0],
-			g_AnimeTableTate[4],
-			PATTERN_WIDTH,
-			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-		//ワープ先の描画
-		DrawSpriteColor(g_TextureRight,
-			basePos.x + g_Player.warppos.x,
-			basePos.y + (g_Player.warppos.y),
-			g_Player.size, g_Player.size,
-			g_AnimeTable[1],
-			g_AnimeTableTate[4],
-			PATTERN_WIDTH,
-			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.5f));
-		break;
-		//ワ－プ状態
-	case warp:
-		break;
-	case attack:
-		switch (g_Player.muki)
-		{
-		case 2:
+			break;
+		case death:
 			DrawSpriteColor(g_TextureRight,
 				basePos.x + g_Player.pos.x,
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
-				g_AnimeTable[g_Player.animeAttack],
-				g_AnimeTableTate[3],
-				PATTERN_WIDTH,
-				PATTERN_HEIGHT,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			break;
-		case 4:
-			DrawSpriteColor(g_TextureLeft,
-				basePos.x + g_Player.pos.x,
-				basePos.y + (g_Player.pos.y),
-				g_Player.size, g_Player.size,
-				g_AnimeTable[g_Player.animeAttack],
-				g_AnimeTableTate[3],
-				PATTERN_WIDTH,
-				PATTERN_HEIGHT,
-				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			break;
-		default:
-			DrawSpriteColor(g_TextureRight,
-				basePos.x + g_Player.pos.x,
-				basePos.y + (g_Player.pos.y),
-				g_Player.size, g_Player.size,
-				g_AnimeTable[g_Player.animeAttack],
-				g_AnimeTableTate[3],
+				g_AnimeTable[g_Player.animeDeath],
+				g_AnimeTableTate[6],
 				PATTERN_WIDTH,
 				PATTERN_HEIGHT,
 				D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 			break;
 		}
-		break;
-	case death:
-		DrawSpriteColor(g_TextureRight,
-			basePos.x + g_Player.pos.x,
-			basePos.y + (g_Player.pos.y),
-			g_Player.size, g_Player.size,
-			g_AnimeTable[g_Player.animeDeath],
-			g_AnimeTableTate[6],
-			PATTERN_WIDTH,
-			PATTERN_HEIGHT,
-			D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		break;
 	}
 
 	//ベース座標を受け取る
@@ -618,30 +742,60 @@ void DrawPlayer(void)
 
 	if (g_Player.attackflag != 0)
 	{
+		float Width = 1.0f / 13.0f;
+
+		if (g_Player.animeCounterAttackKaminari > 4)
+		{
+			//アニメーションパターンを切り替える
+			g_Player.animeAttackKaminari++;
+			//最後のアニメーションパターンを表示したらリセットする
+			if (g_Player.animeAttackKaminari >= 7)
+			{
+				g_Player.animeAttackKaminari = 0;
+			}
+			//アニメーションカウンターのリセット
+			g_Player.animeCounterAttackKaminari = 0;
+
+		}
+		g_Player.animeCounterAttackKaminari++;
+
 		switch (g_Player.attackflag)
 		{
-		case 1:
-			DrawSpriteColorRotate(g_TextureAttack,
+		case 1://左
+		/*	DrawSpriteColorRotate(g_TextureAttack,
 				basePos.x + g_Player.pos.x - 120.0f,
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
 				0.4f, 0.0f, 0.2f, 1.0f,
 				D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
-				0.0f);
+				0.0f);*/
+
+			DrawSpriteLeftTop(g_TextureAttack,
+				basePos.x + g_Player.pos.x - 360.0f,
+				basePos.y + g_Player.pos.y - 1020.0f,
+				480.0f, 1080.0f,
+				Width * (6 + g_Player.animeAttackKaminari), 0.0f, Width, 1.0f);
 			break;
-		case 2:
-			DrawSpriteColorRotate(g_TextureAttack,
+		case 2://右
+		/*	DrawSpriteColorRotate(g_TextureAttack,
 				basePos.x + g_Player.pos.x + 120.0f,
 				basePos.y + (g_Player.pos.y),
 				g_Player.size, g_Player.size,
 				0.6f, 0.0f, -0.2f, 1.0f,
 				D3DXCOLOR(1.0f, 0.0f, 0.0f, 0.5f),
-				0.0f);
+				0.0f);*/
+
+			DrawSpriteLeftTop(g_TextureAttack,
+				basePos.x + g_Player.pos.x - 120.0f,
+				basePos.y + g_Player.pos.y - 1020.0f,
+				480.0f, 1080.0f,
+				Width * (6 + g_Player.animeAttackKaminari), 0.0f, Width, 1.0f);
 			break;
 		default:
 			break;
 		}
 	}
+
 }
 
 void PlayerDamage(int num)
@@ -649,12 +803,27 @@ void PlayerDamage(int num)
 	g_Player.hp -= num;
 
 	g_Player.mutekiflag = true;
+
+	g_Frag_damageSE = true;
 }
 
 void PlayerStatusNormal(void)
 {
 	//左右移動
 	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
+
+	if (g_Player.vel.x != 0.0f && g_Frag_dashSE == false)
+	{
+		PlaySound(g_SE_dash, -1);
+
+		g_Frag_dashSE = true;
+	}
+	else if (g_Player.vel.x == 0.0f)
+	{
+		StopSound(g_SE_dash);
+
+		g_Frag_dashSE = false;
+	}
 
 	if (GetThumbLeftX(TEST_CON) > 0.8f)
 	{
@@ -717,6 +886,8 @@ void PlayerStatusNormal(void)
 
 		g_Player.animeCounterAttack = 0;
 		g_Player.animeAttack = 0;
+
+		PlaySound(g_SE_attack, 0);
 	}
 
 	if (IsButtonPressedX(TEST_CON, XINPUT_GAMEPAD_LEFT_SHOULDER) && g_Player.attackflag == 0)
@@ -728,6 +899,8 @@ void PlayerStatusNormal(void)
 		g_Player.status = attack;
 		g_Player.animeCounterAttack = 0;
 		g_Player.animeAttack = 0;
+
+		PlaySound(g_SE_attack, 0);
 	}
 }
 
@@ -735,6 +908,10 @@ void PlayerStatusWarpwait(void)
 {
 	//左右移動
 	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
+
+	StopSound(g_SE_dash);
+
+	g_Frag_dashSE = false;
 
 	if (0.0 == GetThumbRightX(TEST_CON) && 0.0 == GetThumbRightY(TEST_CON))
 	{
@@ -787,8 +964,12 @@ void PlayerStatusWarp(void)
 	//ワープ処理
 	g_Direction = D3DXVECTOR2(0.0f, 0.0f);
 
+	g_Player.beforewarppos = g_Player.pos;
+
 	g_Player.pos.x = g_Player.warppos.x;
 	g_Player.pos.y = g_Player.warppos.y;
+
+	g_Player.afterwarppos = g_Player.pos;
 
 	g_Player.warpframe = 0;
 	g_Player.waitafterwarp = 15;
@@ -800,6 +981,8 @@ void PlayerStatusWarp(void)
 
 	PlaySound(g_SE_wapu, 0);
 
+	g_Frag_warpTextrue = true;
+
 	if (g_Player.warpStartRecast == 0)
 	{
 		g_Player.warpStartRecast = timeGetTime();
@@ -810,6 +993,19 @@ void PlayerStatusAttack(void)
 {
 	//左右移動
 	g_Player.vel.x += GetThumbLeftX(TEST_CON) * PLAYER_SPEED;
+
+	if (g_Player.vel.x != 0.0f && g_Frag_dashSE == false)
+	{
+		PlaySound(g_SE_dash, -1);
+
+		g_Frag_dashSE = true;
+	}
+	else if (g_Player.vel.x == 0.0f)
+	{
+		StopSound(g_SE_dash);
+
+		g_Frag_dashSE = false;
+	}
 
 	//ワープ処理
 	if (0.0 != GetThumbRightX(TEST_CON) || 0.0 != GetThumbRightY(TEST_CON))
@@ -862,6 +1058,10 @@ void PlayerStatusAttack(void)
 
 void PlayerStatusDeath(void)
 {
+	StopSound(g_SE_dash);
+
+	g_Frag_dashSE = false;
+
 	//死亡パターンの更新
 	if (g_Player.animeCounterDeath > 10)
 	{
@@ -883,6 +1083,47 @@ void PlayerStatusDeath(void)
 		}
 	}
 	g_Player.animeCounterDeath++;
+}
+
+void DrawWarpKaminari(D3DXVECTOR2 beforepos, D3DXVECTOR2 afterpos)
+{
+	if (g_Player.animeCounterWarpKaminari > 2)
+	{
+		//アニメーションパターンを切り替える
+		g_Player.animeWarpKaminari++;
+		//最後のアニメーションパターンを表示したらリセットする
+		if (g_Player.animeWarpKaminari >= 4)
+		{
+			g_Player.animeWarpKaminari = 0;
+			g_Frag_warpTextrue = false;
+		}
+		//アニメーションカウンターのリセット
+		g_Player.animeCounterWarpKaminari = 0;
+
+	}
+	g_Player.animeCounterWarpKaminari++;
+
+	D3DXVECTOR2 BeforeKaminari(beforepos.x - 120.0f, beforepos.y - 1020.0f);
+	D3DXVECTOR2 AfterKaminari(afterpos.x - 120.0f, afterpos.y - 1020.0f);
+
+	float Width = 1.0f / 13.0f;
+
+	//ベース座標を受け取る
+	D3DXVECTOR2 basePos = GetBase();
+
+	//雷（ビフォー）の描画
+	DrawSpriteLeftTop(g_TextureWarp,
+		basePos.x + BeforeKaminari.x,
+		basePos.y + BeforeKaminari.y,
+		240.0f, 1080.0f,
+		Width * (4 + g_Player.animeWarpKaminari), 0.0f, Width, 1.0f);
+
+	//雷（ビフォー）の描画
+	DrawSpriteLeftTop(g_TextureWarp,
+		basePos.x + AfterKaminari.x,
+		basePos.y + AfterKaminari.y,
+		240.0f, 1080.0f,
+		Width * (8 - g_Player.animeWarpKaminari), 0.0f, Width, 1.0f);
 }
 
 void AdjustPlayer(D3DXVECTOR2 pos)

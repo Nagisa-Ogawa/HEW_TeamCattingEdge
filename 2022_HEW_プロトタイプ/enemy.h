@@ -23,6 +23,7 @@ public:
 		RUSH,
 		EXPLOSIONGAS,
 		FUFINAVATOR,
+		RAIJINAVATOR,
 		BOSS_TENGU,
 		BOSS_KASYA,
 		BOSS_FUJIN,
@@ -42,6 +43,7 @@ protected:
 	int m_EnemyTextureNo;		// 敵が使用するテクスチャの番号
 	D3DXVECTOR2 m_Size = D3DXVECTOR2(0.0f, 0.0f);	// 敵の表示サイズ
 	D3DXVECTOR2 m_CollisionSize = D3DXVECTOR2(0.0f, 0.0f); // 敵の当たり判定サイズ
+	D3DXVECTOR2 m_AttackSize = D3DXVECTOR2(0.0f, 0.0f);
 	int m_AnimationPtn = 0;		// 敵のアニメーションのパターン番号
 	int m_AnimationCounter = 0;	// 敵のアニメーションのカウンター
 	float m_Gravity = 0.98f;	// 重力
@@ -62,10 +64,13 @@ protected:
 	bool m_IsStealth = true;
 	bool m_IsInvincible = false;
 	int m_InvincibleTime = 0;
+	bool m_IsDuo = false;
+	bool m_IsAttack = false;
+	D3DXVECTOR2 m_AttackPos = D3DXVECTOR2(0.0f, 0.0f);
 
 public:
-	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo,ENEMY_TYPE enemyType) :
-			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) ,m_EnemyTextureNo(textureNo),m_EnemyType(enemyType)
+	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo,ENEMY_TYPE enemyType,bool isDuo=false) :
+			m_Pos(pos), m_ID(ID), m_Size(size), m_divid(divid) ,m_EnemyTextureNo(textureNo),m_EnemyType(enemyType),m_IsDuo(isDuo)
 	{ 
 		m_pttern.x = 1.0f / m_divid.x;
 		m_pttern.y = 1.0f / m_divid.y;
@@ -98,6 +103,8 @@ public:
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
 	D3DXVECTOR2 GetCollisionSize() { return m_CollisionSize; };
+	D3DXVECTOR2 GetAttackSize() { return m_AttackSize; };
+	D3DXVECTOR2 GetAttackPos() { return m_AttackPos; };
 	D3DXVECTOR2 GetVel() { return m_Vel; };
 	bool GetIsActive() { return m_IsActive; };
 	bool GetIsDead() { return m_IsDead; };
@@ -108,6 +115,8 @@ public:
 	bool GetIsEndSetUp() { return m_IsEndSetUp; };
 	bool GetIsStealth() { return m_IsStealth; };
 	bool GetIsInvincible() { return m_IsInvincible; };
+	bool GetIsDuo() { return m_IsDuo; };
+	bool GetIsAttack() { return m_IsAttack; };
 
 	// Set系関数
 	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };

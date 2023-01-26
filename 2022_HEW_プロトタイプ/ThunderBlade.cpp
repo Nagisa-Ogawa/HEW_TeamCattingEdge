@@ -11,8 +11,9 @@ ThunderBlade::ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size,int textureNo,Thund
 	}
 	else
 	{
-		m_CollisionSize = D3DXVECTOR2(size.x, size.y);
+		m_CollisionSize = D3DXVECTOR2(size.x-100.0f, size.y);
 	}
+	
 	m_pCamera = GetCamera();
 	m_divid = D3DXVECTOR2(13.0f, 1.0f);
 	m_pttern.x = 1.0f / m_divid.x;

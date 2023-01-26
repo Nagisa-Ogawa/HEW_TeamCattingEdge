@@ -45,7 +45,7 @@ void InstallationBomb::Update()
 
 	DWORD result = 0;
 	PLAYER* pPlayer = GetPlayer();
-
+	m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 	switch (m_State)
 	{
 	case InstallationBomb::THROW:

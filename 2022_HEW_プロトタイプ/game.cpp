@@ -587,6 +587,11 @@ void SetGameScene(GAMESCENE scene)
 	g_SceneNext = scene;
 }
 
+GAMESCENE * GetNowScene()
+{
+	return &g_Scene;
+}
+
 EnemyFactory* GetEnemyFactory()
 {
 	return &enemyFactory;

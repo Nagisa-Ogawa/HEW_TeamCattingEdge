@@ -350,6 +350,11 @@ float frand(void)
 	return (float)rand() / RAND_MAX;
 }
 
+int Rand_int(int num)
+{
+	return rand() % num;
+}
+
 
 void SetScene(SCENE nextScene)
 {

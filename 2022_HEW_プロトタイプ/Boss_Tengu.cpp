@@ -28,7 +28,6 @@ Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo) :
 	m_CollisionSize = D3DXVECTOR2(300.0f, 480.0f);
 	// ヒットドロップ系変数初期化
 	m_DropPower = 0.98f;
-	m_ActiveRad_Jump = 600.0f;
 	m_JumpPowerMax = D3DXVECTOR2(5.0f, -15.0f);
 	m_JumpAttenuation = D3DXVECTOR2(0.2f, 0.2f);
 	m_ChangeGlidPowerY = -4.0f;
@@ -98,19 +97,22 @@ void Boss_Tengu::Update()
 		D3DXVECTOR2 pVec = m_Pos - pPlayer->pos;
 		float len = D3DXVec2Length(&pVec);
 		// プレイヤーが範囲内に入ったなら攻撃準備へ
-		if (len < m_ActiveRad_Throw)
+		if (len < m_ActiveRad_Throw&&m_BeforeState!=THROW_INSTALLATION)
 		{
 			m_State = Boss_Tengu::THROW_INSTALLATION;
+			m_BeforeState = Boss_Tengu::THROW_INSTALLATION;
 			m_ActiveRad_Throw = 0.0f;
 		}
-		else if (len < m_ActiveRad_Jump&&m_IsGround)
+		else if (m_BeforeState!=JUMP&&m_IsGround)
 		{
+			m_BeforeState = Boss_Tengu::JUMP;
 			ChangeSetUp();
 			m_ActiveRad_Jump = 0.0f;
 		}
-		else
+		else if(m_BeforeState!=THROW_CONTACT)
 		{
 			m_State = Boss_Tengu::THROW_CONTACT;
+			m_BeforeState = Boss_Tengu::THROW_CONTACT;
 		}
 
 		break;

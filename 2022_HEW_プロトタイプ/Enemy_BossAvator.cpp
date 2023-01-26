@@ -9,8 +9,8 @@
 #include "game.h"
 #include "EnemyFactory.h"
 
-Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy_BossAvator::AVATOR_MODE mode,int muki)
-	: Enemy(pos, ID, D3DXVECTOR2(300.0f, 300.0f), divid, textureNo, Enemy::ENEMY_TYPE::FUFINAVATOR),m_TargetPos(targetPos),m_mode(mode)
+Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy::ENEMY_TYPE mode,int muki)
+	: Enemy(pos, ID, D3DXVECTOR2(300.0f, 300.0f), divid, textureNo, mode),m_TargetPos(targetPos)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
@@ -45,9 +45,9 @@ void Enemy_BossAvator::Update()
 	{
 		m_IsDie = false;
 		m_AnimationPtn = 0;
-		switch (m_mode)
+		switch (m_EnemyType)
 		{
-		case Enemy_BossAvator::FUJIN:
+		case ENEMY_TYPE::FUFINAVATOR:
 			if (m_Muki % 2 == 0)
 			{
 				m_Muki = 10;
@@ -57,7 +57,7 @@ void Enemy_BossAvator::Update()
 				m_Muki = 11;
 			}
 			break;
-		case Enemy_BossAvator::RAIJIN:
+		case ENEMY_TYPE::RAIJINAVATOR:
 			if (m_Muki % 2 == 0)
 			{
 				m_Muki = 6;
@@ -76,12 +76,12 @@ void Enemy_BossAvator::Update()
 	switch (m_State)
 	{
 	case Enemy_BossAvator::IDLE:
-		switch (m_mode)
+		switch (m_EnemyType)
 		{
-		case Enemy_BossAvator::FUJIN:
+		case ENEMY_TYPE::FUFINAVATOR:
 			m_State = WINDBLADE;
 			break;
-		case Enemy_BossAvator::RAIJIN:
+		case ENEMY_TYPE::RAIJINAVATOR:
 			m_State = THUNDERBLADE;
 			break;
 		default:
@@ -95,7 +95,7 @@ void Enemy_BossAvator::Update()
 		ThunderBlade();
 		break;
 	case Enemy_BossAvator::MOVE:
-		if (m_mode == AVATOR_MODE::FUJIN) {
+		if (m_EnemyType == ENEMY_TYPE::FUFINAVATOR) {
 			Move_Fujin();
 		}
 		else {
@@ -130,7 +130,7 @@ void Enemy_BossAvator::Draw()
 		return;
 	}
 	D3DXVECTOR2 basePos = GetBase();
-	if (m_mode == AVATOR_MODE::FUJIN) {
+	if (m_EnemyType == ENEMY_TYPE::FUFINAVATOR) {
 		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
 			m_AnimeFujinTable[m_AnimationPtn], M_MukiFujinTable[m_Muki], m_pttern.x, m_pttern.y);
 	}
@@ -191,8 +191,11 @@ void Enemy_BossAvator::WindBlade()
 	case 5:
 		if (m_WaitFrame == 120)
 		{
-			// 風の刃作成
-			m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x-100.0f, m_Pos.y+100.0f),D3DXVECTOR2(180.0f,180.0f), 1);
+			for (int i = 0; i < 3; i++)
+			{
+				// 風の刃作成
+				m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x - 100.0f, m_Pos.y +(i*100)-100), D3DXVECTOR2(100.0f, 100.0f), 1);
+			}
 		}
 		// 一定時間待機
 		if (m_WaitFrame >= 300)
@@ -224,7 +227,7 @@ void Enemy_BossAvator::ThunderBlade()
 	case 1:
 		m_IsEndSetUp = true;
 		// 他の分身が準備完了しているかチェック
-		if (m_pEnemyFactory->CheckFujinAvatorSetEnd())
+		if (m_pEnemyFactory->CheckRaijinAvatorSetEnd())
 		{
 			m_MoveCount++;
 			m_WaitFrame = 0;

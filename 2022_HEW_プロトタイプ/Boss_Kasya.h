@@ -47,6 +47,10 @@ private:
 
 	STATE_BOSS_KASYA m_State = IDLE;
 	STATE_BOSS_KASYA m_BeforeState = IDLE;
+
+	STATE_BOSS_KASYA m_LastTimeState = IDLE;
+	STATE_BOSS_KASYA m_LastTimeState_Move = IDLE;
+	STATE_BOSS_KASYA m_LastTimeState_Shot = IDLE;
 	// ë“ã@ÉtÉåÅ[ÉÄ
 	int m_WaitFrame = 0;
 	int m_AnimeFrame = 0;

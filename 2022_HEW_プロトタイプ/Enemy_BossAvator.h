@@ -17,12 +17,6 @@ public:
 		MOVE,
 		DEAD,		// 死亡
 	};
-
-	enum AVATOR_MODE
-	{
-		FUJIN,
-		RAIJIN,
-	};
 private:
 	const float m_AnimeFujinTable[6] =
 	{
@@ -74,7 +68,6 @@ private:
 
 	STATE_ENEMY_FUJINAVATOR m_State = IDLE;
 	STATE_ENEMY_FUJINAVATOR m_BeforeState = IDLE;
-	AVATOR_MODE m_mode;
 	// 待機フレーム
 	int m_WaitFrame = 0;
 	WindBladeFactory* m_pWindBladeFactory = nullptr;
@@ -91,7 +84,7 @@ private:
 	int m_MoveCount = 0;
 	D3DXVECTOR2 m_TargetPos = D3DXVECTOR2(0.0f, 0.0f);
 public:
-	Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo,D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, AVATOR_MODE mode,int muki);
+	Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo,D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy::ENEMY_TYPE mode,int muki);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

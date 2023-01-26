@@ -18,13 +18,13 @@ class Boss_Raijin :public Enemy
 {
 public:
 	enum STATE_ENEMY_RAIJIN
-	{
-		IDLE,			// 待機
-		ATTACK,			// 近接攻撃
+	{		
 		SWITCH_BULLET,	// 特殊弾と位置を入れ替え
 		BULLET_T,		// ＋弾
 		THUNDERBLADE,	// 雷の刃
 		AVATOR,			// 分身
+		IDLE,			// 待機
+		ATTACK,			// 近接攻撃
 		MOVE,
 		WAIT,			// 待機
 		DEAD,			// 死亡
@@ -55,6 +55,7 @@ private:
 
 	STATE_ENEMY_RAIJIN m_State = IDLE;
 	STATE_ENEMY_RAIJIN m_BeforeState = IDLE;
+	STATE_ENEMY_RAIJIN m_LastTimeState = IDLE;
 
 	// 待機フレーム
 	int m_StateCount = 0;
@@ -87,7 +88,7 @@ private:
 
 
 public:
-	Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki);
+	Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool isDuo);
 	// エネミーの初期化処理
 	void Init() override;
 	// エネミーの終了処理

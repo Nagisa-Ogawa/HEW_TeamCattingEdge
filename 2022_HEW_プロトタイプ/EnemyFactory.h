@@ -61,8 +61,8 @@ public:
 	// BOSS系Create関数
 	void Create_Boss_Tengu(D3DXVECTOR2 pos);
 	void Create_Boss_Kasya(D3DXVECTOR2 pos);
-	void Create_Boss_Fujin(D3DXVECTOR2 pos);
-	void Create_Boss_Raijin(D3DXVECTOR2 pos,int muki);
+	void Create_Boss_Fujin(D3DXVECTOR2 pos,bool isDuo);
+	void Create_Boss_Raijin(D3DXVECTOR2 pos,int muki,bool isDuo);
 
 
 	std::list<Enemy*>* GetEnemyList() { return &m_pEnemyList; };
@@ -75,13 +75,17 @@ public:
 	void HitCheckWallToEnemy(std::vector<std::vector<int>>* g_Stage);
 	// プレイヤーとエネミーの当たり判定(プレイヤーへのダメージ)
 	void CollisionPlayerToEnemy();
+	void CollisionPlayerToFujinAttack();
 	// プレイヤーとボスの当たり判定(プレイヤーへのダメージ)
 	// void CollisionPlayerToBoss();
 	// プレイヤー攻撃とエネミーの当たり判定(エネミーへのダメージ）
 	void CollisoinAttacktoEnemy(D3DXVECTOR2 AttackPos);
 
 	bool CheckFujinAvatorSetEnd();
+	bool CheckRaijinAvatorSetEnd();
 	bool CheckAliveFujinAvator();
+	bool CheckAliveRaijinAvator();
+	bool CheckTogetherDie();
 
 	// エネミーを削除する
 	void DeleteEnemy();

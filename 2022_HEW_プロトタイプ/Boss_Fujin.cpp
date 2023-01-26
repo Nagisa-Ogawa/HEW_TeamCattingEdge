@@ -11,13 +11,13 @@
 #include "RayFactory.h"
 #include "Enemy_BossAvator.h"
 
-Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
-	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 12.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN)
+Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
+	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 12.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN,isDuo)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP = 1;
+	m_HP = 10;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();
 	m_pRayFactory = GetRayFactory();
@@ -27,7 +27,8 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo)
 	m_AttackDistance = 300.0f;
 	// 攻撃用変数
 	m_AttackTextureNo=LoadTexture((char*)"data/TEXTURE/fade_white.png");
-	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 100.0f);
+	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 360.0f);
+	m_AttackSize = m_AttackCollisionSize;
 	// 吸い込み攻撃用変数
 	m_InHalePower = D3DXVECTOR2(5.0f, 5.0f);
 }
@@ -53,7 +54,12 @@ void Boss_Fujin::Update()
 	if (m_IsDie)
 	{
 		m_IsDie = false;
+		m_IsAttack = false;
 		m_AnimationPtn = 0;
+		if (m_Pos.x >= BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f))
+		{
+			m_Pos.x = BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f) - 60.0f;
+		}
 		if (m_Muki % 2 == 0)
 		{
 			m_Muki = 10;
@@ -71,36 +77,44 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 120)
 		{
 			m_WaitFrame = 0;
-			// m_StateCount = 4;
-			switch (m_StateCount)
-			{
-			case 0:
-				m_Muki += 6;
-				m_State = WINDBLADE;
-				break;
-			case 1:
-				m_Muki += 8;
-				m_State = INHALE;
-				break;
-			case 2:
-				m_Muki += 2;
-				m_State = BULLET_X;
-				break;
-			case 3:
-				m_Muki += 6;
-				m_State = WINDBLADE;
-				break;
-			case 4:
-				m_Muki += 4;
-				m_State = AVATOR;
-				break;
-			default:
-				break;
-			}
-			m_StateCount++;
-			if (m_StateCount >= 5) {
-				m_StateCount = 0;
-			}
+			//int num = Rand_int(4);
+			//if (m_LastTimeState == num)
+			//{
+			//	if (num == 3)
+			//	{
+			//		num = 0;
+			//	}
+			//	else
+			//	{
+			//		num++;
+			//	}
+			//}
+			//m_LastTimeState = (STATE_ENEMY_FUJIN)num;
+			//m_State = (STATE_ENEMY_FUJIN)num;
+			m_Muki += 4;
+			m_LastTimeState = (STATE_ENEMY_FUJIN)AVATOR;
+			m_State = (STATE_ENEMY_FUJIN)AVATOR;
+			//switch (num)
+			//{
+			//case 0:
+			//	m_Muki += 8;
+			//	m_State = INHALE;
+			//	break;
+			//case 1:
+			//	m_Muki += 2;
+			//	m_State = BULLET_X;
+			//	break;
+			//case 2:
+			//	m_Muki += 6;
+			//	m_State = WINDBLADE;
+			//	break;
+			//case 3:
+			//	m_Muki += 4;
+			//	m_State = AVATOR;
+			//	break;
+			//default:
+			//	break;
+			//}
 		}
 		else
 		{
@@ -108,6 +122,14 @@ void Boss_Fujin::Update()
 		}
 		break;
 	case Boss_Fujin::ATTACK:
+		if (m_Muki % 2 == 0)
+		{
+			m_AttackPos = D3DXVECTOR2(m_Pos.x - 100.0f, m_Pos.y + 60.0f);
+		}
+		else
+		{
+			m_AttackPos = D3DXVECTOR2(m_Pos.x + 100.0f, m_Pos.y + 60.0f);
+		}
 		if (m_AnimeFrame >= 10 && m_AnimationPtn < 3) {
 			m_AnimeFrame = 0;
 			m_AnimationPtn++;
@@ -117,6 +139,7 @@ void Boss_Fujin::Update()
 			m_AnimationPtn = 0;
 			m_Muki -= 6;
 			m_State = IDLE;
+			m_IsAttack = false;
 		}
 		else {
 			m_AnimeFrame++;
@@ -145,7 +168,7 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame == 160)
 		{
 			// 風の刃作成
-			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(300.0f,300.0f), 1);
+			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(240.0f,240.0f), 1);
 		}
 		// 一定時間待機
 		if (m_WaitFrame >= 300)
@@ -181,15 +204,22 @@ void Boss_Fujin::Update()
 		}
 		break;
 	case Boss_Fujin::DEAD:
-		if (m_WaitFrame >= 10)
+		if (m_WaitFrame >= 10 && m_AnimationPtn < 5)
 		{
 			m_WaitFrame = 0;
 			m_AnimationPtn++;
 			if (m_AnimationPtn >= 6)
 			{
-				m_AnimationPtn = 0;
-				m_IsActive = false;
+				m_AnimationPtn = 5;
+				if (!m_IsDuo)
+				{
+					m_IsActive = false;
+				}
 			}
+		}
+		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo)
+		{
+			// m_IsActive = false;
 		}
 		else
 		{
@@ -199,6 +229,16 @@ void Boss_Fujin::Update()
 	default:
 		break;
 	}
+	if (m_IsInvincible == true)
+	{
+		m_InvincibleTime++;
+
+		if (m_InvincibleTime >= 120)
+		{
+			m_InvincibleTime = 0;
+			m_IsInvincible = false;
+		}
+	}
 }
 
 void Boss_Fujin::Draw()
@@ -207,22 +247,24 @@ void Boss_Fujin::Draw()
 	{
 		return;
 	}
-	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
-	if (m_State == Boss_Fujin::ATTACK)
+	if (m_IsInvincible)
 	{
-		if (m_Muki % 2 == 0)
-		{
-			DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x-300.0f, basePos.y + m_Pos.y, m_AttackCollisionSize.x, m_AttackCollisionSize.y,
-				0.0f, 0.0f, 1.0f, 1.0f);
-		}
-		else
-		{
-			DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x+300.0f, basePos.y + m_Pos.y, m_AttackCollisionSize.x, m_AttackCollisionSize.y,
-				m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
-		}
+		float alpha = (float)(m_InvincibleTime % 30);
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, alpha / 30.0f));
 	}
+	else
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
+	//if (m_State == Boss_Fujin::ATTACK)
+	//{
+	//	DrawSprite(m_AttackTextureNo, basePos.x + m_AttackPos.x, basePos.y + m_AttackPos.y, m_AttackCollisionSize.x, m_AttackCollisionSize.y,
+	//		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+	//}
 }
 
 void Boss_Fujin::InHale()
@@ -238,6 +280,7 @@ void Boss_Fujin::InHale()
 		m_Muki += 6;
 		m_AnimationPtn = 0;
 		m_State = ATTACK;
+		m_IsAttack = true;
 	}
 	// ベクトルを正規化
 	D3DXVec2Normalize(&vec, &vec);
@@ -253,6 +296,7 @@ void Boss_Fujin::InHale()
 		m_Muki += 6;
 		m_AnimationPtn = 0;
 		m_State = ATTACK;
+		m_IsAttack = true;
 	}
 	else
 	{
@@ -425,7 +469,7 @@ void Boss_Fujin::Avator()
 		// 分身を三体作成
 		for (int i = 0; i < 3; i++)
 		{
-			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f),D3DXVECTOR2(6.0f,12.0f), Enemy_BossAvator::AVATOR_MODE::FUJIN,0);
+			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2(SCREEN_WIDTH - 200.0f, SCREEN_HEIGHT - (i*300.0f) - 250.0f),D3DXVECTOR2(6.0f,12.0f), Enemy::ENEMY_TYPE::FUFINAVATOR,0);
 		}
 		m_MoveCount++;
 	case 4:
@@ -436,10 +480,21 @@ void Boss_Fujin::Avator()
 		}
 		break;
 	case 5:
+		if (m_WaitFrame >= 60)
+		{
+			m_WaitFrame = 0;
+			m_MoveCount++;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 6:
 		// マップ内へ移動
 		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
 		break;
-	case 6:
+	case 7:
 		// 待機
 		if (m_WaitFrame >= 60)
 		{
@@ -511,7 +566,7 @@ void Boss_Fujin::Move()
 
 void Boss_Fujin::AfterHitCheckBlockX(DWORD result)
 {
-	if (m_State != MOVE)
+	if (m_State == DEAD)
 	{
 		//当たり判定処理
 		if (result & HIT_LEFT)
@@ -536,7 +591,7 @@ void Boss_Fujin::AfterHitCheckBlockX(DWORD result)
 
 void Boss_Fujin::AfterHitCheckBlockY(DWORD result)
 {
-	if (m_State != MOVE)
+	if (m_State == DEAD)
 	{
 		//落下させるか？処理
 		if ((result & HIT_UP) == 0 && m_IsGround == true)

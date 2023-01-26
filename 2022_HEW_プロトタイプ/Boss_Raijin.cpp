@@ -13,13 +13,13 @@
 #include "SwitchBulletFactory.h"
 #include "SwitchBullet.h"
 
-Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki)
-	: Enemy(pos, ID, D3DXVECTOR2(480.0f, 480.0f), D3DXVECTOR2(8.0f, 8.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_RAIJIN)
+Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool isDuo)
+	: Enemy(pos, ID, D3DXVECTOR2(480.0f, 480.0f), D3DXVECTOR2(8.0f, 8.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_RAIJIN,isDuo)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP = 1;
+	m_HP = 10;
 	m_Muki = muki;
 	m_WaitFrame = 60;
 	// 攻撃用変数
@@ -55,6 +55,14 @@ void Boss_Raijin::Update()
 	{
 		m_IsDie = false;
 		m_AnimationPtn = 0;
+		if (m_Pos.x >= BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f))
+		{
+			m_Pos.x = BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f) - 60.0f;
+		}
+		else if (m_Pos.x <= BLOCK_SIZE * 2.0f + (m_Size.x / 2.0f))
+		{
+			m_Pos.x = BLOCK_SIZE * 2.0f + (m_Size.x / 2.0f);
+		}
 		if (m_Muki % 2 == 0)
 		{
 			m_Muki = 6;
@@ -74,31 +82,44 @@ void Boss_Raijin::Update()
 		{
 			m_WaitFrame = 0;
 			// m_StateCount = 3;
-			switch (m_StateCount)
-			{
-			case 0:
-				m_Muki += 0;
-				m_State = THUNDERBLADE;
-				break;
-			case 1:
-				m_Muki += 2;
-				m_State = AVATOR;
-				break;
-			case 2:
-				m_Muki += 4;
-				m_State = BULLET_T;
-				break;
-			case 3:
-				m_Muki += 0;
-				m_State = SWITCH_BULLET;
-				break;
-			default:
-				break;
-			}
-			m_StateCount++;
-			if (m_StateCount >= 4) {
-				m_StateCount = 0;
-			}
+			//int num = Rand_int(4);
+			//if (m_LastTimeState == num)
+			//{
+			//	if (num == 3)
+			//	{
+			//		num = 0;
+			//	}
+			//	else
+			//	{
+			//		num++;
+			//	}
+			//}
+			//m_LastTimeState = (STATE_ENEMY_RAIJIN)num;
+			//m_State = (STATE_ENEMY_RAIJIN)num;
+			m_Muki += 2;
+			m_LastTimeState = (STATE_ENEMY_RAIJIN)AVATOR;
+			m_State = (STATE_ENEMY_RAIJIN)AVATOR;
+			//switch (num)
+			//{
+			//case 0:
+			//	m_Muki += 0;
+			//	m_State = SWITCH_BULLET;
+			//	break;
+			//case 1:
+			//	m_Muki += 4;
+			//	m_State = BULLET_T;
+			//	break;
+			//case 2:
+			//	m_Muki += 0;
+			//	m_State = THUNDERBLADE;
+			//	break;
+			//case 3:
+			//	m_Muki += 2;
+			//	m_State = AVATOR;
+			//	break;
+			//default:
+			//	break;
+			//}
 		}
 		else
 		{
@@ -124,15 +145,22 @@ void Boss_Raijin::Update()
 	case Boss_Raijin::WAIT:
 		break;
 	case Boss_Raijin::DEAD:
-		if (m_WaitFrame >= 10)
+		if (m_WaitFrame >= 10 && m_AnimationPtn < 5)
 		{
 			m_WaitFrame = 0;
 			m_AnimationPtn++;
 			if (m_AnimationPtn >= 6)
 			{
-				m_AnimationPtn = 0;
-				m_IsActive = false;
+				m_AnimationPtn = 5;
+				if (!m_IsDuo)
+				{
+					m_IsActive = false;
+				}
 			}
+		}
+		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5&&m_IsDuo)
+		{
+			// m_IsActive = false;
 		}
 		else
 		{
@@ -141,6 +169,16 @@ void Boss_Raijin::Update()
 		break;
 	default:
 		break;
+	}
+	if (m_IsInvincible == true)
+	{
+		m_InvincibleTime++;
+
+		if (m_InvincibleTime >= 120)
+		{
+			m_InvincibleTime = 0;
+			m_IsInvincible = false;
+		}
 	}
 }
 
@@ -154,20 +192,18 @@ void Boss_Raijin::Draw()
 		return;
 	}
 	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
-	if (m_State == Boss_Raijin::ATTACK)
+	if (m_IsInvincible)
 	{
-		if (m_Muki % 2 == 0)
-		{
-			DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x - 300.0f, basePos.y + m_Pos.y, m_AttackCollisionSize.x, m_AttackCollisionSize.y,
-				0.0f, 0.0f, 1.0f, 1.0f);
-		}
-		else
-		{
-			DrawSprite(m_AttackTextureNo, basePos.x + m_Pos.x + 300.0f, basePos.y + m_Pos.y, m_AttackCollisionSize.x, m_AttackCollisionSize.y,
-				m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
-		}
+		float alpha = (float)(m_InvincibleTime % 30);
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, alpha / 30.0f));
+	}
+	else
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 }
 
@@ -523,12 +559,12 @@ void Boss_Raijin::Avator()
 		// 分身を三体作成
 		for (int i = 0; i < 4; i++)
 		{
-			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2((i*400.0f)+400.0f, 300.0f),D3DXVECTOR2(8.0f,8.0f), Enemy_BossAvator::AVATOR_MODE::RAIJIN,m_Muki);
+			m_pEnemyFactory->Create_BossAvator(m_Pos, D3DXVECTOR2((i*400.0f)+400.0f, 300.0f),D3DXVECTOR2(8.0f,8.0f), ENEMY_TYPE::RAIJINAVATOR,m_Muki);
 		}
 		m_MoveCount++;
 	case 3:
 		// 分身が消えるまで待機
-		if (m_pEnemyFactory->CheckAliveFujinAvator()) {
+		if (m_pEnemyFactory->CheckAliveRaijinAvator()) {
 			m_MoveCount++;
 		}
 		break;
@@ -607,7 +643,7 @@ void Boss_Raijin::Move()
 
 void Boss_Raijin::AfterHitCheckBlockX(DWORD result)
 {
-	if (m_State != MOVE)
+	if (m_State == DEAD)
 	{
 		//当たり判定処理
 		if (result & HIT_LEFT)
@@ -632,7 +668,7 @@ void Boss_Raijin::AfterHitCheckBlockX(DWORD result)
 
 void Boss_Raijin::AfterHitCheckBlockY(DWORD result)
 {
-	if (m_State != MOVE)
+	if (m_State == DEAD)
 	{
 		//落下させるか？処理
 		if ((result & HIT_UP) == 0 && m_IsGround == true)

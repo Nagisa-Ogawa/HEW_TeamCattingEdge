@@ -16,7 +16,7 @@ DamageFloorFactory::DamageFloorFactory()
 
 void DamageFloorFactory::Init()
 {
-	m_DamageFloorTextureNo = LoadTexture((char*)"data/TEXTURE/DamageFloor.png");
+	m_DamageFloorTextureNo = LoadTexture((char*)"data/TEXTURE/FireWall.png");
 	m_pEnemyFactory = GetEnemyFactory();
 	m_pCamera = GetCamera();
 	Set();

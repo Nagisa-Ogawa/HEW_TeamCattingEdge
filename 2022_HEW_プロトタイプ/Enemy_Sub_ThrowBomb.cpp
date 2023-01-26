@@ -1,9 +1,22 @@
 #include "Enemy_Sub_ThrowBomb.h"
 #include "player.h"
 #include "game.h"
+#include "sound.h"
+
+static int	g_SE_dead;	// SE‚ÌŽ¯•ÊŽq
+static int	g_SE_throw;		// SE‚ÌŽ¯•ÊŽq
+
 
 Enemy_Sub_ThrowBomb::Enemy_Sub_ThrowBomb(D3DXVECTOR2 pos, int ID, int textureNo):Enemy_ThrowBomb::Enemy_ThrowBomb(pos, ID, textureNo)
 {
+	m_Size.x = 240.0f;
+	m_Size.y = 240.0f;
+	m_ActiveRange = 800.0f;
+
+	g_SE_throw = LoadSound((char*)"data/SE/Tengu_throw.wav");
+	SetVolume(g_SE_throw, 1.0f);
+	g_SE_dead = LoadSound((char*)"data/SE/Tengu_dead.wav");
+	SetVolume(g_SE_dead, 0.5f);
 }
 
 Enemy_Sub_ThrowBomb::~Enemy_Sub_ThrowBomb()
@@ -25,6 +38,7 @@ void Enemy_Sub_ThrowBomb::Update(void)
 		m_Muki += 2;
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 	m_OldPos = m_Pos;
 	DWORD result = 0;

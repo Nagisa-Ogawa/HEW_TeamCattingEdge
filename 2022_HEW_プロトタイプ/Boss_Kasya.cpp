@@ -48,7 +48,7 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 void Boss_Kasya::Init()
 {
 	//音関連の初期化
-	g_SE_hasiri= LoadSound((char*)"data/SE/kasya-hasiri.wav");
+	g_SE_hasiri= LoadSound((char*)"data/SE/player_dash.wav");
 	SetVolume(g_SE_hasiri, 1.5f);
 	g_SE_teisi = LoadSound((char*)"data/SE/Kasya_Teisi.wav");
 	SetVolume(g_SE_teisi, 0.5f);
@@ -58,6 +58,7 @@ void Boss_Kasya::Init()
 
 void Boss_Kasya::Uninit()
 {
+	StopSound(g_SE_hasiri);
 	SetGameScene(GAMESCENE_PICTURE_STAGE03);
 }
 
@@ -91,28 +92,15 @@ void Boss_Kasya::Update()
 		{
 			m_WaitFrame = 0;
 			m_MoveCount = 0;
-			// m_StateCount = 0;
-			switch (m_StateCount)
+			if (m_LastTimeState!=SETUP_MOVE)
 			{
-			case 0:
-				m_State = SETUP_THROW;
-				break;
-			case 1:
-				m_State = SETUP_THROW;
-
-				break;
-			case 2:
 				m_State = SETUP_MOVE;
-				break;
-			case 3:
-				m_State = SETUP_MOVE;
-				break;
-			default:
-				break;
+				m_LastTimeState = SETUP_MOVE;
 			}
-			m_StateCount++;
-			if (m_StateCount >= 5) {
-				m_StateCount = 0;
+			else if(m_LastTimeState != SETUP_THROW)
+			{
+				m_State = SETUP_THROW;
+				m_LastTimeState = SETUP_THROW;
 			}
 		}
 		else
@@ -202,6 +190,16 @@ void Boss_Kasya::Update()
 	default:
 		break;
 	}
+	if (m_IsInvincible == true)
+	{
+		m_InvincibleTime++;
+
+		if (m_InvincibleTime >= 120)
+		{
+			m_InvincibleTime = 0;
+			m_IsInvincible = false;
+		}
+	}
 }
 
 void Boss_Kasya::Draw()
@@ -210,9 +208,19 @@ void Boss_Kasya::Draw()
 	{
 		return;
 	}
-	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+	if (m_IsInvincible)
+	{
+		float alpha = (float)(m_InvincibleTime % 30);
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, alpha / 30.0f));
+	}
+	else
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }
 
 void Boss_Kasya::AfterHitCheckBlockX(DWORD result)
@@ -281,10 +289,12 @@ void Boss_Kasya::SetUp_Move()
 	case 0:
 		m_BeforeMuki = m_Muki;
 		// 上下、左右どっちの動きか決める
-		if (m_StateCount % 2 == 0) {
+		if (Rand_int(2) == 0) {
+			m_LastTimeState_Move = MOVE_LEFT_RIGHT;
 			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[0]));
 		}
 		else {
+			m_LastTimeState_Move = MOVE_UP_DOWN;
 			SetMove(m_Pos, D3DXVECTOR2(0.0f + BLOCK_SIZE * 31.0f - (m_Size.x / 2.0f), m_LanePosYList[2]));
 		}
 		m_BeforeState = Boss_Kasya::SETUP_MOVE;
@@ -299,7 +309,7 @@ void Boss_Kasya::SetUp_Move()
 		m_AnimationPtn++;
 		m_WaitFrame = 0;
 		m_MoveCount = 0;
-		if (m_StateCount % 2 == 0) {
+		if (m_LastTimeState_Move==MOVE_LEFT_RIGHT) {
 			m_BeforeMuki = 8;
 			m_State = Boss_Kasya::MOVE_LEFT_RIGHT;
 		}
@@ -553,12 +563,14 @@ void Boss_Kasya::SetUp_Throw()
 		// どっちの火の玉攻撃か決める
 		m_IsStop = true;
 		m_BeforeState = Boss_Kasya::SETUP_THROW;
-		if (m_StateCount % 2 == 0) {
+		if (Rand_int(2) == 0) {
+			m_LastTimeState_Shot = THROW_ONESHOT;
 			m_Muki = 0;
 			m_BeforeMuki = m_Muki;
 			SetMove(m_Pos, D3DXVECTOR2(m_LanePosXList[2], m_LanePosYList[1]));
 		}
 		else {
+			m_LastTimeState_Shot = THROW_THREESHOT;
 			D3DXVECTOR2 pos;
 			// プレイヤーの座標から移動地点をセット
 			if (m_pPlayer->pos.x > SCREEN_WIDTH/2.0f) {
@@ -591,7 +603,7 @@ void Boss_Kasya::SetUp_Throw()
 			m_WaitFrame = 0;
 			m_Muki += 4;
 			m_AnimationPtn = 1;
-			if (m_StateCount % 2 == 0) {
+			if (m_LastTimeState_Shot==THROW_ONESHOT) {
 				m_State = Boss_Kasya::THROW_ONESHOT;
 			}
 			else {

@@ -16,6 +16,7 @@
 #include "Boss_Fujin.h"
 #include "Enemy_BossAvator.h"
 #include "Boss_Raijin.h"
+#include "game.h"
 
 bool HitCheckBox(D3DXVECTOR2 enemyPos, D3DXVECTOR2 enemySize,
 	D3DXVECTOR2 playerPos, D3DXVECTOR2 playerSize);
@@ -79,11 +80,11 @@ void EnemyFactory::Create_BossAvator(D3DXVECTOR2 pos, D3DXVECTOR2 targetPos,D3DX
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	if (mode == Enemy_BossAvator::AVATOR_MODE::FUJIN) {
-		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyFujinNo, targetPos,divid, Enemy_BossAvator::AVATOR_MODE::FUJIN,muki));
+	if (mode == Enemy::ENEMY_TYPE::FUFINAVATOR) {
+		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyFujinNo, targetPos,divid, Enemy::ENEMY_TYPE::FUFINAVATOR,muki));
 	}
 	else {
-		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyRaijinNo, targetPos,divid, Enemy_BossAvator::AVATOR_MODE::RAIJIN,muki));
+		m_pEnemyList.insert(enemyIt, new Enemy_BossAvator(pos, m_nowID, m_EnemyRaijinNo, targetPos,divid, Enemy::ENEMY_TYPE::RAIJINAVATOR,muki));
 	}
 }
 
@@ -101,18 +102,18 @@ void EnemyFactory::Create_Boss_Kasya(D3DXVECTOR2 pos)
 	m_pEnemyList.insert(enemyIt, new Boss_Kasya(pos, m_nowID, m_EnemyKasyaNo));
 }
 
-void EnemyFactory::Create_Boss_Fujin(D3DXVECTOR2 pos)
+void EnemyFactory::Create_Boss_Fujin(D3DXVECTOR2 pos, bool isDuo)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Boss_Fujin(pos, m_nowID, m_EnemyFujinNo));
+	m_pEnemyList.insert(enemyIt, new Boss_Fujin(pos, m_nowID, m_EnemyFujinNo,isDuo));
 }
 
-void EnemyFactory::Create_Boss_Raijin(D3DXVECTOR2 pos,int muki)
+void EnemyFactory::Create_Boss_Raijin(D3DXVECTOR2 pos,int muki, bool isDuo)
 {
 	m_nowID++;
 	auto enemyIt = m_pEnemyList.begin();
-	m_pEnemyList.insert(enemyIt, new Boss_Raijin(pos, m_nowID, m_EnemyRaijinNo,muki));
+	m_pEnemyList.insert(enemyIt, new Boss_Raijin(pos, m_nowID, m_EnemyRaijinNo,muki,isDuo));
 }
 
 void EnemyFactory::Init()
@@ -160,7 +161,7 @@ void EnemyFactory::Update()
 			pEnemy->Update();	
 		}
 		// ボス風神の場合は画面外でもupdateを行う
-		else if (pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN|| pEnemy->GetEnemyType() == Enemy::BOSS_RAIJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR)
+		else if (pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN|| pEnemy->GetEnemyType() == Enemy::BOSS_RAIJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR || pEnemy->GetEnemyType() == Enemy::RAIJINAVATOR)
 		{
 			pEnemy->Update();
 		}
@@ -176,6 +177,7 @@ void EnemyFactory::Update()
 	CollisionPlayerToEnemy();
 	// プレイヤーとボスの当たり判定
 	// CollisionPlayerToBoss();
+	CollisionPlayerToFujinAttack();
 	// 表示していない敵は削除
 	DeleteEnemy();
 }
@@ -239,13 +241,20 @@ void EnemyFactory::SetEnemy()
 				Create_ExplosionGas(pos);
 				break;
 			case 50:
-				Create_Boss_Fujin(pos);
+				if ((*GetNowScene()) == GAMESCENE::GAMESCENE_BASS_FUJINRAIJIN)
+				{
+					Create_Boss_Fujin(pos, true);
+				}
+				else
+				{
+					Create_Boss_Fujin(pos, false);
+				}
 				break;
 			case 51:
-				Create_Boss_Raijin(pos,0);
+				Create_Boss_Raijin(pos,0,false);
 				break;
 			case 52:
-				Create_Boss_Raijin(pos, 1);
+				Create_Boss_Raijin(pos, 1,true);
 				break;
 				//エネミー以外
 			default:
@@ -266,7 +275,7 @@ void EnemyFactory::CollisionWallToEnemy()
 	// すべての敵をチェック
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		if ((pEnemy->GetPos().x - m_pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f)|| pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN || pEnemy->GetEnemyType() == Enemy::BOSS_RAIJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR) {
+		if ((pEnemy->GetPos().x - m_pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f)|| pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN || pEnemy->GetEnemyType() == Enemy::BOSS_RAIJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR || pEnemy->GetEnemyType() == Enemy::RAIJINAVATOR) {
 
 			m_Result = 0;
 			if (!pEnemy->GetIsActive()) {
@@ -320,7 +329,7 @@ void EnemyFactory::CollisionWallToEnemy()
 	// すべての敵をチェック
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		if ((pEnemy->GetPos().x - m_pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f) || pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN || pEnemy->GetEnemyType() == Enemy::BOSS_RAIJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR) {
+		if ((pEnemy->GetPos().x - m_pCamera->pos.x >= -60.0f && pEnemy->GetPos().x - m_pCamera->pos.x <= SCREEN_WIDTH + 60.0f) || pEnemy->GetEnemyType() == Enemy::BOSS_FUJIN || pEnemy->GetEnemyType() == Enemy::BOSS_RAIJIN || pEnemy->GetEnemyType() == Enemy::FUFINAVATOR || pEnemy->GetEnemyType() == Enemy::RAIJINAVATOR) {
 			m_Result = 0;
 			if (!pEnemy->GetIsActive()) {
 				continue;
@@ -445,7 +454,7 @@ void EnemyFactory::CollisionPlayerToEnemy()
 			continue;
 		}
 		// 分身の敵なら当たらない
-		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::FUFINAVATOR)
+		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::FUFINAVATOR|| pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::RAIJINAVATOR)
 		{
 			continue;
 		}
@@ -458,6 +467,30 @@ void EnemyFactory::CollisionPlayerToEnemy()
 		}
 	}
 	return ;
+}
+
+void EnemyFactory::CollisionPlayerToFujinAttack()
+{
+	if (m_pPlayer->mutekiflag)
+	{
+		return;
+	}
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		if (pEnemy->GetEnemyType() != Enemy::ENEMY_TYPE::BOSS_FUJIN)
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsAttack())
+		{
+			continue;
+		}
+		if (HitCheckBox(pEnemy->GetAttackPos(), pEnemy->GetAttackSize(), m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size,m_pPlayer->size)))
+		{
+			PlayerDamage(1);
+		}
+
+	}
 }
 
 
@@ -494,6 +527,32 @@ bool EnemyFactory::CheckFujinAvatorSetEnd()
 	return flag;
 }
 
+bool EnemyFactory::CheckRaijinAvatorSetEnd()
+{
+	bool flag = true;
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		if (pEnemy->GetEnemyType() != Enemy::RAIJINAVATOR)
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsActive())
+		{
+			continue;
+		}
+		if (pEnemy->GetIsDead())
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsEndSetUp())
+		{
+			flag = false;
+		}
+	}
+	return flag;
+}
+
+
 bool EnemyFactory::CheckAliveFujinAvator()
 {
 	for (Enemy* pEnemy : m_pEnemyList)
@@ -513,6 +572,45 @@ bool EnemyFactory::CheckAliveFujinAvator()
 		return false;
 	}
 	return true;
+}
+
+bool EnemyFactory::CheckAliveRaijinAvator()
+{
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		if (pEnemy->GetEnemyType() != Enemy::RAIJINAVATOR)
+		{
+			continue;
+		}
+		if (!pEnemy->GetIsActive())
+		{
+			continue;
+		}
+		if (pEnemy->GetIsDead())
+		{
+			continue;
+		}
+		return false;
+	}
+	return true;
+}
+
+bool EnemyFactory::CheckTogetherDie()
+{
+	bool fujinFlag = false;
+	bool raijinFlag = false;
+	for (Enemy* pEnemy : m_pEnemyList)
+	{
+		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_FUJIN&&pEnemy->GetIsDead())
+		{
+			fujinFlag = true;
+		}
+		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_RAIJIN&& pEnemy->GetIsDead())
+		{
+			raijinFlag = true;
+		}
+	}
+	return (fujinFlag && raijinFlag);
 }
 
 void EnemyFactory::DeleteEnemy()
