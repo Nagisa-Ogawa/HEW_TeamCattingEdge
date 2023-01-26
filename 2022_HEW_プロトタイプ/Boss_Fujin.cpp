@@ -17,7 +17,7 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	// “G‚ÌƒTƒCƒY‚ðÝ’è
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP = 10;
+	m_HP = 2;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();
 	m_pRayFactory = GetRayFactory();
@@ -39,6 +39,12 @@ void Boss_Fujin::Init()
 
 void Boss_Fujin::Uninit()
 {
+	if (m_IsDuo) {
+		SetGameScene(GAMESCENE_PICTURE_RESULT);
+	}
+	else {
+		SetGameScene(GAMESCENE_PICTURE_STAGE03_RAIJIN);
+	}
 }
 
 void Boss_Fujin::Update()
@@ -77,44 +83,44 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame >= 120)
 		{
 			m_WaitFrame = 0;
-			//int num = Rand_int(4);
-			//if (m_LastTimeState == num)
-			//{
-			//	if (num == 3)
-			//	{
-			//		num = 0;
-			//	}
-			//	else
-			//	{
-			//		num++;
-			//	}
-			//}
-			//m_LastTimeState = (STATE_ENEMY_FUJIN)num;
-			//m_State = (STATE_ENEMY_FUJIN)num;
-			m_Muki += 4;
-			m_LastTimeState = (STATE_ENEMY_FUJIN)AVATOR;
-			m_State = (STATE_ENEMY_FUJIN)AVATOR;
-			//switch (num)
-			//{
-			//case 0:
-			//	m_Muki += 8;
-			//	m_State = INHALE;
-			//	break;
-			//case 1:
-			//	m_Muki += 2;
-			//	m_State = BULLET_X;
-			//	break;
-			//case 2:
-			//	m_Muki += 6;
-			//	m_State = WINDBLADE;
-			//	break;
-			//case 3:
-			//	m_Muki += 4;
-			//	m_State = AVATOR;
-			//	break;
-			//default:
-			//	break;
-			//}
+			int num = Rand_int(4);
+			if (m_LastTimeState == num)
+			{
+				if (num == 3)
+				{
+					num = 0;
+				}
+				else
+				{
+					num++;
+				}
+			}
+			m_LastTimeState = (STATE_ENEMY_FUJIN)num;
+			m_State = (STATE_ENEMY_FUJIN)num;
+			//m_Muki += 4;
+			//m_LastTimeState = (STATE_ENEMY_FUJIN)AVATOR;
+			//m_State = (STATE_ENEMY_FUJIN)AVATOR;
+			switch (num)
+			{
+			case 0:
+				m_Muki += 8;
+				m_State = INHALE;
+				break;
+			case 1:
+				m_Muki += 2;
+				m_State = BULLET_X;
+				break;
+			case 2:
+				m_Muki += 6;
+				m_State = WINDBLADE;
+				break;
+			case 3:
+				m_Muki += 4;
+				m_State = AVATOR;
+				break;
+			default:
+				break;
+			}
 		}
 		else
 		{
@@ -208,7 +214,7 @@ void Boss_Fujin::Update()
 		{
 			m_WaitFrame = 0;
 			m_AnimationPtn++;
-			if (m_AnimationPtn >= 6)
+			if (m_AnimationPtn >= 5)
 			{
 				m_AnimationPtn = 5;
 				if (!m_IsDuo)
@@ -219,7 +225,7 @@ void Boss_Fujin::Update()
 		}
 		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo)
 		{
-			// m_IsActive = false;
+			m_IsActive = false;
 		}
 		else
 		{

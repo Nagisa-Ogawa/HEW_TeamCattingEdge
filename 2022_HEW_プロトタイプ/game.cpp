@@ -83,7 +83,10 @@ void InitGame(void)
 	case GAMESCENE_BASS_KASYA:
 		InitGameStage();
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_RAIJIN:
 		InitGameStage();
 		break;
 	case GAMESCENE_BASS_FINAL:
@@ -104,7 +107,13 @@ void InitGame(void)
 	case GAMESCENE_PICTURE_STAGE03:
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -134,7 +143,10 @@ void UninitGame(void)
 	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
+		UninitGameStage();
+		break;
+	case GAMESCENE_BASS_RAIJIN:
 		UninitGameStage();
 		break;
 	case GAMESCENE_BASS_FINAL:
@@ -155,7 +167,13 @@ void UninitGame(void)
 	case GAMESCENE_PICTURE_STAGE03:
 		UninitGameIllust();
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		UninitGameIllust();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -185,7 +203,10 @@ void UpdateGame(void)
 	case GAMESCENE_BASS_KASYA:
 		UpdateGameStage();
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
+		UpdateGameStage();
+		break;
+	case GAMESCENE_BASS_RAIJIN:
 		UpdateGameStage();
 		break;
 	case GAMESCENE_BASS_FINAL:
@@ -206,7 +227,13 @@ void UpdateGame(void)
 	case GAMESCENE_PICTURE_STAGE03:
 		UpdateGameIllust();
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		UpdateGameIllust();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -243,7 +270,10 @@ void DrawGame(void)
 	case GAMESCENE_BASS_KASYA:
 		DrawGameStage();
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
+		DrawGameStage();
+		break;
+	case GAMESCENE_BASS_RAIJIN:
 		DrawGameStage();
 		break;
 	case GAMESCENE_BASS_FINAL:
@@ -264,7 +294,13 @@ void DrawGame(void)
 	case GAMESCENE_PICTURE_STAGE03:
 		DrawGameIllust();
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		DrawGameIllust();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -490,7 +526,10 @@ void ChangeGameScene(void)
 	case GAMESCENE_BASS_KASYA:
 		UninitGameStage();
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
+		UninitGameStage();
+		break;
+	case GAMESCENE_BASS_RAIJIN:
 		UninitGameStage();
 		break;
 	case GAMESCENE_BASS_FINAL:
@@ -511,7 +550,13 @@ void ChangeGameScene(void)
 	case GAMESCENE_PICTURE_STAGE03:
 		UninitGameIllust();
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		UninitGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		UninitGameIllust();
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -542,7 +587,11 @@ void ChangeGameScene(void)
 		g_Scene = g_SceneNext;
 		InitGameStage();
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
+		g_Scene = g_SceneNext;
+		InitGameStage();
+		break;
+	case GAMESCENE_BASS_RAIJIN:
 		g_Scene = g_SceneNext;
 		InitGameStage();
 		break;
@@ -565,7 +614,13 @@ void ChangeGameScene(void)
 	case GAMESCENE_PICTURE_STAGE03:
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:

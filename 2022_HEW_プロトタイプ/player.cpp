@@ -173,7 +173,7 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 		break;
 	case GAMESCENE_BASS_KASYA:
 		break;
-	case GAMESCENE_BASS_FUJINRAIJIN:
+	case GAMESCENE_BASS_FUJIN:
 		g_Player.pos = D3DXVECTOR2(960.0f, 540.0f);
 		break;
 	case GAMESCENE_BASS_FINAL:

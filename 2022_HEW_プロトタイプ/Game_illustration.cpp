@@ -39,7 +39,13 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 	case GAMESCENE_PICTURE_STAGE03:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ステージ3.png");
 		break;
-	case GAMESCENE_PICTURE_STAGE03_BOSS:
+	case GAMESCENE_PICTURE_STAGE03_FUJIN:
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
+		break;
+	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
+		break;
+	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
@@ -79,9 +85,15 @@ void UpdateGameIllust(void)
 			SetGameScene(GAMESCENE_BASS_KASYA);
 			break;
 		case GAMESCENE_PICTURE_STAGE03:
-			SetGameScene(GAMESCENE_BASS_FUJINRAIJIN);
+			SetGameScene(GAMESCENE_PICTURE_STAGE03_FUJIN);
 			break;
-		case GAMESCENE_PICTURE_STAGE03_BOSS:
+		case GAMESCENE_PICTURE_STAGE03_FUJIN:
+			SetGameScene(GAMESCENE_BASS_FUJIN);
+			break;
+		case GAMESCENE_PICTURE_STAGE03_RAIJIN:
+			SetGameScene(GAMESCENE_BASS_RAIJIN);
+			break;
+		case GAMESCENE_PICTURE_STAGE03_FINAL:
 			SetGameScene(GAMESCENE_BASS_FINAL);
 			break;
 		case GAMESCENE_PICTURE_OVERGAME:

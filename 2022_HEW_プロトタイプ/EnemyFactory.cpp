@@ -241,7 +241,7 @@ void EnemyFactory::SetEnemy()
 				Create_ExplosionGas(pos);
 				break;
 			case 50:
-				if ((*GetNowScene()) == GAMESCENE::GAMESCENE_BASS_FUJINRAIJIN)
+				if ((*GetNowScene()) == GAMESCENE::GAMESCENE_BASS_FINAL)
 				{
 					Create_Boss_Fujin(pos, true);
 				}

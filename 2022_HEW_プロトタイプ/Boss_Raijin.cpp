@@ -19,7 +19,7 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool is
 	// “G‚ÌƒTƒCƒY‚ðÝ’è
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP = 10;
+	m_HP = 2;
 	m_Muki = muki;
 	m_WaitFrame = 60;
 	// UŒ‚—p•Ï”
@@ -39,6 +39,9 @@ void Boss_Raijin::Init()
 
 void Boss_Raijin::Uninit()
 {
+	if (!m_IsDuo) {
+		SetGameScene(GAMESCENE_PICTURE_STAGE03_FINAL);
+	}
 }
 
 void Boss_Raijin::Update()
@@ -54,6 +57,7 @@ void Boss_Raijin::Update()
 	if (m_IsDie)
 	{
 		m_IsDie = false;
+		m_IsStealth = true;
 		m_AnimationPtn = 0;
 		if (m_Pos.x >= BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f))
 		{
@@ -81,45 +85,45 @@ void Boss_Raijin::Update()
 		if (m_WaitFrame >= 120)
 		{
 			m_WaitFrame = 0;
-			// m_StateCount = 3;
-			//int num = Rand_int(4);
-			//if (m_LastTimeState == num)
-			//{
-			//	if (num == 3)
-			//	{
-			//		num = 0;
-			//	}
-			//	else
-			//	{
-			//		num++;
-			//	}
-			//}
-			//m_LastTimeState = (STATE_ENEMY_RAIJIN)num;
-			//m_State = (STATE_ENEMY_RAIJIN)num;
-			m_Muki += 2;
-			m_LastTimeState = (STATE_ENEMY_RAIJIN)AVATOR;
-			m_State = (STATE_ENEMY_RAIJIN)AVATOR;
-			//switch (num)
-			//{
-			//case 0:
-			//	m_Muki += 0;
-			//	m_State = SWITCH_BULLET;
-			//	break;
-			//case 1:
-			//	m_Muki += 4;
-			//	m_State = BULLET_T;
-			//	break;
-			//case 2:
-			//	m_Muki += 0;
-			//	m_State = THUNDERBLADE;
-			//	break;
-			//case 3:
-			//	m_Muki += 2;
-			//	m_State = AVATOR;
-			//	break;
-			//default:
-			//	break;
-			//}
+			 m_StateCount = 3;
+			int num = Rand_int(4);
+			if (m_LastTimeState == num)
+			{
+				if (num == 3)
+				{
+					num = 0;
+				}
+				else
+				{
+					num++;
+				}
+			}
+			m_LastTimeState = (STATE_ENEMY_RAIJIN)num;
+			m_State = (STATE_ENEMY_RAIJIN)num;
+			//m_Muki += 2;
+			//m_LastTimeState = (STATE_ENEMY_RAIJIN)AVATOR;
+			//m_State = (STATE_ENEMY_RAIJIN)AVATOR;
+			switch (num)
+			{
+			case 0:
+				m_Muki += 0;
+				m_State = SWITCH_BULLET;
+				break;
+			case 1:
+				m_Muki += 4;
+				m_State = BULLET_T;
+				break;
+			case 2:
+				m_Muki += 0;
+				m_State = THUNDERBLADE;
+				break;
+			case 3:
+				m_Muki += 2;
+				m_State = AVATOR;
+				break;
+			default:
+				break;
+			}
 		}
 		else
 		{
@@ -149,7 +153,7 @@ void Boss_Raijin::Update()
 		{
 			m_WaitFrame = 0;
 			m_AnimationPtn++;
-			if (m_AnimationPtn >= 6)
+			if (m_AnimationPtn >= 5)
 			{
 				m_AnimationPtn = 5;
 				if (!m_IsDuo)
