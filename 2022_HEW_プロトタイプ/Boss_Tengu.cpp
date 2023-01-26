@@ -17,13 +17,14 @@
 static int	g_SE_throw;		// SEの識別子
 static int	g_SE_jump;		// SEの識別子
 static int	g_SE_tyakuti;		// SEの識別子
+static int	g_SE_dead;	// SEの識別子
 
-Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo):
-	Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f),D3DXVECTOR2(6.0f,6.0f),textureNo,ENEMY_TYPE::BOSS_TENGU)
+Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo) :
+	Enemy(pos, ID, D3DXVECTOR2(480.0f, 480.0f), D3DXVECTOR2(6.0f, 6.0f), textureNo, ENEMY_TYPE::BOSS_TENGU)
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
-	m_HP = 1;
+	m_HP = 2;
 	m_CollisionSize = D3DXVECTOR2(300.0f, 480.0f);
 	// ヒットドロップ系変数初期化
 	m_DropPower = 0.98f;
@@ -73,17 +74,21 @@ void Boss_Tengu::Update()
 	PLAYER* pPlayer = GetPlayer();
 
 	// 死亡していたなら死亡状態へ
-	if (m_IsDie) {
+	if (m_IsDie)
+	{
 		m_IsDie = false;
 		m_AnimationPtn = 0;
-		if (m_Muki % 2 == 0) {
+		if (m_Muki % 2 == 0)
+		{
 			m_Muki = 4;
 		}
-		else {
+		else
+		{
 			m_Muki = 5;
 		}
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 
 	switch (m_State)
@@ -107,7 +112,7 @@ void Boss_Tengu::Update()
 		{
 			m_State = Boss_Tengu::THROW_CONTACT;
 		}
-		
+
 		break;
 	}
 	case Boss_Tengu::SETUP:
@@ -199,13 +204,25 @@ void Boss_Tengu::Update()
 		{
 			m_WaitFrame++;
 		}
-		if (m_AnimationPtn > m_DeadAnimeNum - 1) {
+		if (m_AnimationPtn > m_DeadAnimeNum - 1)
+		{
 			m_IsActive = false;
 		}
 		break;
 	default:
 		break;
 	}
+	if (m_IsInvincible == true)
+	{
+		m_InvincibleTime++;
+
+		if (m_InvincibleTime >= 120)
+		{
+			m_InvincibleTime = 0;
+			m_IsInvincible = false;
+		}
+	}
+
 }
 
 void Boss_Tengu::Draw()
@@ -214,9 +231,19 @@ void Boss_Tengu::Draw()
 	{
 		return;
 	}
-	D3DXVECTOR2 basePos = GetBase();
-	DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
-		m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y);
+	if (m_IsInvincible)
+	{
+		float alpha = (float)(m_InvincibleTime % 30);
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, alpha / 30.0f));
+	}
+	else
+	{
+		D3DXVECTOR2 basePos = GetBase();
+		DrawSpriteColor(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
+			m_AnimeTable[m_AnimationPtn], M_MukiTable[m_Muki], m_pttern.x, m_pttern.y, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }
 
 void Boss_Tengu::AfterHitCheckBlockX(DWORD result)
@@ -322,7 +349,8 @@ void Boss_Tengu::Jump()
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
-		if (enemyPos.x >= pPos.x) {
+		if (enemyPos.x >= pPos.x)
+		{
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
@@ -334,7 +362,8 @@ void Boss_Tengu::Jump()
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
-		if (enemyPos.x <= pPos.x) {
+		if (enemyPos.x <= pPos.x)
+		{
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
@@ -364,7 +393,8 @@ void Boss_Tengu::Glid()
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn++;
 		}
-		if (enemyPos.x >= pPos.x) {
+		if (enemyPos.x >= pPos.x)
+		{
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
@@ -376,7 +406,8 @@ void Boss_Tengu::Glid()
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn++;
 		}
-		if (enemyPos.x <= pPos.x) {
+		if (enemyPos.x <= pPos.x)
+		{
 			m_State = Boss_Tengu::DROP;
 			m_AnimationPtn += 2;
 		}
@@ -428,20 +459,20 @@ void Boss_Tengu::Throw_Installation()
 	// 3つ爆弾を生成
 	for (int i = 0; i < 3; i++)
 	{
-		m_pBombFactory->CreateInstallationBomb(m_Pos, D3DXVECTOR2(m_Pos.x+(i*distance)+offset , pPlayer->pos.y));
+		m_pBombFactory->CreateInstallationBomb(m_Pos, D3DXVECTOR2(m_Pos.x + (i*distance) + offset, pPlayer->pos.y));
 	}
 	// 向きによってアニメーションを変える
-	if (m_Muki == 0) 
+	if (m_Muki == 0)
 	{
 		m_Muki = 2;
 	}
-	else 
+	else
 	{
 		m_Muki = 3;
 	}
 	m_AnimationPtn = 1;
 	//SEを入力
-	PlaySound(g_SE_throw,0);
+	PlaySound(g_SE_throw, 0);
 	m_State = Boss_Tengu::AFTERTHROW;
 }
 
@@ -487,8 +518,8 @@ void Boss_Tengu::Throw_Contact()
 void Boss_Tengu::LookPlayer()
 {
 	// 向きを変えてはいけない状態なら変えない
-	if (m_State== Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID || m_State == Boss_Tengu::DROP||
-			m_State==Boss_Tengu::SETUP||m_State==Boss_Tengu::THROW_INSTALLATION||m_State==Boss_Tengu::AFTERTHROW||m_State==Boss_Tengu::DEAD)
+	if (m_State == Boss_Tengu::JUMP || m_State == Boss_Tengu::GLID || m_State == Boss_Tengu::DROP ||
+		m_State == Boss_Tengu::SETUP || m_State == Boss_Tengu::THROW_INSTALLATION || m_State == Boss_Tengu::AFTERTHROW || m_State == Boss_Tengu::DEAD)
 	{
 		return;
 	}

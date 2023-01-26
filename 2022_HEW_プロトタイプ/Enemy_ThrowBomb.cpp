@@ -5,6 +5,10 @@
 #include "camera.h"
 #include "player.h"
 #include "Block.h"
+#include "sound.h"
+
+static int	g_SE_dead;	// SEの識別子
+static int	g_SE_throw;		// SEの識別子
 
 Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(3.0f, 4.0f),textureNo,ENEMY_TYPE::THROWBOMB)
@@ -21,6 +25,11 @@ Enemy_ThrowBomb::Enemy_ThrowBomb(D3DXVECTOR2 pos,int ID, int textureNo):
 void Enemy_ThrowBomb::Init()
 {
 	m_pBombFactory = GetBombFactory();
+
+	g_SE_throw = LoadSound((char*)"data/SE/Tengu_throw.wav");
+	SetVolume(g_SE_throw, 1.0f);
+	g_SE_dead = LoadSound((char*)"data/SE/Tengu_dead.wav");
+	SetVolume(g_SE_dead, 0.5f);
 }
 
 void Enemy_ThrowBomb::Uninit()
@@ -36,6 +45,7 @@ void Enemy_ThrowBomb::Update()
 		m_Muki += 2;
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 	m_OldPos = m_Pos;
 	DWORD result = 0;
@@ -92,52 +102,13 @@ void Enemy_ThrowBomb::Update()
 		}
 		if (m_AnimationPtn > m_DeadAnimeNum - 1) {
 			m_IsActive = false;
+			
 		}
 		break;
 	default:
 		break;
 	}
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	////当たり判定処理
-	//if (result & HIT_LEFT)
-	//{
-	//	if (m_Vel.x > 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//if (result & HIT_RIGHT)
-	//{
-	//	if (m_Vel.x < 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//m_Vel.y += m_Gravity;
-
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-
-	////落下させるか？処理
-	//if ((result & HIT_UP) == 0 && m_IsGround == true)
-	//{
-	//	m_IsGround = false;
-	//}
-
-	////落下処理
-	//if (m_IsGround == false)
-	//{
-	//	if (result & HIT_UP)
-	//	{
-	//		m_IsGround = true;
-	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-	//		m_Vel.y = 0.0f;
-	//	}
-	//}
-	//else // 最終的に地面に触れている
-	//{
-	//	m_Vel.y = 0.0f;
-	//}
-
-	//m_Pos += m_Vel;
-	//LookPlayer();
-
-	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+	
 }
 
 void Enemy_ThrowBomb::Draw()
@@ -219,6 +190,8 @@ void Enemy_ThrowBomb::Throw()
 	//}
 	// 爆弾を生成
 	m_pBombFactory->CreateContactBomb(m_Pos,pPlayer->pos);
+	//SEを入力
+	PlaySound(g_SE_throw, 0);
 	m_State = STATE_ENEMY_THROWBOMB::WAIT;
 }
 

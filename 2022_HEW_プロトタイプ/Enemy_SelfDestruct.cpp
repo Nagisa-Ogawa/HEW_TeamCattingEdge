@@ -9,6 +9,7 @@
 #include "sound.h"
 
 static int	g_SE_bomb;		// SEの識別子
+static int	g_SE_dead;	// SEの識別子
 
 Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID, int textureNo):
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f),textureNo,ENEMY_TYPE::SELFDESTRUCT)
@@ -29,6 +30,8 @@ Enemy_SelfDestruct::Enemy_SelfDestruct(D3DXVECTOR2 pos, int ID, int textureNo):
 	//音関連の初期化
 	g_SE_bomb = LoadSound((char*)"data/SE/Tengu_bomb.wav");
 	SetVolume(g_SE_bomb, 0.3f);
+	g_SE_dead = LoadSound((char*)"data/SE/Tengu_dead.wav");
+	SetVolume(g_SE_dead, 0.5f);
 }
 
 void Enemy_SelfDestruct::Init()
@@ -56,6 +59,7 @@ void Enemy_SelfDestruct::Update()
 		m_Muki += 2;
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 	switch (m_State)
 	{
@@ -101,58 +105,7 @@ void Enemy_SelfDestruct::Update()
 	default:
 		break;
 	}
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	////当たり判定処理
-	//if (result & HIT_LEFT)
-	//{
-	//	if (m_Vel.x > 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//if (result & HIT_RIGHT)
-	//{
-	//	if (m_Vel.x < 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//m_Vel.y += m_Gravity;
-
-	//result = HitChackEnemy_Block(m_Pos,m_Size,m_Vel);
-
-	////落下させるか？処理
-	//if ((result & HIT_UP) == 0 && m_IsGround == true)
-	//{
-	//	m_IsGround = false;
-	//}
-
-	////落下処理
-	//if (m_IsGround == false)
-	//{
-	//	if (result & HIT_UP)
-	//	{
-	//		m_IsGround = true;
-	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-	//		m_Vel.y = 0.0f;
-	//	}
-	//}
-	//else // 最終的に地面に触れている
-	//{
-	//	m_Vel.y = 0.0f;
-	//}
-
-	//m_Pos += m_Vel;
-	//if (m_WaitAnimeFrame >= 10)
-	//{
-	//	m_WaitAnimeFrame = 0;
-	//	m_AnimationPtn++;
-	//	if (m_AnimationPtn == 2) {
-	//		m_AnimationPtn = 0;
-	//	}
-	//}
-	//else
-	//{
-	//	m_WaitAnimeFrame++;
-	//}
-	//LookPlayer();
-	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
+	
 }
 
 void Enemy_SelfDestruct::Draw()

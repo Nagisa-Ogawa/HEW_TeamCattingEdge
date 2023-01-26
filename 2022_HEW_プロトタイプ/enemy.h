@@ -60,6 +60,8 @@ protected:
 	float m_BlockHeight = 0.0f;
 	bool m_IsEndSetUp = false;
 	bool m_IsStealth = true;
+	bool m_IsInvincible = false;
+	int m_InvincibleTime = 0;
 
 public:
 	Enemy(D3DXVECTOR2 pos, int ID, D3DXVECTOR2 size, D3DXVECTOR2 divid,int textureNo,ENEMY_TYPE enemyType) :
@@ -71,6 +73,7 @@ public:
 		m_IsGround = false;
 		m_IsDead = false;
 		m_CollisionSize = size;
+		m_InvincibleTime = 0;
 	};
 	// エネミーの初期化処理
 	virtual void Init() = 0;
@@ -104,6 +107,7 @@ public:
 	float GetBlockHeight() { return m_BlockHeight; };
 	bool GetIsEndSetUp() { return m_IsEndSetUp; };
 	bool GetIsStealth() { return m_IsStealth; };
+	bool GetIsInvincible() { return m_IsInvincible; };
 
 	// Set系関数
 	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };

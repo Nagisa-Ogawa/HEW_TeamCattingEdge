@@ -164,7 +164,7 @@ void EnemyFactory::Update()
 		{
 			pEnemy->Update();
 		}
-		if (pEnemy->GetPos().y >= SCREEN_HEIGHT + (BLOCK_SIZE * 2))
+		if (pEnemy->GetPos().y >= SCREEN_HEIGHT + (BLOCK_SIZE * 2)&&!pEnemy->GetIsDead())
 		{
 			pEnemy->Damege(1);
 		}

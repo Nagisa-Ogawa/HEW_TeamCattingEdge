@@ -27,7 +27,6 @@ void Push();
 //*****************************************************************************
 // グローバル変数
 //*****************************************************************************
-static int	g_BGMNo;		// BGMの識別子
 
 static Anime LStick;
 static Anime RStick;
@@ -125,8 +124,6 @@ void InitTitle(void)
 	ArrowH.pack = D3DXVECTOR2(0.5, 1);
 	ArrowH.pos = D3DXVECTOR2(0, RStick.pos.y-200);
 
-	//タイトル用BGMの読み込み
-	g_BGMNo = LoadSound((char*)"data/BGM/sample000.wav");
 
 	Frame = 0;
 
@@ -136,11 +133,6 @@ void InitTitle(void)
 
 void UninitTitle(void)
 {
-	//テクスチャの解放
-//	UninitTexture();
-
-	//BGMストップ
-	StopSound(g_BGMNo);
 }
 
 void UpdateTitle(void)

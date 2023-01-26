@@ -27,7 +27,6 @@
 // グローバル変数
 //*****************************************************************************
 static int	g_TextureNo;	// テクスチャ識別子
-static int	g_BGMNo;		// BGMの識別子
 
 //=============================================================================
 // 初期化処理
@@ -37,15 +36,11 @@ void InitResult(void)
 	//タイトル画面用テクスチャの読み込み
 	g_TextureNo = LoadTexture((char*)"data/TEXTURE/ED.png");
 
-	//タイトル用BGMの読み込み
-	g_BGMNo = LoadSound((char*)"data/BGM/sample000.wav");
 
 }
 
 void UninitResult(void)
 {
-	//BGMストップ
-	StopSound(g_BGMNo);
 }
 
 void UpdateResult(void)

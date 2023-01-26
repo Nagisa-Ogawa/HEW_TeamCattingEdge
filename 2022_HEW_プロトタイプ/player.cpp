@@ -752,20 +752,20 @@ void PlayerStatusWarpwait(void)
 
 		if (oldvel.x < 0.0f)
 		{
-			oldvel.x += 0.001f;
+			oldvel.x += 0.1f;
 		}
 		else if(oldvel.x > 0.0f)
 		{
-			oldvel.x -= 0.001f;
+			oldvel.x -= 0.1f;
 		}
 
 		if (oldvel.y < 0.0f)
 		{
-			oldvel.y += 0.001f;
+			oldvel.y += 0.1f;
 		}
 		else if (oldvel.y > 0.0f)
 		{
-			oldvel.y -= 0.001f;
+			oldvel.y -= 0.1f;
 		}
 
 		if (D3DXVec2Length(&oldvel) <= D3DXVec2Length(&nowvel))

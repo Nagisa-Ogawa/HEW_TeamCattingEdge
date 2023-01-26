@@ -6,7 +6,8 @@
 #include "player.h"
 #include "sound.h"
 
-static int	g_SE_jump;		// SEの識別子
+static int	g_SE_jump;	// SEの識別子
+static int	g_SE_dead;	// SEの識別子	
 
 Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
 	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(4.0f, 4.0f),textureNo,ENEMY_TYPE::HITDROP)
@@ -22,6 +23,8 @@ Enemy_HitDrop::Enemy_HitDrop(D3DXVECTOR2 pos, int ID, int textureNo) :
 	//音関連の初期化
 	g_SE_jump = LoadSound((char*)"data/SE/Tengu_jump.wav");
 	SetVolume(g_SE_jump, 0.5f);
+	g_SE_dead = LoadSound((char*)"data/SE/Tengu_dead.wav");
+	SetVolume(g_SE_dead, 0.5f);
 }
 
 void Enemy_HitDrop::Init()
@@ -45,6 +48,7 @@ void Enemy_HitDrop::Update()
 		m_Muki += 2;
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 
 	// ブロックと敵の当たり判定
