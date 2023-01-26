@@ -10,10 +10,15 @@
 static GAMESCENE g_gamescene;
 static GAMESCENE g_nowscene;
 static int	g_TextureNo;	// テクスチャ識別子
+static int	g_TextureAnime;	// テクスチャ識別子
 static int	g_BGMNo;		// BGMの識別子
+
+int Frame;
 
 void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 {
+	Frame = 0;
+
 	g_gamescene = gamescene;
 	g_nowscene = nowscene;
 
@@ -38,12 +43,12 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
 		break;
 	case GAMESCENE_PICTURE_OVERGAME:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/GAMEOVER.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/GameOverBG.png");
+		g_TextureAnime = LoadTexture((char*)"data/TEXTURE/GameOverChar.png");
 		break;
 	case GAMESCENE_PICTURE_RESULT:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/ED.png");
 		break;
-		
 	default:
 		break;
 	}
@@ -55,6 +60,7 @@ void UninitGameIllust(void)
 
 void UpdateGameIllust(void)
 {
+
 	//スペースキーが押されたらゲームシーンへ移行する
 	if (IsButtonPressedX(0, XINPUT_GAMEPAD_A) || IsButtonPressedX(0, XINPUT_GAMEPAD_B))
 	{
@@ -94,4 +100,25 @@ void DrawGameIllust(void)
 {
 	DrawSpriteLeftTop(g_TextureNo, 0.0f, 0.0f, SCREEN_WIDTH, SCREEN_HEIGHT,
 		0.0f, 0.0f, 1.0f, 1.0f);
+
+	if (g_gamescene == GAMESCENE_PICTURE_OVERGAME)
+	{
+		Frame++;
+
+		if (Frame % 30 < 10)
+		{
+			DrawSpriteLeftTop(g_TextureAnime, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 250, 400, 400,
+				0.0f, 0.0f, (float)1 / 3, 1.0f);
+		}
+		else if (Frame % 30 < 20)
+		{
+			DrawSpriteLeftTop(g_TextureAnime, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 250, 400, 400,
+				(float)1 / 3, 0.0f, (float)1 / 3, 1.0f);
+		}
+		else
+		{
+			DrawSpriteLeftTop(g_TextureAnime, SCREEN_WIDTH / 2 - 200, SCREEN_HEIGHT / 2 - 250, 400, 400,
+				(float)2 / 3, 0.0f, (float)1 / 3, 1.0f);
+		}
+	}
 }
