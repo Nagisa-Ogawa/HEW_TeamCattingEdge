@@ -12,7 +12,7 @@
 static int	g_SE_fire;		// SEの識別子
 static int	g_SE_hasiri;	// SEの識別子
 static int	g_SE_teisi;		// SEの識別子
-
+static int	g_SE_dead;	// SEの識別子
 
 Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) : 
 	Enemy(pos, ID, D3DXVECTOR2(360.0f, 360.0f), D3DXVECTOR2(6.0f, 10.0f), textureNo,ENEMY_TYPE::BOSS_KASYA)
@@ -54,6 +54,8 @@ void Boss_Kasya::Init()
 	SetVolume(g_SE_teisi, 0.5f);
 	g_SE_fire = LoadSound((char*)"data/SE/Kasya_fire.wav");
 	SetVolume(g_SE_fire, 0.5f);
+	g_SE_dead = LoadSound((char*)"data/SE/Kasya_dead.wav");
+	SetVolume(g_SE_dead, 0.5f);
 }
 
 void Boss_Kasya::Uninit()
@@ -83,6 +85,7 @@ void Boss_Kasya::Update()
 			m_Muki = 3;
 		}
 		m_WaitFrame = 0;
+		PlaySound(g_SE_dead, 0);
 		m_State = DEAD;
 	}
 

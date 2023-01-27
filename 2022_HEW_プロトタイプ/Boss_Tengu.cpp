@@ -54,6 +54,8 @@ void Boss_Tengu::Init()
 	SetVolume(g_SE_throw, 0.5f);
 	g_SE_tyakuti = LoadSound((char*)"data/SE/Tengu_Tyakuti.wav");
 	SetVolume(g_SE_tyakuti, 0.5f);
+	g_SE_dead = LoadSound((char*)"data/SE/Tengu_dead.wav");
+	SetVolume(g_SE_dead, 0.5f);
 }
 
 void Boss_Tengu::Uninit()

@@ -156,7 +156,7 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 	g_SE_dash = LoadSound((char*)"data/SE/kasya-hasiri.wav");
 	SetVolume(g_SE_dash, 1.0f);
 	g_SE_damage = LoadSound((char*)"data/SE/player_damage.wav");
-	SetVolume(g_SE_damage, 0.8f);
+	SetVolume(g_SE_damage, 1.5f);
 
 	//‚»‚Ì‘¼‚Ì‰Šú‰»
 	g_Player.enemyfactory = GetEnemyFactory();
