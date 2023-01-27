@@ -23,9 +23,10 @@ protected:
 	int			m_texture;
 	RayState	m_state;
 	bool		m_use = true;
+	bool		m_IsDuo = false;
 public:
-	RayInterface(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
-		:m_pos(pos), m_goalpos(playerpos) {};
+	RayInterface(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo)
+		:m_pos(pos), m_goalpos(playerpos),m_IsDuo(isDuo) {};
 
 	virtual void Init(void) = 0;
 	virtual void Update(void)= 0;
@@ -33,4 +34,5 @@ public:
 	virtual void Uninit(void) = 0;
 
 	bool GetUse() {	return m_use;}
+	bool GetIsDuo() { return m_IsDuo; };
 };

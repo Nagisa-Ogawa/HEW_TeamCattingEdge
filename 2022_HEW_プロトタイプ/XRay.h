@@ -5,7 +5,7 @@
 class XRay:public RayInterface
 {
 public:
-	XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos);
+	XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo);
 	void Init(void);
 	void Update(void);
 	void Draw(void);

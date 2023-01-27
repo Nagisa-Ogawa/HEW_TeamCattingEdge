@@ -12,6 +12,8 @@
 
 static int	g_SE_thunder;		// SEの識別子
 static int	g_SE_ult;		// SEの識別子
+static int g_SE_Fujin_decision;
+static int g_SE_Raijin_decision;
 
 
 Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy::ENEMY_TYPE mode,int muki)
@@ -32,6 +34,11 @@ Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXV
 	// 音関連の初期化
 	g_SE_ult = LoadSound((char*)"data/SE/Fujin_ult.wav");
 	SetVolume(g_SE_ult, 1.3f);
+	//g_t = LoadSound((char*)"data/SE/Fujin_ult.wav");
+	//SetVolume(g_SE_ult, 1.3f);
+	//g_SE_ult = LoadSound((char*)"data/SE/Fujin_ult.wav");
+	//SetVolume(g_SE_ult, 1.3f);
+
 }
 
 
@@ -206,7 +213,7 @@ void Enemy_BossAvator::WindBlade()
 			for (int i = 0; i < 3; i++)
 			{
 				// 風の刃作成
-				m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x - 100.0f, m_Pos.y +(i*100)-100), D3DXVECTOR2(100.0f, 100.0f), 1);
+				m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x - 100.0f, m_Pos.y +(i*100)-100), D3DXVECTOR2(100.0f, 100.0f), 1,m_IsDuo);
 				PlaySound(g_SE_ult, 0);
 			}
 		}
@@ -268,7 +275,7 @@ void Enemy_BossAvator::ThunderBlade()
 		if (m_WaitFrame == 80)
 		{
 			// 雷の刃作成
-			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),1);
+			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),1,m_IsDuo);
 			PlaySound(g_SE_thunder, 0);
 		}
 		// 一定時間待機

@@ -12,8 +12,8 @@ float crossT(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
 
 static int	g_SE_expansion;		// SE‚ÌŽ¯•ÊŽq
 
-TRay::TRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
-	:RayInterface(pos, playerpos) 
+TRay::TRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo)
+	:RayInterface(pos, playerpos,isDuo) 
 {
 	m_texture = LoadTexture((char*)"data/TEXTURE/TRay.png");
 	m_use = true;
@@ -62,7 +62,15 @@ void TRay::Update(void)
 
 	if (HitCheckPlayerToTRay(m_pos, m_size, m_pPlayer->pos))
 	{
-		PlayerDamage(1);
+		if (m_IsDuo)
+		{
+			PlayerDamage(1);
+
+		}
+		else
+		{
+			PlayerDamage(2);
+		}
 	}
 }
 

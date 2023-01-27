@@ -3,8 +3,8 @@
 #include "camera.h"
 #include "player.h"
 
-SwitchBullet::SwitchBullet(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,D3DXVECTOR2 targetPos,int muki,SwitchBullet::BULLET_MODE mode):
-		m_Pos(pos), m_Size(size), m_TextureNo(textureNo),m_TargetPos(targetPos),m_Muki(muki),m_mode(mode)
+SwitchBullet::SwitchBullet(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,D3DXVECTOR2 targetPos,int muki,SwitchBullet::BULLET_MODE mode,bool isDuo):
+		m_Pos(pos), m_Size(size), m_TextureNo(textureNo),m_TargetPos(targetPos),m_Muki(muki),m_mode(mode),m_IsDuo(isDuo)
 {
 	m_pCamera = GetCamera();
 	m_Power = D3DXVECTOR2(20.0f, 0.0f);

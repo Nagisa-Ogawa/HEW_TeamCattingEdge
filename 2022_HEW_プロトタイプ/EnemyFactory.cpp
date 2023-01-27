@@ -462,8 +462,17 @@ void EnemyFactory::CollisionPlayerToEnemy()
 		if (HitCheckBox(pEnemy->GetPos(), pEnemy->GetCollisionSize(),
 			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size-70.0f, m_pPlayer->size)))
 		{
-			// プレイヤーのHPを減らす
-			PlayerDamage(1);
+			if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_TENGU ||
+				(pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_FUJIN && !pEnemy->GetIsDuo()) || (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_RAIJIN && !pEnemy->GetIsDuo()))
+			{
+				// プレイヤーのHPを減らす
+				PlayerDamage(2);
+			}
+			else
+			{
+				// プレイヤーのHPを減らす
+				PlayerDamage(1);
+			}
 		}
 	}
 	return ;
@@ -487,7 +496,14 @@ void EnemyFactory::CollisionPlayerToFujinAttack()
 		}
 		if (HitCheckBox(pEnemy->GetAttackPos(), pEnemy->GetAttackSize(), m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size,m_pPlayer->size)))
 		{
-			PlayerDamage(1);
+			if (pEnemy->GetIsDuo())
+			{
+				PlayerDamage(1);
+			}
+			else
+			{
+				PlayerDamage(2);
+			}
 		}
 
 	}

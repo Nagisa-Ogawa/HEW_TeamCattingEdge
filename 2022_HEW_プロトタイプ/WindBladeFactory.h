@@ -28,7 +28,7 @@ public:
 	void Draw();
 
 	// CreateŠÖ”
-	void Create(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki);
+	void Create(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki,bool isDuo);
 
 	// ƒvƒŒƒCƒ„[‚Æ•—‚Ìn‚Ì“–‚½‚è”»’è
 	void CollisionWindBladeToPlayer();

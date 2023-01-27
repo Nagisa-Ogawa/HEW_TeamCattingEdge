@@ -49,9 +49,9 @@ void SwitchBulletFactory::Draw()
 	}
 }
 
-void SwitchBulletFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,D3DXVECTOR2 targetPos,int muki,int mode)
+void SwitchBulletFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,D3DXVECTOR2 targetPos,int muki,int mode,bool isDuo)
 {
-	m_pSwitchBulletList.push_back(new SwitchBullet(pos, size, m_SwitchBulletNo, targetPos,muki,(SwitchBullet::BULLET_MODE)mode));
+	m_pSwitchBulletList.push_back(new SwitchBullet(pos, size, m_SwitchBulletNo, targetPos,muki,(SwitchBullet::BULLET_MODE)mode,isDuo));
 }
 
 void SwitchBulletFactory::CollisionSwitchBulletToPlayer()
@@ -74,8 +74,16 @@ void SwitchBulletFactory::CollisionSwitchBulletToPlayer()
 		if (HitCheckBox(m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size),
 			pWindBlade->GetPos(), pWindBlade->GetSize()))
 		{
-			// プレイヤーへダメージを与える
-			PlayerDamage(1);
+			if (pWindBlade->GetIsDuo())
+			{
+				// プレイヤーへダメージを与える
+				PlayerDamage(1);
+			}
+			else
+			{
+				// プレイヤーへダメージを与える
+				PlayerDamage(2);
+			}
 		}
 	}
 }

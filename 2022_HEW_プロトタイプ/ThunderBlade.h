@@ -58,8 +58,9 @@ private:
 	bool m_IsCanHit = false;
 	int m_ThunderBoltFrame = 0;
 	int m_HitStartFrame = 0;
+	bool m_IsDuo = false;
 public:
-	ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,THUNDERBLADE_MODE mode);
+	ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,THUNDERBLADE_MODE mode,bool isDuo);
 	// ‰Î‚Ì‹Ê‚Ì‰Šú‰»ˆ—
 	void Init();
 	// ‰Î‚Ì‹Ê‚ÌI—¹ˆ—
@@ -78,6 +79,7 @@ public:
 	D3DXVECTOR2 GetSize() { return m_Size; };
 	D3DXVECTOR2 GetCollisionSize() { return m_CollisionSize; };
 	bool GetIsCanHit() { return m_IsCanHit; };
+	bool GetIsDuo() { return m_IsDuo; };
 
 };
 

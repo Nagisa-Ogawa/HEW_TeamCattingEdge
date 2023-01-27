@@ -21,7 +21,7 @@ Boss_Kasya::Boss_Kasya(D3DXVECTOR2 pos, int ID, int textureNo) :
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_CollisionSize=D3DXVECTOR2(300.0f, 240.0f);
-	m_HP = 5;
+	m_HP =10;
 	m_Muki = 0;
 	m_IdleWaitFrame = 120;
 	// 移動攻撃用変数初期化

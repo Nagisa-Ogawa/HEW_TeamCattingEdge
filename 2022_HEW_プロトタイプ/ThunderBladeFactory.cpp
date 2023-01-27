@@ -47,15 +47,15 @@ void ThunderBladeFactory::Draw()
 	}
 }
 
-void ThunderBladeFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,int mode)
+void ThunderBladeFactory::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,int mode,bool isDuo)
 {
 	if (mode == 0)
 	{
-		m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_ThunderBladeNo,(ThunderBlade::THUNDERBLADE_MODE)mode));
+		m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_ThunderBladeNo,(ThunderBlade::THUNDERBLADE_MODE)mode,isDuo));
 	}
 	else
 	{
-		m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_BigThunderBladeNo, (ThunderBlade::THUNDERBLADE_MODE)mode));
+		m_pThunderBladeList.push_back(new ThunderBlade(pos, size, m_BigThunderBladeNo, (ThunderBlade::THUNDERBLADE_MODE)mode,isDuo));
 	}
 }
 
@@ -79,8 +79,17 @@ void ThunderBladeFactory::CollisionThunderBladeToPlayer()
 		if (HitCheckBox(m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size),
 			pWindBlade->GetPos(), pWindBlade->GetCollisionSize()))
 		{
-			// プレイヤーへダメージを与える
-			PlayerDamage(1);
+			if (pWindBlade->GetIsDuo())
+			{
+				// プレイヤーへダメージを与える
+				PlayerDamage(1);
+
+			}
+			else
+			{
+				// プレイヤーへダメージを与える
+				PlayerDamage(1);
+			}
 		}
 	}
 

@@ -19,6 +19,7 @@ static int	g_SE_change;		// SE‚ÌŽ¯•ÊŽq
 static int	g_SE_burst;		// SE‚ÌŽ¯•ÊŽq
 static int g_SE_throw;	// SE‚ÌŽ¯•ÊŽq
 static int g_SE_dead;
+static int g_SE_decision;
 
 
 Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool isDuo)
@@ -27,7 +28,7 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool is
 	// “G‚ÌƒTƒCƒY‚ðÝ’è
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP = 2;
+	m_HP =1;
 	m_Muki = muki;
 	m_WaitFrame = 60;
 	// UŒ‚—p•Ï”
@@ -45,6 +46,8 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool is
 	SetVolume(g_SE_throw, 1.0f);
 	g_SE_dead = LoadSound((char*)"data/SE/raijinn_dead.wav");
 	SetVolume(g_SE_dead, 1.0f);
+	g_SE_decision = LoadSound((char*)"data/SE/Raijin_decision.wav");
+	SetVolume(g_SE_decision, 1.5f);
 }
 
 void Boss_Raijin::Init()
@@ -132,7 +135,6 @@ void Boss_Raijin::Update()
 				m_State = SWITCH_BULLET;
 				break;
 			case 1:
-				m_Muki += 4;
 				m_State = BULLET_T;
 				break;
 			case 2:
@@ -181,7 +183,7 @@ void Boss_Raijin::Update()
 				m_IsDeadBoss = true;
 				if (!m_IsDuo)
 				{
-					m_IsActive = false;
+					m_IsEndDead = true;
 				}
 			}
 		}
@@ -190,7 +192,11 @@ void Boss_Raijin::Update()
 			m_IsEndDead = true;
 			m_WaitFrame = 0;
 		}
-		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
+		else if (m_AnimationPtn == 5 && m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
+		{
+			m_IsActive = false;
+		}
+		else if (m_AnimationPtn == 5 && !m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
 		{
 			m_IsActive = false;
 		}
@@ -247,6 +253,10 @@ void Boss_Raijin::SwitchBullet()
 		if (m_WaitFrame >= 10 && m_AnimationPtn < 7) {
 			m_AnimationPtn++;
 			m_WaitFrame = 0;
+			if (m_AnimationPtn == 4)
+			{
+				PlaySound(g_SE_decision, 0);
+			}
 		}
 		if (m_WaitFrame == 40)
 		{
@@ -266,11 +276,11 @@ void Boss_Raijin::SwitchBullet()
 			m_TargetPos = m_pPlayer->pos;
 			m_TargetPos.y=  BLOCK_SIZE * 18.0f - 120.0f;
 			if (m_Muki % 2 == 0) {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::ONCE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::ONCE,m_IsDuo);
 				PlaySound(g_SE_throw,0);
 			}
 			else {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::ONCE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::ONCE,m_IsDuo);
 				PlaySound(g_SE_throw, 0);
 
 			}
@@ -332,11 +342,11 @@ void Boss_Raijin::SwitchBullet()
 		}
 		if (m_WaitFrame == 240) {
 			if (m_Muki % 2 == 0) {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x - 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::TWICE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x - 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::TWICE,m_IsDuo);
 				PlaySound(g_SE_throw, 0);
 			}
 			else {
-				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x + 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::TWICE);
+				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x + 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::TWICE, m_IsDuo);
 				PlaySound(g_SE_throw, 0);
 			}
 			// —‹’e”­ŽË
@@ -392,6 +402,23 @@ void Boss_Raijin::ShotBullet_T()
 	switch (m_MoveCount)
 	{
 	case 0:
+		if (m_WaitFrame == 0)
+		{
+			PlaySound(g_SE_decision, 0);
+		}
+		if (m_WaitFrame >= 60)
+		{
+			m_Muki += 4;
+			m_WaitFrame = 0;
+			m_MoveCount++;
+			m_AnimationPtn = 0;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 1:
 		// ‘Ò‹@
 		if (m_WaitFrame >= 6)
 		{
@@ -408,7 +435,7 @@ void Boss_Raijin::ShotBullet_T()
 			m_WaitFrame++;
 		}
 		break;
-	case 1:
+	case 2:
 	{
 		// ˆÊ’u‚ðC³
 		D3DXVECTOR2 pos = m_Pos;
@@ -421,14 +448,14 @@ void Boss_Raijin::ShotBullet_T()
 			pos.y -= 200;
 		}
 		// X’e”­ŽË
-		m_pRayFactory->CreateTRay(pos, m_pPlayer->pos);
+		m_pRayFactory->CreateTRay(pos, m_pPlayer->pos,m_IsDuo);
 		PlaySound(g_SE_throw, 0);
 		m_Muki -= 4;
 		m_AnimationPtn = 0;
 		m_MoveCount++;
 		break;
 	}
-	case 2:
+	case 3:
 		// ‘Ò‹@
 		if (m_WaitFrame >= 60)
 		{
@@ -440,7 +467,7 @@ void Boss_Raijin::ShotBullet_T()
 			m_WaitFrame++;
 		}
 		break;
-	case 3:
+	case 4:
 	{
 		// ã‹ó‚ÖˆÚ“®
 		m_AnimationPtn = 0;
@@ -454,7 +481,7 @@ void Boss_Raijin::ShotBullet_T()
 		SetMove(m_Pos, pos, m_State, m_Muki);
 		break;
 	}
-	case 4:
+	case 5:
 		if (m_WaitFrame >= 60)
 		{
 			m_Muki += 4;
@@ -466,7 +493,7 @@ void Boss_Raijin::ShotBullet_T()
 			m_WaitFrame++;
 		}
 		break;
-	case 5:
+	case 6:
 		if (m_WaitFrame >= 6)
 		{
 			m_WaitFrame = 0;
@@ -481,7 +508,7 @@ void Boss_Raijin::ShotBullet_T()
 			m_WaitFrame++;
 		}
 		break;
-	case 6:
+	case 7:
 	{
 		// ˆÊ’u‚ðC³
 		D3DXVECTOR2 pos = m_Pos;
@@ -494,13 +521,13 @@ void Boss_Raijin::ShotBullet_T()
 			pos.y -= 200;
 		}
 		// X’e”­ŽË
-		m_pRayFactory->CreateTRay(pos, m_pPlayer->pos);
+		m_pRayFactory->CreateTRay(pos, m_pPlayer->pos,m_IsDuo);
 		PlaySound(g_SE_throw, 0);
 		m_Muki -= 4;
 		m_AnimationPtn = 0;
 		m_MoveCount++;
 	}
-	case 7:
+	case 8:
 		// ‘Ò‹@
 		if (m_WaitFrame >= 60)
 		{
@@ -512,12 +539,12 @@ void Boss_Raijin::ShotBullet_T()
 			m_WaitFrame++;
 		}
 		break;
-	case 8:
+	case 9:
 		// ’n–Ê‚ÖˆÚ“®
 		m_AnimationPtn = 0;
 		SetMove(m_Pos, m_BeforeShotPos, m_State, m_Muki);
 		break;
-	case 9:
+	case 10:
 		// ‘Ò‹@
 		if (m_WaitFrame >= 60)
 		{
@@ -541,6 +568,10 @@ void Boss_Raijin::ThunderBlade()
 	if (m_WaitFrame >= 10 && m_AnimationPtn < 7) {
 		m_AnimationPtn++;
 		m_WaitFrame = 0;
+		if (m_AnimationPtn == 4)
+		{
+			PlaySound(g_SE_decision, 0);
+		}
 	}
 	if (m_WaitFrame == 40)
 	{
@@ -551,7 +582,7 @@ void Boss_Raijin::ThunderBlade()
 	if (m_WaitFrame == 120)
 	{
 		// —‹‚Ìnì¬
-		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),0);
+		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),0,m_IsDuo);
 		PlaySound(g_SE_thunder, 0);
 	}
 	// ˆê’èŽžŠÔ‘Ò‹@
@@ -576,6 +607,10 @@ void Boss_Raijin::Avator()
 		if (m_WaitFrame >= 10 && m_AnimationPtn < 6) {
 			m_AnimationPtn++;
 			m_WaitFrame = 0;
+			if (m_AnimationPtn == 3)
+			{
+				PlaySound(g_SE_decision, 0);
+			}
 		}
 		else if (m_WaitFrame == 120) {
 			m_MoveCount++;

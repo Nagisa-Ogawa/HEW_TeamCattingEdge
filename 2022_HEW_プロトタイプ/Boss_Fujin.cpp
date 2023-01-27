@@ -16,6 +16,8 @@ static int g_SE_inhole;
 static int g_SE_normal;
 static int g_SE_throw;
 static int g_SE_dead;
+static int g_SE_decision;
+static int g_SE_Attack;
 
 Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 12.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN,isDuo)
@@ -23,7 +25,7 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP = 2;
+	m_HP =1;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();
 	m_pRayFactory = GetRayFactory();
@@ -47,6 +49,10 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	SetVolume(g_SE_throw, 1.0f);
 	g_SE_dead = LoadSound((char*)"data/SE/Fujin_dead.wav");
 	SetVolume(g_SE_dead, 1.0f);
+	g_SE_decision= LoadSound((char*)"data/SE/Fujin_decision.wav");
+	SetVolume(g_SE_decision, 1.0f);
+	g_SE_Attack = LoadSound((char*)"data/SE/Fujin_panti.wav");
+	SetVolume(g_SE_Attack, 2.0f);
 }
 
 void Boss_Fujin::Init()
@@ -121,9 +127,8 @@ void Boss_Fujin::Update()
 			switch (num)
 			{
 			case 0:
-				m_Muki += 8;
+				PlaySound(g_SE_decision, 0);
 				m_State = INHALE;
-				PlaySound(g_SE_inhole, -1);
 				break;
 			case 1:
 				m_Muki += 2;
@@ -180,6 +185,10 @@ void Boss_Fujin::Update()
 		if (m_AnimeFrame >= 10 && m_AnimationPtn < 3) {
 			m_AnimeFrame = 0;
 			m_AnimationPtn++;
+			if (m_AnimationPtn == 2)
+			{
+				PlaySound(g_SE_decision, 0);
+			}
 		}
 		else {
 			m_AnimeFrame++;
@@ -193,7 +202,7 @@ void Boss_Fujin::Update()
 		if (m_WaitFrame == 160)
 		{
 			// 風の刃作成
-			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(240.0f,240.0f), 1);
+			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(240.0f,240.0f), 1,m_IsDuo);
 			PlaySound(g_SE_normal, 0);
 		}
 		// 一定時間待機
@@ -240,7 +249,7 @@ void Boss_Fujin::Update()
 				m_AnimationPtn = 5;
 				if (!m_IsDuo)
 				{
-					m_IsActive = false;
+					m_IsEndDead = true;
 				}
 			}
 		}
@@ -249,7 +258,11 @@ void Boss_Fujin::Update()
 			m_IsEndDead = true;
 			m_WaitFrame = 0;
 		}
-		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
+		else if (m_AnimationPtn == 5 && m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
+		{
+			m_IsActive = false;
+		}
+		else if (m_AnimationPtn == 5 && !m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
 		{
 			m_IsActive = false;
 		}
@@ -301,50 +314,79 @@ void Boss_Fujin::Draw()
 
 void Boss_Fujin::InHale()
 {
-	// プレイヤーとの距離を計算
-	D3DXVECTOR2 vec = m_Pos - m_pPlayer->pos;
-	float distance = D3DXVec2Length(&vec);
-	// プレイヤーと一定値以上近づいたら終了
-	if (distance <= m_AttackDistance)
+	switch (m_MoveCount)
 	{
-		m_WaitFrame = 0;
-		m_Muki -= 8;
-		m_Muki += 6;
-		m_AnimationPtn = 0;
-		m_State = ATTACK;
-		m_IsAttack = true;
-		StopSound(g_SE_inhole);
-	}
-	// ベクトルを正規化
-	D3DXVec2Normalize(&vec, &vec);
-	vec.x *= m_InHalePower.x;
-	vec.y *= m_InHalePower.y;
-	// プレイヤーを吸い込む
-	m_pPlayer->vel += vec;
-	// 規定フレーム経過していたなら終了
-	if (m_WaitFrame >= 600)
-	{
-		m_WaitFrame = 0;
-		m_Muki -= 8;
-		m_Muki += 6;
-		m_AnimationPtn = 0;
-		m_State = ATTACK;
-		m_IsAttack = true;
-		StopSound(g_SE_inhole);
-	}
-	else
-	{
-		m_WaitFrame++;
-	}
-	if (m_AnimeFrame >= 10) {
-		m_AnimeFrame = 0;
-		m_AnimationPtn++;
-		if (m_AnimationPtn >= 5) {
-			m_AnimationPtn = 2;
+	case 0:
+		if (m_WaitFrame >= 60)
+		{
+			m_Muki += 8;
+			m_WaitFrame = 0;
+			PlaySound(g_SE_inhole, -1);
+			m_MoveCount++;
 		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		break;
+	case 1:
+	{
+		// プレイヤーとの距離を計算
+		D3DXVECTOR2 vec = m_Pos - m_pPlayer->pos;
+		float distance = D3DXVec2Length(&vec);
+		// プレイヤーと一定値以上近づいたら終了
+		if (distance <= m_AttackDistance)
+		{
+			m_WaitFrame = 0;
+			m_Muki -= 8;
+			m_Muki += 6;
+			m_AnimationPtn = 0;
+			m_MoveCount = 0;
+			m_State = ATTACK;
+			m_IsAttack = true;
+			StopSound(g_SE_inhole);
+			PlaySound(g_SE_Attack, 0);
+		}
+		// ベクトルを正規化
+		D3DXVec2Normalize(&vec, &vec);
+		vec.x *= m_InHalePower.x;
+		vec.y *= m_InHalePower.y;
+		// プレイヤーを吸い込む
+		m_pPlayer->vel += vec;
+		// 規定フレーム経過していたなら終了
+		if (m_WaitFrame >= 600)
+		{
+			m_WaitFrame = 0;
+			m_Muki -= 8;
+			m_Muki += 6;
+			m_AnimationPtn = 0;
+			m_MoveCount = 0;
+			m_State = ATTACK;
+			m_IsAttack = true;
+			StopSound(g_SE_inhole);
+			PlaySound(g_SE_Attack, 0);
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
+		if (m_AnimeFrame >= 10)
+		{
+			m_AnimeFrame = 0;
+			m_AnimationPtn++;
+			if (m_AnimationPtn >= 5)
+			{
+				m_AnimationPtn = 2;
+			}
+		}
+		else
+		{
+			m_AnimeFrame++;
+		}
+		break;
 	}
-	else {
-		m_AnimeFrame++;
+	default:
+		break;
 	}
 }
 
@@ -358,6 +400,10 @@ void Boss_Fujin::ShotBullet_X()
 		{
 			m_WaitFrame = 0;
 			m_AnimationPtn ++;
+			if (m_AnimationPtn == 3)
+			{
+				PlaySound(g_SE_decision, 0);
+			}
 			if (m_AnimationPtn >= 4) {
 				m_AnimationPtn = 3;
 				m_BeforeShotPos = m_Pos;
@@ -371,7 +417,7 @@ void Boss_Fujin::ShotBullet_X()
 		break;
 	case 1:
 		// X弾発射
-		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
+		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos,m_IsDuo);
 		PlaySound(g_SE_throw, 0);
 		m_MoveCount++;
 		break;
@@ -425,7 +471,7 @@ void Boss_Fujin::ShotBullet_X()
 		break;
 	case 6:
 		// X弾発射
-		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
+		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos,m_IsDuo);
 		PlaySound(g_SE_throw, 0);
 		m_MoveCount++;
 	case 7:
@@ -474,6 +520,10 @@ void Boss_Fujin::Avator()
 		{
 			m_WaitFrame = 0;
 			m_AnimationPtn++;
+			if (m_AnimationPtn == 3)
+			{
+				PlaySound(g_SE_decision, 0);
+			}
 			if (m_AnimationPtn >= 4) {
 				m_AnimationPtn = 3;
 				m_MoveCount++;

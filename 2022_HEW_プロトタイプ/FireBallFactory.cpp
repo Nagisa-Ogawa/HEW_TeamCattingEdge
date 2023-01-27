@@ -368,7 +368,14 @@ void FireBallFactory::CollisionPlayerToFireBall()
 			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size)))
 		{
 			// ƒvƒŒƒCƒ„[‚ÌHP‚ðŒ¸‚ç‚·
-			PlayerDamage(1);
+			if (fireBall->GetMode() == FireBall::MODE::GHOSTFIRE)
+			{
+				PlayerDamage(1);
+			}
+			else
+			{
+				PlayerDamage(2);
+			}
 			fireBall->Hit();
 		}
 	}

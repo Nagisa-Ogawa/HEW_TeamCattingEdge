@@ -54,14 +54,14 @@ void RayFactory::Uninit(void)
 	m_pRayList.clear();
 }
 
-void RayFactory::CreateXRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
+void RayFactory::CreateXRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo)
 {
 	auto It = m_pRayList.begin();
-	m_pRayList.insert(It, new XRay(pos, playerpos));
+	m_pRayList.insert(It, new XRay(pos, playerpos,isDuo));
 }
 
-void RayFactory::CreateTRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
+void RayFactory::CreateTRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo)
 {
 	auto It = m_pRayList.begin();
-	m_pRayList.insert(It, new TRay(pos, playerpos));
+	m_pRayList.insert(It, new TRay(pos, playerpos,isDuo));
 }

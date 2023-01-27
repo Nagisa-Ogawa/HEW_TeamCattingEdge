@@ -46,9 +46,9 @@ void WindBladeFactory::Draw()
 	}
 }
 
-void WindBladeFactory::Create(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki)
+void WindBladeFactory::Create(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki,bool isDuo)
 {
-	m_pWindBladeList.push_back(new WindBlade(pos,size, muki,m_WindBladeNo));
+	m_pWindBladeList.push_back(new WindBlade(pos,size, muki,m_WindBladeNo,isDuo));
 }
 
 void WindBladeFactory::CollisionWindBladeToPlayer()
@@ -68,8 +68,16 @@ void WindBladeFactory::CollisionWindBladeToPlayer()
 		if (HitCheckBox(m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size, m_pPlayer->size),
 			pWindBlade->GetPos(), pWindBlade->GetSize()))
 		{
-			// プレイヤーへダメージを与える
-			PlayerDamage(1);
+			if (pWindBlade->GetIsDuo())
+			{
+				// プレイヤーへダメージを与える
+				PlayerDamage(1);
+			}
+			else
+			{
+				// プレイヤーへダメージを与える
+				PlayerDamage(1);
+			}
 		}
 	}
 }

@@ -24,7 +24,7 @@ Boss_Tengu::Boss_Tengu(D3DXVECTOR2 pos, int ID, int textureNo) :
 {
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
-	m_HP = 5;
+	m_HP =10;
 	m_CollisionSize = D3DXVECTOR2(300.0f, 480.0f);
 	// ヒットドロップ系変数初期化
 	m_DropPower = 0.98f;

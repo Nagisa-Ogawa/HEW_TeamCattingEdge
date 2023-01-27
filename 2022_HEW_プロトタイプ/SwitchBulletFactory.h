@@ -28,7 +28,7 @@ public:
 	void Draw();
 
 	// CreateŠÖ”
-	void Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,D3DXVECTOR2 targetPos,int muki,int mode);
+	void Create(D3DXVECTOR2 pos, D3DXVECTOR2 size,D3DXVECTOR2 targetPos,int muki,int mode,bool isDuo);
 
 	// ƒvƒŒƒCƒ„[‚Æ•—‚Ìn‚Ì“–‚½‚è”»’è
 	void CollisionSwitchBulletToPlayer();

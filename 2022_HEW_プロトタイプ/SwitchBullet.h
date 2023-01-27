@@ -54,8 +54,9 @@ private:
 	float m_TargetDistance = 0.0f;
 	bool m_IsSwitch = false;
 	D3DXVECTOR2 m_SwitchPos = D3DXVECTOR2(0.0f, 0.0f);
+	bool m_IsDuo = false;
 public:
-	SwitchBullet(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,D3DXVECTOR2 targetPos,int muki,BULLET_MODE mode);
+	SwitchBullet(D3DXVECTOR2 pos, D3DXVECTOR2 size, int textureNo,D3DXVECTOR2 targetPos,int muki,BULLET_MODE mode,bool isDuo);
 	// âŒÇÃã ÇÃèâä˙âªèàóù
 	void Init();
 	// âŒÇÃã ÇÃèIóπèàóù
@@ -78,5 +79,6 @@ public:
 	STATE_SWITCHBULLET GetState() { return m_State; };
 	BULLET_MODE GetMode() { return m_mode; };
 	D3DXVECTOR2 GetSwitchPos() { return m_SwitchPos; };
+	bool GetIsDuo() { return m_IsDuo; };
 };
 

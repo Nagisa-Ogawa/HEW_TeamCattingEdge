@@ -67,7 +67,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_STAGE_TENGU;
+	g_Scene = g_SceneNext = GAMESCENE_PICTURE_STAGE03_FUJIN;
 
 	switch (g_Scene)
 	{

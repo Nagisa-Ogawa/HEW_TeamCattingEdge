@@ -2,7 +2,8 @@
 #include "sprite.h"
 #include "camera.h"
 
-WindBlade::WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki, int textureNo):m_Pos(pos),m_Size(size),m_Muki(muki),m_TextureNo(textureNo)
+WindBlade::WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki, int textureNo,bool isDuo):
+	m_Pos(pos),m_Size(size),m_Muki(muki),m_TextureNo(textureNo),m_IsDuo(isDuo)
 {
 	m_pCamera = GetCamera();
 	m_Power = D3DXVECTOR2(20.0f, 0.0f);

@@ -2,8 +2,8 @@
 #include "sprite.h"
 #include "camera.h"
 
-ThunderBlade::ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size,int textureNo,ThunderBlade::THUNDERBLADE_MODE mode):
-	m_Pos(pos),m_Size(size),m_TextureNo(textureNo)
+ThunderBlade::ThunderBlade(D3DXVECTOR2 pos, D3DXVECTOR2 size,int textureNo,ThunderBlade::THUNDERBLADE_MODE mode,bool isDuo):
+	m_Pos(pos),m_Size(size),m_TextureNo(textureNo),m_IsDuo(isDuo)
 {
 	if (mode == THUNDERBLADE_MODE::NORMAL)
 	{

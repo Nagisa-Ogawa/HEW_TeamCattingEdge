@@ -12,8 +12,8 @@ float crossX(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
 
 static int	g_SE_expansion;		// SE‚ÌŽ¯•ÊŽq
 
-XRay::XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
-	:RayInterface(pos, playerpos)
+XRay::XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo)
+	:RayInterface(pos, playerpos,isDuo)
 {
 	m_texture = LoadTexture((char*)"data/TEXTURE/XRay.png");
 	m_use = true;
@@ -59,7 +59,14 @@ void XRay::Update(void)
 
 	if (HitCheckPlayerToXRay(m_pos, m_size, m_pPlayer->pos))
 	{
-		PlayerDamage(1);
+		if (m_IsDuo)
+		{
+			PlayerDamage(1);
+		}
+		else
+		{
+			PlayerDamage(2);
+		}
 	}
 }
 

@@ -12,7 +12,7 @@ public:
 	void Draw(void);
 	void Uninit(void);
 
-	void CreateXRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos);
-	void CreateTRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos);
+	void CreateXRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo);
+	void CreateTRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos,bool isDuo);
 };
 

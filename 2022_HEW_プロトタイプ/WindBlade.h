@@ -41,8 +41,9 @@ private:
 	D3DXVECTOR2 m_pttern;
 	int m_Muki = 0;
 	bool m_IsActive = false;
+	bool m_IsDuo = false;
 public:
-	WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki,int textureNo);
+	WindBlade(D3DXVECTOR2 pos,D3DXVECTOR2 size, int muki,int textureNo,bool isDuo);
 	// ‰Î‚Ì‹Ê‚Ì‰Šú‰»ˆ—
 	void Init();
 	// ‰Î‚Ì‹Ê‚ÌI—¹ˆ—
@@ -57,6 +58,7 @@ public:
 	bool GetIsActive() { return m_IsActive; };
 	D3DXVECTOR2 GetPos() { return m_Pos; };
 	D3DXVECTOR2 GetSize() { return m_Size; };
+	bool GetIsDuo() { return m_IsDuo; };
 
 };
 
