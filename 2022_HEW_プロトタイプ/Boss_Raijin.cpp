@@ -12,6 +12,12 @@
 #include "Enemy_BossAvator.h"
 #include "SwitchBulletFactory.h"
 #include "SwitchBullet.h"
+#include "sound.h"
+
+static int	g_SE_thunder;		// SEの識別子
+static int	g_SE_change;		// SEの識別子
+static int	g_SE_burst;		// SEの識別子
+
 
 Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool isDuo)
 	: Enemy(pos, ID, D3DXVECTOR2(480.0f, 480.0f), D3DXVECTOR2(8.0f, 8.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_RAIJIN,isDuo)
@@ -25,6 +31,14 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool is
 	// 攻撃用変数
 	m_AttackTextureNo = LoadTexture((char*)"data/TEXTURE/fade_white.png");
 	m_AttackCollisionSize = D3DXVECTOR2(200.0f, 100.0f);
+
+	//音関連の初期化
+	g_SE_burst = LoadSound((char*)"data/SE/Raijin_burst.wav");
+	SetVolume(g_SE_burst, 0.5f);
+	g_SE_change = LoadSound((char*)"data/SE/Raijin_change.wav");
+	SetVolume(g_SE_change, 0.5f);
+	g_SE_thunder = LoadSound((char*)"data/SE/Raijin_thunder.wav");
+	SetVolume(g_SE_thunder, 0.5f);
 }
 
 void Boss_Raijin::Init()
@@ -156,6 +170,7 @@ void Boss_Raijin::Update()
 			if (m_AnimationPtn >= 5)
 			{
 				m_AnimationPtn = 5;
+				m_IsDeadBoss = true;
 				if (!m_IsDuo)
 				{
 					m_IsActive = false;
@@ -225,10 +240,12 @@ void Boss_Raijin::SwitchBullet()
 			if (m_Muki % 2 == 0) {
 				// 光るオブジェクト作成
 				m_pFlashFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(180.0f, 180.0f));
+				//PlaySound(g_SE_change, 0);
 			}
 			else {
 				// 光るオブジェクト作成
 				m_pFlashFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(180.0f, 180.0f));
+				//PlaySound(g_SE_change, 0);
 			}
 		}
 		if (m_WaitFrame == 120)
@@ -515,6 +532,7 @@ void Boss_Raijin::ThunderBlade()
 	{
 		// 雷の刃作成
 		m_pThunderFactory->Create(D3DXVECTOR2(m_ThunderBoltPos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),0);
+		PlaySound(g_SE_thunder, 0);
 	}
 	// 一定時間待機
 	if (m_WaitFrame >= 300)

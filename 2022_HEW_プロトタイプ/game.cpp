@@ -67,7 +67,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_PICTURE_STAGE03;
+	g_Scene = g_SceneNext = GAMESCENE_BASS_FINAL;
 
 	switch (g_Scene)
 	{
@@ -120,6 +120,9 @@ void InitGame(void)
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
 	case GAMESCENE_PICTURE_RESULT:
+		InitGameIllust(g_SceneNext, g_Scene);
+		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
 	default:
@@ -182,6 +185,9 @@ void UninitGame(void)
 	case GAMESCENE_PICTURE_RESULT:
 		UninitGameIllust();
 		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
+		UninitGameIllust();
+		break;
 	default:
 		break;
 	}
@@ -240,6 +246,9 @@ void UpdateGame(void)
 		UpdateGameIllust();
 		break;
 	case GAMESCENE_PICTURE_RESULT:
+		UpdateGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
 		UpdateGameIllust();
 		break;
 	default:
@@ -307,6 +316,9 @@ void DrawGame(void)
 		DrawGameIllust();
 		break;
 	case GAMESCENE_PICTURE_RESULT:
+		DrawGameIllust();
+		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
 		DrawGameIllust();
 		break;
 	default:
@@ -565,6 +577,9 @@ void ChangeGameScene(void)
 	case GAMESCENE_PICTURE_RESULT:
 		UninitGameIllust();
 		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
+		UninitGameIllust();
+		break;
 	default:
 		break;
 	}
@@ -629,6 +644,8 @@ void ChangeGameScene(void)
 	case GAMESCENE_PICTURE_RESULT:
 		InitGameIllust(g_SceneNext, g_Scene);
 		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
+		InitGameIllust(g_SceneNext, g_Scene);
 	default:
 		break;
 	}

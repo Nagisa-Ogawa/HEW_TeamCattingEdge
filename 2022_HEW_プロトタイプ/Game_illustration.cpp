@@ -40,10 +40,10 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ステージ3.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE03_FUJIN:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE03_RAIJIN:
-		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_雷神.png");
 		break;
 	case GAMESCENE_PICTURE_STAGE03_FINAL:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/挿絵_ボス_風神雷神.png");
@@ -54,6 +54,9 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 		break;
 	case GAMESCENE_PICTURE_RESULT:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/ED.png");
+		break;
+	case GAMESCENE_PICTURE_STAFFROLL:
+		g_TextureNo = LoadTexture((char*)"data/TEXTURE/endroll.png");
 		break;
 	default:
 		break;
@@ -97,9 +100,12 @@ void UpdateGameIllust(void)
 			SetGameScene(GAMESCENE_BASS_FINAL);
 			break;
 		case GAMESCENE_PICTURE_OVERGAME:
-			SetGameScene(g_nowscene);
+			SetGameScene(GAMESCENE_PICTURE_RESULT);
 			break;
 		case GAMESCENE_PICTURE_RESULT:
+			SetGameScene(GAMESCENE_PICTURE_STAFFROLL);
+			break;
+		case GAMESCENE_PICTURE_STAFFROLL:
 			SceneFadeIn(SCENE_TITLE);
 			break;
 		default:

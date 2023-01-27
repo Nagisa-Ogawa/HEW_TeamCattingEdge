@@ -7,7 +7,7 @@
 #include "game.h"
 
 Enemy_Rush::Enemy_Rush(D3DXVECTOR2 pos, int ID, int textureNo):
-	Enemy(pos, ID, D3DXVECTOR2(120.0f, 120.0f), D3DXVECTOR2(2.0f, 6.0f),textureNo,ENEMY_TYPE::RUSH)
+	Enemy(pos, ID, D3DXVECTOR2(150.0f, 150.0f), D3DXVECTOR2(9.0f, 4.0f),textureNo,ENEMY_TYPE::RUSH)
 {
 	m_HP = 1;
 	m_Muki = 0;
@@ -57,18 +57,7 @@ void Enemy_Rush::Update()
 			//else {
 			//	m_ChaseDirection = D3DXVECTOR2(1.0f, 0.0f);
 			//}
-			m_Muki++;
 			m_State = Enemy_Rush::CHASE;
-		}
-		if (m_WaitFrame >= 20) {
-			m_WaitFrame = 0;
-			m_AnimationPtn++;
-			if (m_AnimationPtn >= 2) {
-				m_AnimationPtn = 0;
-			}
-		}
-		else {
-			m_WaitFrame++;
 		}
 		break;
 	}
@@ -78,53 +67,33 @@ void Enemy_Rush::Update()
 		break;
 	}
 	case Enemy_Rush::WAIT:
+		if (m_WaitFrame == 20)
+		{
+			m_AnimationPtn = 0;
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	case Enemy_Rush::DEAD:
-		m_IsActive = false;
+		if (m_WaitFrame >= 10)
+		{
+			m_AnimationPtn++;
+			m_WaitFrame = 0;
+			if (m_AnimationPtn >= 3)
+			{
+				m_IsActive = false;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	default:
 		break;
 	}
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-	////当たり判定処理
-	//if (result & HIT_LEFT)
-	//{
-	//	if (m_Vel.x > 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//if (result & HIT_RIGHT)
-	//{
-	//	if (m_Vel.x < 0.0)
-	//		m_Vel.x = 0.0f;
-	//}
-	//m_Vel.y += m_Gravity;
-
-	//result = HitChackEnemy_Block(m_Pos, m_Size, m_Vel);
-
-	////落下させるか？処理
-	//if ((result & HIT_UP) == 0 && m_IsGround == true)
-	//{
-	//	m_IsGround = false;
-	//}
-
-	////落下処理
-	//if (m_IsGround == false)
-	//{
-	//	if (result & HIT_UP)
-	//	{
-	//		m_IsGround = true;
-	//		m_Pos.y = GetBlockHeight() - (m_Size.y / 2);
-	//		m_Vel.y = 0.0f;
-	//	}
-	//}
-	//else // 最終的に地面に触れている
-	//{
-	//	m_Vel.y = 0.0f;
-	//}
-
-	//m_Pos += m_Vel;
-	//LookPlayer();
-	//m_Vel = D3DXVECTOR2(0.0f, 0.0f);
 }
 
 void Enemy_Rush::Draw()
@@ -216,13 +185,15 @@ void Enemy_Rush::Chase()
 	m_NowDistance += abs(m_ChaseDirection.x*m_ChaseSpeed);
 	if (m_NowDistance >= m_DistanceMax) {
 		m_Muki = 0;
+		m_AnimationPtn = 8;
+		m_WaitFrame = 0;
 		m_State = Enemy_Rush::WAIT;
 	}
-	if (m_WaitFrame >= 20) {
+	if (m_WaitFrame >= 5) {
 		m_WaitFrame = 0;
 		m_AnimationPtn++;
-		if (m_AnimationPtn >= 2) {
-			m_AnimationPtn = 0;
+		if (m_AnimationPtn >= 8) {
+			m_AnimationPtn = 2;
 		}
 	}
 	else {

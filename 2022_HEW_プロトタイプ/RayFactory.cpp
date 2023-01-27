@@ -46,6 +46,12 @@ void RayFactory::Draw(void)
 
 void RayFactory::Uninit(void)
 {
+	for (RayInterface* pRay : m_pRayList)
+	{
+		pRay->Uninit();
+		delete pRay;
+	}
+	m_pRayList.clear();
 }
 
 void RayFactory::CreateXRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)

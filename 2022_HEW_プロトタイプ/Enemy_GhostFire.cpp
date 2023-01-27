@@ -39,7 +39,14 @@ void Enemy_GhostFire::Update()
 	if (m_IsDie) {
 		m_IsDie = false;
 		m_AnimationPtn = 0;
-		m_Muki += 2;
+		if (m_Muki % 2 == 0)
+		{
+			m_Muki = 2;
+		}
+		else
+		{
+			m_Muki = 3;
+		}
 		m_WaitFrame = 0;
 		m_State = DEAD;
 	}
@@ -89,18 +96,19 @@ void Enemy_GhostFire::Update()
 		}
 		break;
 	case Enemy_GhostFire::DEAD:
-		//if (m_WaitFrame >= m_DeadAnimeFrame)
-		//{
-		//	m_AnimationPtn++;
-		//	m_WaitFrame = 0;
-		//}
-		//else
-		//{
-		//	m_WaitFrame++;
-		//}
-		//if (m_AnimationPtn > m_DeadAnimeNum - 1) {
-			m_IsActive = false;
-		//}
+		if (m_WaitFrame >= 5)
+		{
+			m_AnimationPtn++;
+			m_WaitFrame = 0;
+			if (m_AnimationPtn >= 8)
+			{
+				m_IsActive = false;
+			}
+		}
+		else
+		{
+			m_WaitFrame++;
+		}
 		break;
 	default:
 		break;

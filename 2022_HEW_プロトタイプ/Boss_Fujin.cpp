@@ -10,6 +10,9 @@
 #include "EnemyFactory.h"
 #include "RayFactory.h"
 #include "Enemy_BossAvator.h"
+#include "sound.h"
+
+static int g_SE_inhole;
 
 Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 12.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN,isDuo)
@@ -31,6 +34,10 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	m_AttackSize = m_AttackCollisionSize;
 	// 吸い込み攻撃用変数
 	m_InHalePower = D3DXVECTOR2(5.0f, 5.0f);
+
+	//音関連の初期化
+	g_SE_inhole = LoadSound((char*)"data/SE/Fujin_inhale.wav");
+	SetVolume(g_SE_inhole, 0.5f);
 }
 
 void Boss_Fujin::Init()
@@ -105,6 +112,7 @@ void Boss_Fujin::Update()
 			case 0:
 				m_Muki += 8;
 				m_State = INHALE;
+				PlaySound(g_SE_inhole, -1);
 				break;
 			case 1:
 				m_Muki += 2;
@@ -216,6 +224,7 @@ void Boss_Fujin::Update()
 			m_AnimationPtn++;
 			if (m_AnimationPtn >= 5)
 			{
+				m_IsDeadBoss = true;
 				m_AnimationPtn = 5;
 				if (!m_IsDuo)
 				{
@@ -287,6 +296,7 @@ void Boss_Fujin::InHale()
 		m_AnimationPtn = 0;
 		m_State = ATTACK;
 		m_IsAttack = true;
+		StopSound(g_SE_inhole);
 	}
 	// ベクトルを正規化
 	D3DXVec2Normalize(&vec, &vec);
@@ -303,6 +313,7 @@ void Boss_Fujin::InHale()
 		m_AnimationPtn = 0;
 		m_State = ATTACK;
 		m_IsAttack = true;
+		StopSound(g_SE_inhole);
 	}
 	else
 	{

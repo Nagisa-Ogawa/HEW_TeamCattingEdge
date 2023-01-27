@@ -3,11 +3,14 @@
 #include "sprite.h"
 #include "player.h"
 #include "Block.h"
+#include "sound.h"
 
 bool HitCheckBlockToTRay(D3DXVECTOR2 raypos, float size);
 bool HitCheckPlayerToTRay(D3DXVECTOR2 raypos, float raysize, D3DXVECTOR2 playerpos);
 bool HitCheckTRayLine(D3DXVECTOR2 startA, D3DXVECTOR2 endA, D3DXVECTOR2 startB, D3DXVECTOR2 endB);
 float crossT(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
+
+static int	g_SE_expansion;		// SE‚ÌŽ¯•ÊŽq
 
 TRay::TRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 	:RayInterface(pos, playerpos) 
@@ -21,6 +24,9 @@ TRay::TRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 
 	m_vec = m_goalpos - m_pos;
 	D3DXVec2Normalize(&m_vec, &m_vec);
+
+	g_SE_expansion = LoadSound((char*)"data/SE/Raijin_burst.wav");
+	SetVolume(g_SE_expansion, 1.0f);
 }
 
 void TRay::Init(void)
@@ -36,7 +42,10 @@ void TRay::Update(void)
 		m_pos += m_vec * RAYSPEED;
 
 		if (HitCheckBlockToTRay(m_pos, m_size))
+		{
 			m_state = Expo;
+			PlaySound(g_SE_expansion, -1);
+		}
 		break;
 	case Expo:
 		if (m_size <= MAXSIZE)
@@ -46,6 +55,7 @@ void TRay::Update(void)
 		else
 		{
 			m_use = false;
+			StopSound(g_SE_expansion);
 		}
 		break;
 	}
@@ -63,7 +73,7 @@ void TRay::Draw(void)
 
 void TRay::Uninit(void)
 {
-
+	StopSound(g_SE_expansion);
 }
 
 bool HitCheckBlockToTRay(D3DXVECTOR2 raypos, float size)

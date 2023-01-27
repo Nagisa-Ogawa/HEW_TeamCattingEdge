@@ -3,11 +3,14 @@
 #include "sprite.h"
 #include "player.h"
 #include "Block.h"
+#include "sound.h"
 
 bool HitCheckBlockToXRay(D3DXVECTOR2 raypos, float size);
 bool HitCheckPlayerToXRay(D3DXVECTOR2 raypos, float raysize, D3DXVECTOR2 playerpos);
 bool HitCheckXRayLine(D3DXVECTOR2 startA, D3DXVECTOR2 endA, D3DXVECTOR2 startB, D3DXVECTOR2 endB);
 float crossX(D3DXVECTOR2 vec1, D3DXVECTOR2 vec2);
+
+static int	g_SE_expansion;		// SE‚ÌŽ¯•ÊŽq
 
 XRay::XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 	:RayInterface(pos, playerpos)
@@ -20,6 +23,9 @@ XRay::XRay(D3DXVECTOR2 pos, D3DXVECTOR2 playerpos)
 
 	m_vec = m_goalpos - m_pos;
 	D3DXVec2Normalize(&m_vec, &m_vec);
+
+	g_SE_expansion = LoadSound((char*)"data/SE/Fujin_slice.wav");
+	SetVolume(g_SE_expansion, 1.0f);
 }
 
 void XRay::Init(void)
@@ -34,7 +40,10 @@ void XRay::Update(void)
 		m_pos += m_vec * RAYSPEED;
 
 		if (HitCheckBlockToXRay(m_pos, m_size))
+		{
 			m_state = Expo;
+			PlaySound(g_SE_expansion, 0);
+		}
 		break;
 	case Expo:
 		if (m_size <= MAXSIZE)
@@ -61,7 +70,7 @@ void XRay::Draw(void)
 
 void XRay::Uninit(void)
 {
-	
+	StopSound(g_SE_expansion);
 }
 
 bool HitCheckBlockToXRay(D3DXVECTOR2 raypos,float size)

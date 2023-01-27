@@ -13,19 +13,24 @@ public:
 		DEAD,		// 死亡
 	};
 	// アニメーションのUV値の指定に使う配列
-	const float m_AnimeTable[2] =
+	const float m_AnimeTable[9] =
 	{
-		0.0f,
-		0.5f,
+		0.00000f,
+		0.11111f,
+		0.22222f,
+		0.33333f,
+		0.44444f,
+		0.55555f,
+		0.66666f,
+		0.77777f,
+		0.88888f,
 	};
-	const float M_MukiTable[6] =
+	const float M_MukiTable[4] =
 	{
-		0.00000f,	//左向き待機
-		0.16667f,	//右向き待機
-		0.33334f,	//左向き接近
-		0.50000f,	//右向き待機
-		0.66667f,	//左向き爆発
-		0.83334f,	//右向き爆発
+		0.00f,	//左向き待機
+		0.25f,
+		0.50f,
+		0.75f,
 	};
 private:
 	// チェイス系変数
@@ -36,6 +41,7 @@ private:
 	float m_NowDistance = 0.0f;	// 現在の移動距離
 	// 待機フレーム
 	int m_WaitFrame = 0;
+	int m_AnimeFrame = 0;
 	STATE_ENEMY_RUSH m_State = IDLE;
 public:
 	Enemy_Rush(D3DXVECTOR2 pos, int ID, int textureNo);

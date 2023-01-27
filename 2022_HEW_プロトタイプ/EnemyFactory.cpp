@@ -125,7 +125,7 @@ void EnemyFactory::Init()
 	m_EnemyTenguNo = LoadTexture((char*)"data/TEXTURE/Boss_Tengu.png");
 
 	m_EnemyGhostFireNo = LoadTexture((char*)"data/TEXTURE/Enemy_GhostFire.png");
-	m_EnemyRushNo = LoadTexture((char*)"data/TEXTURE/enemy_selfdestruct.png");
+	m_EnemyRushNo = LoadTexture((char*)"data/TEXTURE/Enemy_Rush.png");
 	m_EnemyExplosionGasNo = LoadTexture((char*)"data/TEXTURE/Enemy_ExplosionGas.png");
 	m_EnemyKasyaNo = LoadTexture((char*)"data/TEXTURE/Boss_Kasya01.png");
 
@@ -601,11 +601,11 @@ bool EnemyFactory::CheckTogetherDie()
 	bool raijinFlag = false;
 	for (Enemy* pEnemy : m_pEnemyList)
 	{
-		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_FUJIN&&pEnemy->GetIsDead())
+		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_FUJIN&&pEnemy->GetIsDeadBoss())
 		{
 			fujinFlag = true;
 		}
-		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_RAIJIN&& pEnemy->GetIsDead())
+		if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_RAIJIN&& pEnemy->GetIsDeadBoss())
 		{
 			raijinFlag = true;
 		}

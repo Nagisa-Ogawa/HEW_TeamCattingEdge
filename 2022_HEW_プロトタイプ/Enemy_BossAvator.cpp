@@ -8,6 +8,9 @@
 #include "FlashFactory.h"
 #include "game.h"
 #include "EnemyFactory.h"
+#include "sound.h"
+
+static int	g_SE_thunder;		// SE‚ÌŽ¯•ÊŽq
 
 Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy::ENEMY_TYPE mode,int muki)
 	: Enemy(pos, ID, D3DXVECTOR2(300.0f, 300.0f), divid, textureNo, mode),m_TargetPos(targetPos)
@@ -20,6 +23,10 @@ Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXV
 	m_pThunderBladeFactory = GetThunderBladeFactory();
 	m_pFlashFactory = GetFlashFactory();
 	m_pEnemyFactory = GetEnemyFactory();
+
+	// ‰¹ŠÖ˜A‚Ì‰Šú‰»
+	g_SE_thunder = LoadSound((char*)"data/SE/Raijin_thunder.wav");
+	SetVolume(g_SE_thunder, 0.5f);
 }
 
 
@@ -256,6 +263,7 @@ void Enemy_BossAvator::ThunderBlade()
 		{
 			// —‹‚Ìnì¬
 			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),1);
+			PlaySound(g_SE_thunder, 0);
 		}
 		// ˆê’èŽžŠÔ‘Ò‹@
 		if (m_WaitFrame >= 300)
