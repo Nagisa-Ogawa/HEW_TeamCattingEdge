@@ -25,7 +25,7 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	// ìGÇÃÉTÉCÉYÇê›íË
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP =1;
+	m_HP =10;
 	m_Muki = 0;
 	m_pPlayer = GetPlayer();
 	m_pRayFactory = GetRayFactory();

@@ -462,8 +462,7 @@ void EnemyFactory::CollisionPlayerToEnemy()
 		if (HitCheckBox(pEnemy->GetPos(), pEnemy->GetCollisionSize(),
 			m_pPlayer->pos, D3DXVECTOR2(m_pPlayer->size-70.0f, m_pPlayer->size)))
 		{
-			if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_TENGU ||
-				(pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_FUJIN && !pEnemy->GetIsDuo()) || (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_RAIJIN && !pEnemy->GetIsDuo()))
+			if (pEnemy->GetEnemyType() == Enemy::ENEMY_TYPE::BOSS_TENGU)
 			{
 				// ÉvÉåÉCÉÑÅ[ÇÃHPÇå∏ÇÁÇ∑
 				PlayerDamage(2);
@@ -502,7 +501,7 @@ void EnemyFactory::CollisionPlayerToFujinAttack()
 			}
 			else
 			{
-				PlayerDamage(2);
+				PlayerDamage(1);
 			}
 		}
 

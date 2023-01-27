@@ -15,6 +15,8 @@ static int	g_SE_ult;		// SEの識別子
 static int g_SE_Fujin_decision;
 static int g_SE_Raijin_decision;
 
+static int g_Texture_warning;
+
 
 Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy::ENEMY_TYPE mode,int muki)
 	: Enemy(pos, ID, D3DXVECTOR2(300.0f, 300.0f), divid, textureNo, mode),m_TargetPos(targetPos)
@@ -31,13 +33,10 @@ Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXV
 	// 音関連の初期化
 	g_SE_thunder = LoadSound((char*)"data/SE/Raijin_thunder.wav");
 	SetVolume(g_SE_thunder, 0.5f);
-	// 音関連の初期化
 	g_SE_ult = LoadSound((char*)"data/SE/Fujin_ult.wav");
 	SetVolume(g_SE_ult, 1.3f);
-	//g_t = LoadSound((char*)"data/SE/Fujin_ult.wav");
-	//SetVolume(g_SE_ult, 1.3f);
-	//g_SE_ult = LoadSound((char*)"data/SE/Fujin_ult.wav");
-	//SetVolume(g_SE_ult, 1.3f);
+
+	g_Texture_warning = LoadTexture((char*)"data/TEXTURE/warning.png");
 
 }
 
@@ -157,6 +156,12 @@ void Enemy_BossAvator::Draw()
 		DrawSprite(m_EnemyTextureNo, basePos.x + m_Pos.x, basePos.y + m_Pos.y, m_Size.x, m_Size.y,
 			m_AnimeRaijinTable[m_AnimationPtn], M_MukiRaijinTable[m_Muki], m_pttern.x, m_pttern.y);
 	}
+
+	if (m_IsDead == false)
+	{
+		DrawSprite(g_Texture_warning, basePos.x + m_Pos.x, basePos.y + m_Pos.y - 120.0f, 120.0f, 120.0f,
+			0.0f, 0.0f, 1.0f, 1.0f);
+	}
 }
 
 void Enemy_BossAvator::WindBlade()
@@ -275,7 +280,7 @@ void Enemy_BossAvator::ThunderBlade()
 		if (m_WaitFrame == 80)
 		{
 			// 雷の刃作成
-			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(600.0f, 600.0f),1,m_IsDuo);
+			m_pThunderBladeFactory->Create(D3DXVECTOR2(m_Pos.x, BLOCK_SIZE * 17.0f - 300.0f), D3DXVECTOR2(700.0f, 600.0f),1,m_IsDuo);
 			PlaySound(g_SE_thunder, 0);
 		}
 		// 一定時間待機

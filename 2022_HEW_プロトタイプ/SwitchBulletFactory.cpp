@@ -82,7 +82,7 @@ void SwitchBulletFactory::CollisionSwitchBulletToPlayer()
 			else
 			{
 				// プレイヤーへダメージを与える
-				PlayerDamage(2);
+				PlayerDamage(1);
 			}
 		}
 	}

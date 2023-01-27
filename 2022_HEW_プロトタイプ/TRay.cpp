@@ -69,7 +69,7 @@ void TRay::Update(void)
 		}
 		else
 		{
-			PlayerDamage(2);
+			PlayerDamage(1);
 		}
 	}
 }

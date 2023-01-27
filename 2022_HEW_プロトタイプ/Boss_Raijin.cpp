@@ -28,7 +28,7 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool is
 	// 敵のサイズを設定
 	m_Gravity = 4.0f;
 	m_CollisionSize = D3DXVECTOR2(240.0f, 300.0f);
-	m_HP =1;
+	m_HP =10;
 	m_Muki = muki;
 	m_WaitFrame = 60;
 	// 攻撃用変数
