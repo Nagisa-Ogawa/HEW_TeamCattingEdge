@@ -67,7 +67,7 @@ static UI ui(GetPlayer());
 //=============================================================================
 void InitGame(void)
 {
-	g_Scene = g_SceneNext = GAMESCENE_PICTURE_STAGE01;
+	g_Scene = g_SceneNext = GAMESCENE_PICTURE_STAGE03;
 
 	switch (g_Scene)
 	{

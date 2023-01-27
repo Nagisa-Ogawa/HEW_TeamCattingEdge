@@ -140,7 +140,7 @@ void UpdateTitle(void)
 	
 
 	//スペースキーが押されたらゲームシーンへ移行する
-	if (IsButtonPressedX(0, XINPUT_GAMEPAD_A)||GetKeyboardPress(DIK_RETURN))
+	if (IsButtonTriggeredX(0, XINPUT_GAMEPAD_A)|| IsButtonTriggeredX(0,DIK_RETURN))
 	{
 		if (Apush %2 == 0)
 		{

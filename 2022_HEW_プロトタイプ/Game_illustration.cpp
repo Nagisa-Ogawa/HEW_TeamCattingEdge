@@ -68,7 +68,7 @@ void UpdateGameIllust(void)
 {
 
 	//スペースキーが押されたらゲームシーンへ移行する
-	if (IsButtonPressedX(0, XINPUT_GAMEPAD_A) || IsButtonPressedX(0, XINPUT_GAMEPAD_B))
+	if (IsButtonTriggeredX(0, XINPUT_GAMEPAD_A) || IsButtonTriggeredX(0, XINPUT_GAMEPAD_B))
 	{
 		switch (g_gamescene)
 		{

@@ -239,7 +239,7 @@ void Boss_Fujin::Update()
 	{
 		m_InvincibleTime++;
 
-		if (m_InvincibleTime >= 120)
+		if (m_InvincibleTime >= 180)
 		{
 			m_InvincibleTime = 0;
 			m_IsInvincible = false;
