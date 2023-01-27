@@ -147,7 +147,7 @@ HRESULT InitPlayer(GAMESCENE gamescene)
 	g_Player.hp = 10;
 
 	//‰¹ŠÖ˜A‚Ì‰Šú‰»
-	g_SE_wapu = LoadSound((char*)"data/SE/wa-pu.wav");
+	g_SE_wapu = LoadSound((char*)"data/SE/player_warp.wav");
 	SetVolume(g_SE_wapu, 0.5f);
 	g_SE_attack = LoadSound((char*)"data/SE/player_attack.wav");
 	SetVolume(g_SE_attack, 0.5f);

@@ -13,6 +13,9 @@
 #include "sound.h"
 
 static int g_SE_inhole;
+static int g_SE_normal;
+static int g_SE_throw;
+static int g_SE_dead;
 
 Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	: Enemy(pos,ID,D3DXVECTOR2(480.0f,480.0f), D3DXVECTOR2(6.0f, 12.0f), textureNo, Enemy::ENEMY_TYPE::BOSS_FUJIN,isDuo)
@@ -38,6 +41,12 @@ Boss_Fujin::Boss_Fujin(D3DXVECTOR2 pos, int ID, int textureNo,bool isDuo)
 	//‰¹ŠÖ˜A‚Ì‰Šú‰»
 	g_SE_inhole = LoadSound((char*)"data/SE/Fujin_inhale.wav");
 	SetVolume(g_SE_inhole, 0.5f);
+	g_SE_normal = LoadSound((char*)"data/SE/Fujin_nomal.wav");
+	SetVolume(g_SE_normal, 0.5f);
+	g_SE_throw = LoadSound((char*)"data/SE/Tengu_throw.wav");
+	SetVolume(g_SE_throw, 1.0f);
+	g_SE_dead = LoadSound((char*)"data/SE/Fujin_dead.wav");
+	SetVolume(g_SE_dead, 1.0f);
 }
 
 void Boss_Fujin::Init()
@@ -68,6 +77,7 @@ void Boss_Fujin::Update()
 	{
 		m_IsDie = false;
 		m_IsAttack = false;
+		m_IsEndDead = false;
 		m_AnimationPtn = 0;
 		if (m_Pos.x >= BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f))
 		{
@@ -83,6 +93,7 @@ void Boss_Fujin::Update()
 		}
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 	switch (m_State)
 	{
@@ -183,6 +194,7 @@ void Boss_Fujin::Update()
 		{
 			// •—‚Ìnì¬
 			m_pWindBladeFactory->Create(D3DXVECTOR2(SCREEN_WIDTH + 60.0f, SCREEN_HEIGHT - 200.0f),D3DXVECTOR2(240.0f,240.0f), 1);
+			PlaySound(g_SE_normal, 0);
 		}
 		// ˆê’èŽžŠÔ‘Ò‹@
 		if (m_WaitFrame >= 300)
@@ -232,7 +244,12 @@ void Boss_Fujin::Update()
 				}
 			}
 		}
-		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo)
+		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo&&!m_IsEndDead)
+		{
+			m_IsEndDead = true;
+			m_WaitFrame = 0;
+		}
+		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
 		{
 			m_IsActive = false;
 		}
@@ -355,6 +372,7 @@ void Boss_Fujin::ShotBullet_X()
 	case 1:
 		// X’e”­ŽË
 		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
+		PlaySound(g_SE_throw, 0);
 		m_MoveCount++;
 		break;
 	case 2:
@@ -408,6 +426,7 @@ void Boss_Fujin::ShotBullet_X()
 	case 6:
 		// X’e”­ŽË
 		m_pRayFactory->CreateXRay(m_Pos, m_pPlayer->pos);
+		PlaySound(g_SE_throw, 0);
 		m_MoveCount++;
 	case 7:
 		// ‘Ò‹@

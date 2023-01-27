@@ -299,12 +299,12 @@ HRESULT InitBlock(GAMESCENE gamescene)
 		break;
 	case GAMESCENE_BASS_FUJIN:
 		g_NowStage = &g_BASS_fujin;
-		g_BGM = LoadSound((char*)"data/BGM/BGM_fujin_raijin.wav");
+		g_BGM = LoadSound((char*)"data/BGM/BGM_fujin.wav");
 		SetVolume(g_BGM, 0.3f);
 		break;
 	case GAMESCENE_BASS_RAIJIN:
 		g_NowStage = &g_BASS_Raijin;
-		g_BGM = LoadSound((char*)"data/BGM/BGM_fujin_raijin.wav");
+		g_BGM = LoadSound((char*)"data/BGM/BGM_raijin.wav");
 		SetVolume(g_BGM, 0.3f);
 		break;
 	case GAMESCENE_BASS_FINAL:

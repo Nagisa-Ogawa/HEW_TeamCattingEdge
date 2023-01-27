@@ -17,6 +17,8 @@
 static int	g_SE_thunder;		// SEの識別子
 static int	g_SE_change;		// SEの識別子
 static int	g_SE_burst;		// SEの識別子
+static int g_SE_throw;	// SEの識別子
+static int g_SE_dead;
 
 
 Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool isDuo)
@@ -35,10 +37,14 @@ Boss_Raijin::Boss_Raijin(D3DXVECTOR2 pos, int ID, int textureNo,int muki,bool is
 	//音関連の初期化
 	g_SE_burst = LoadSound((char*)"data/SE/Raijin_burst.wav");
 	SetVolume(g_SE_burst, 0.5f);
-	g_SE_change = LoadSound((char*)"data/SE/Raijin_change.wav");
+	g_SE_change = LoadSound((char*)"data/SE/raijin_warp.wav");
 	SetVolume(g_SE_change, 0.5f);
 	g_SE_thunder = LoadSound((char*)"data/SE/Raijin_thunder.wav");
 	SetVolume(g_SE_thunder, 0.5f);
+	g_SE_throw = LoadSound((char*)"data/SE/Raijin_shot.wav");
+	SetVolume(g_SE_throw, 1.0f);
+	g_SE_dead = LoadSound((char*)"data/SE/raijinn_dead.wav");
+	SetVolume(g_SE_dead, 1.0f);
 }
 
 void Boss_Raijin::Init()
@@ -72,6 +78,7 @@ void Boss_Raijin::Update()
 	{
 		m_IsDie = false;
 		m_IsStealth = true;
+		m_IsEndDead = false;
 		m_AnimationPtn = 0;
 		if (m_Pos.x >= BLOCK_SIZE * 32.0f - (m_Size.x / 2.0f))
 		{
@@ -91,6 +98,7 @@ void Boss_Raijin::Update()
 		}
 		m_WaitFrame = 0;
 		m_State = DEAD;
+		PlaySound(g_SE_dead, 0);
 	}
 
 	switch (m_State)
@@ -177,9 +185,14 @@ void Boss_Raijin::Update()
 				}
 			}
 		}
-		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5&&m_IsDuo)
+		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo && !m_IsEndDead)
 		{
-			// m_IsActive = false;
+			m_IsEndDead = true;
+			m_WaitFrame = 0;
+		}
+		else if (m_pEnemyFactory->CheckTogetherDie() && m_AnimationPtn == 5 && m_IsDuo&&m_IsEndDead&&m_WaitFrame >= 120)
+		{
+			m_IsActive = false;
 		}
 		else
 		{
@@ -240,12 +253,11 @@ void Boss_Raijin::SwitchBullet()
 			if (m_Muki % 2 == 0) {
 				// 光るオブジェクト作成
 				m_pFlashFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(180.0f, 180.0f));
-				//PlaySound(g_SE_change, 0);
+				
 			}
 			else {
 				// 光るオブジェクト作成
 				m_pFlashFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(180.0f, 180.0f));
-				//PlaySound(g_SE_change, 0);
 			}
 		}
 		if (m_WaitFrame == 120)
@@ -255,9 +267,11 @@ void Boss_Raijin::SwitchBullet()
 			m_TargetPos.y=  BLOCK_SIZE * 18.0f - 120.0f;
 			if (m_Muki % 2 == 0) {
 				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x - 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::ONCE);
+				PlaySound(g_SE_throw,0);
 			}
 			else {
 				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_Pos.x + 100, BLOCK_SIZE * 18.0f - 120.0f), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::ONCE);
+				PlaySound(g_SE_throw, 0);
 
 			}
 			m_WaitFrame = 0;
@@ -286,6 +300,7 @@ void Boss_Raijin::SwitchBullet()
 			// 爆発
 			// 光るオブジェクト作成
 			m_pFlashFactory->Create(m_Pos, D3DXVECTOR2(300.0f, 300.0f));
+			PlaySound(g_SE_change, 0);
 		}
 		if (m_WaitFrame == 60) {
 			// 爆発
@@ -318,9 +333,11 @@ void Boss_Raijin::SwitchBullet()
 		if (m_WaitFrame == 240) {
 			if (m_Muki % 2 == 0) {
 				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x - 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 0, SwitchBullet::BULLET_MODE::TWICE);
+				PlaySound(g_SE_throw, 0);
 			}
 			else {
 				m_pSwitchBulletFactory->Create(D3DXVECTOR2(m_SwitchStartPos.x + 100, m_TargetPos.y), D3DXVECTOR2(60.0f, 60.0f), m_pPlayer->pos, 1, SwitchBullet::BULLET_MODE::TWICE);
+				PlaySound(g_SE_throw, 0);
 			}
 			// 雷弾発射
 			m_MoveCount++;
@@ -337,6 +354,7 @@ void Boss_Raijin::SwitchBullet()
 			// 爆発
 			// 光るオブジェクト作成
 			m_pFlashFactory->Create(m_Pos, D3DXVECTOR2(300.0f, 300.0f));
+			PlaySound(g_SE_change, 0);
 		}
 		if (m_WaitFrame == 90) {
 			// 爆発
@@ -404,6 +422,7 @@ void Boss_Raijin::ShotBullet_T()
 		}
 		// X弾発射
 		m_pRayFactory->CreateTRay(pos, m_pPlayer->pos);
+		PlaySound(g_SE_throw, 0);
 		m_Muki -= 4;
 		m_AnimationPtn = 0;
 		m_MoveCount++;
@@ -476,6 +495,7 @@ void Boss_Raijin::ShotBullet_T()
 		}
 		// X弾発射
 		m_pRayFactory->CreateTRay(pos, m_pPlayer->pos);
+		PlaySound(g_SE_throw, 0);
 		m_Muki -= 4;
 		m_AnimationPtn = 0;
 		m_MoveCount++;

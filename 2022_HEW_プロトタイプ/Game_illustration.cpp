@@ -51,9 +51,14 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 	case GAMESCENE_PICTURE_OVERGAME:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/GameOverBG.png");
 		g_TextureAnime = LoadTexture((char*)"data/TEXTURE/GameOverChar.png");
+		g_BGMNo = LoadSound((char*)"data/BGM/BGM_GameOver.wav");
+		SetVolume(g_BGMNo, 0.3f);
+		PlaySound(g_BGMNo, -1);
 		break;
 	case GAMESCENE_PICTURE_RESULT:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/ED.png");
+		g_BGMNo = LoadSound((char*)"data/BGM/BGM_ED.wav");
+		PlaySound(g_BGMNo, -1);
 		break;
 	case GAMESCENE_PICTURE_STAFFROLL:
 		g_TextureNo = LoadTexture((char*)"data/TEXTURE/endroll.png");
@@ -65,6 +70,10 @@ void InitGameIllust(GAMESCENE gamescene,GAMESCENE nowscene)
 
 void UninitGameIllust(void)
 {
+	if (g_gamescene == GAMESCENE_PICTURE_STAFFROLL||g_gamescene== GAMESCENE_PICTURE_OVERGAME)
+	{
+		StopSound(g_BGMNo);
+	}
 }
 
 void UpdateGameIllust(void)
@@ -100,7 +109,7 @@ void UpdateGameIllust(void)
 			SetGameScene(GAMESCENE_BASS_FINAL);
 			break;
 		case GAMESCENE_PICTURE_OVERGAME:
-			SetGameScene(GAMESCENE_PICTURE_RESULT);
+			SetGameScene(g_nowscene);
 			break;
 		case GAMESCENE_PICTURE_RESULT:
 			SetGameScene(GAMESCENE_PICTURE_STAFFROLL);

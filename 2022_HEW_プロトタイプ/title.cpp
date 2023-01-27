@@ -41,6 +41,7 @@ static int warp;
 
 static int BGManual;
 static int Title;
+static int TitleBGM;
 
 static int Attack;
 static int AttackFrame;
@@ -91,6 +92,7 @@ void InitTitle(void)
 
 	BGManual = LoadTexture((char*)"data/TEXTURE/bgm.png");
 	Title = LoadTexture((char*)"data/TEXTURE/title.png");
+	TitleBGM = LoadSound((char*)"data/BGM/BGM_OP.wav");
 	//タイトル画面用テクスチャの読み込み
 	LStick.Texture = LoadTexture((char*)"data/TEXTURE/TStick.png");
 	LStick.pack = D3DXVECTOR2(0.2, (float)1 / 3);
@@ -127,8 +129,9 @@ void InitTitle(void)
 
 	Frame = 0;
 
+	SetVolume(TitleBGM, 0.3f);
 	//BGM再生(二つ目の引数はループ回数 負の値を指定すると無限ループ)
-	//PlaySound(g_BGMNo, -1);
+	PlaySound(TitleBGM, -1);
 }
 
 void UninitTitle(void)
@@ -409,6 +412,7 @@ void Push()
 	}
 	else
 	{
+		StopSound(TitleBGM);
 		SetFadeColor(0.0f, 0.0f, 0.0f, 0.0f);//フェードカラーを黒に変える
 		SceneTransition(SCENE_GAME);
 

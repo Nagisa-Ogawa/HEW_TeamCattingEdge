@@ -67,6 +67,7 @@ protected:
 	bool m_IsDuo = false;
 	bool m_IsAttack = false;
 	bool m_IsDeadBoss = false;
+	bool m_IsEndDead = false;
 	D3DXVECTOR2 m_AttackPos = D3DXVECTOR2(0.0f, 0.0f);
 
 public:
@@ -78,6 +79,7 @@ public:
 		m_IsActive = true;
 		m_IsGround = false;
 		m_IsDead = false;
+		m_IsEndDead = false;
 		m_CollisionSize = size;
 		m_InvincibleTime = 0;
 	};
@@ -119,6 +121,7 @@ public:
 	bool GetIsDuo() { return m_IsDuo; };
 	bool GetIsAttack() { return m_IsAttack; };
 	bool GetIsDeadBoss() { return m_IsDeadBoss; };
+	bool GetIsEndDead() { return m_IsEndDead; };
 
 	// Setånä÷êî
 	void SetBlockIndexX(int num) { m_BlockIndex[0] = num; };

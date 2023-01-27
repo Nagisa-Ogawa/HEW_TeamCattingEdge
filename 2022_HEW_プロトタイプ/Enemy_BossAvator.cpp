@@ -11,6 +11,8 @@
 #include "sound.h"
 
 static int	g_SE_thunder;		// SEの識別子
+static int	g_SE_ult;		// SEの識別子
+
 
 Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXVECTOR2 targetPos,D3DXVECTOR2 divid, Enemy::ENEMY_TYPE mode,int muki)
 	: Enemy(pos, ID, D3DXVECTOR2(300.0f, 300.0f), divid, textureNo, mode),m_TargetPos(targetPos)
@@ -27,6 +29,9 @@ Enemy_BossAvator::Enemy_BossAvator(D3DXVECTOR2 pos, int ID, int textureNo, D3DXV
 	// 音関連の初期化
 	g_SE_thunder = LoadSound((char*)"data/SE/Raijin_thunder.wav");
 	SetVolume(g_SE_thunder, 0.5f);
+	// 音関連の初期化
+	g_SE_ult = LoadSound((char*)"data/SE/Fujin_ult.wav");
+	SetVolume(g_SE_ult, 1.3f);
 }
 
 
@@ -202,6 +207,7 @@ void Enemy_BossAvator::WindBlade()
 			{
 				// 風の刃作成
 				m_pWindBladeFactory->Create(D3DXVECTOR2(m_Pos.x - 100.0f, m_Pos.y +(i*100)-100), D3DXVECTOR2(100.0f, 100.0f), 1);
+				PlaySound(g_SE_ult, 0);
 			}
 		}
 		// 一定時間待機

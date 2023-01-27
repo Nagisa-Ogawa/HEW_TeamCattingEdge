@@ -76,6 +76,7 @@ void Boss_Tengu::Update()
 	if (m_IsDie)
 	{
 		m_IsDie = false;
+		m_IsEndDead = false;
 		m_AnimationPtn = 0;
 		if (m_Muki % 2 == 0)
 		{
@@ -197,18 +198,23 @@ void Boss_Tengu::Update()
 		}
 		break;
 	case Boss_Tengu::DEAD:
-		if (m_WaitFrame >= m_DeadAnimeFrame)
+		if (m_WaitFrame >= m_DeadAnimeFrame&&!m_IsEndDead)
 		{
 			m_AnimationPtn++;
 			m_WaitFrame = 0;
+			if (m_AnimationPtn >= 3)
+			{
+				m_IsEndDead = true;
+				m_AnimationPtn = 2;
+			}
+		}
+		else if (m_IsEndDead&&m_WaitFrame >= 120)
+		{
+			m_IsActive = false;
 		}
 		else
 		{
 			m_WaitFrame++;
-		}
-		if (m_AnimationPtn > m_DeadAnimeNum - 1)
-		{
-			m_IsActive = false;
 		}
 		break;
 	default:

@@ -74,6 +74,7 @@ void Boss_Kasya::Update()
 	// Ž€–S‚µ‚Ä‚¢‚½‚È‚çŽ€–Só‘Ô‚Ö
 	if (m_IsDie) {
 		m_IsDie = false;
+		m_IsEndDead = false;
 		m_AnimationPtn = 0;
 		if (m_Muki % 2 == 0) {
 			m_Muki = 2;
@@ -173,14 +174,19 @@ void Boss_Kasya::Update()
 
 		break;
 	case Boss_Kasya::DEAD:
-		if (m_WaitFrame >= 10)
+		if (m_WaitFrame >= 10 && !m_IsEndDead)
 		{
-			m_WaitFrame = 0;
 			m_AnimationPtn++;
-			if (m_AnimationPtn >= 6) {
-				m_AnimationPtn = 0;
-				m_IsActive = false;
+			m_WaitFrame = 0;
+			if (m_AnimationPtn >= 6)
+			{
+				m_IsEndDead = true;
+				m_AnimationPtn = 5;
 			}
+		}
+		else if (m_IsEndDead&&m_WaitFrame >= 120)
+		{
+			m_IsActive = false;
 		}
 		else
 		{
@@ -511,6 +517,7 @@ void Boss_Kasya::Move()
 			m_Muki += 2;
 			m_State = Boss_Kasya::STOP;
 			StopSound(g_SE_hasiri);
+			PlaySound(g_SE_teisi, 0);
 		}
 		else {
 			m_Muki = m_BeforeMuki;
@@ -535,11 +542,6 @@ void Boss_Kasya::Move()
 
 void Boss_Kasya::Stop()
 {
-	if (m_AnimeFrame == 1)
-	{
-		PlaySound(g_SE_teisi, 0);
-	}
-
 	if (m_AnimeFrame >= 20)
 	{
 		m_AnimationPtn++;
